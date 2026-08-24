@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulateur retraite & écrêtement cumul | Élus</title>
+<meta name="description" content="Simule ta pension d'élu (député, maire...) et le plafond d'écrêtement si tu cumules plusieurs mandats. Calculs transparents, barèmes 2024.">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<meta property="og:title" content="Simulateur retraite & écrêtement cumul | Élus : combien ça coûte vraiment ?">
+<meta property="og:description" content="Simule ta pension d'élu et le plafond si tu cumules. Calculs transparents, barèmes 2024.">
+<meta property="og:url" content="https://wald52.github.io/remunerations-elus/simulateur.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://wald52.github.io/remunerations-elus/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+.tabs{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
+.tabBtn{padding:10px 16px;border-radius:999px;border:1px solid var(--border);background:white;font-weight:700;cursor:pointer}
+.tabBtn.active{background:var(--primary);color:white;border-color:var(--primary)}
+.simPanel{display:none}
+.simPanel.active{display:block}
+.rangeRow{display:flex;gap:12px;align-items:center;margin:8px 0}
+.rangeRow input[type="range"]{flex:1}
+.inputGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.inputGrid{grid-template-columns:1fr}}
+.kpiRow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}
+@media(max-width:700px){.kpiRow{grid-template-columns:1fr}}
+.kpiBox{padding:14px;border-radius:12px;border:1px solid var(--border);background:white;text-align:center}
+.kpiBox strong{font-size:22px;color:var(--primary)}
+.kpiBox small{color:var(--muted);font-size:12px}
+.mandatRow{display:flex;gap:8px;align-items:center;margin:6px 0;padding:8px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}
+.mandatRow select{flex:1}
+</style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html">ÉLUS<span>· combien ça coûte vraiment ?</span></a>
+        <nav class="navlinks">
+      <a href="index.html">Comparateur</a>
+      <a href="france.html">France</a>
+      <a href="monde.html">Monde</a>
+      <a href="cout.html">Coût complet</a>
+      <a href="communes.html">Mon maire</a>
+      <a href="evolution.html">Évolution</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="metiers.html">Métiers</a>
+      <a class="active" href="simulateur.html">Simulateur</a>
+      <a href="methodologie.html">Méthodologie</a>
+    </nav>
+  </div>
+</header>
+<main class="container">
+  <section style="padding:28px 0 8px">
+    <span class="kicker">2 simulateurs • Barèmes 2024 • Transparent</span>
+    <h1>Simulateur retraite & écrêtement</h1>
+    <p class="lead">Combien toucheras-tu à la retraite après tes mandats ? Et combien peux-tu cumuler sans être écrêté ? Deux calculs qui alimentent 80% des fantasmes.</p>
+    <div class="tabs">
+      <button class="tabBtn active" data-tab="retraite">🕰️ Retraite d'élu</button>
+      <button class="tabBtn" data-tab="cumul">⚖️ Cumul & écrêtement</button>
+    </div>
+  </section>
+
+  <!-- RETRAITE -->
+  <section id="panel-retraite" class="simPanel active">
+    <div class="panel" style="padding:18px">
+      <h2>1. Choisis ton mandat</h2>
+      <div class="inputGrid">
+        <div>
+          <label>Mandat</label>
+          <select id="selRetraite"></select>
+          <div class="small" id="infoRetraite" style="margin-top:6px"></div>
+        </div>
+        <div>
+          <label>Indemnité brute mensuelle (plafond)</label>
+          <input id="inpIndemnite" type="number" min="0" max="20000" step="50" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);font-weight:700">
+          <div class="small">Modifiable : si ton conseil vote en dessous du plafond, change ici.</div>
+        </div>
+      </div>
+      <div class="rangeRow" style="margin-top:14px">
+        <label style="min-width:160px">Durée : <strong id="valAnnees">15 ans</strong></label>
+        <input id="rangeAnnees" type="range" min="1" max="42" value="15" step="1">
+        <span class="badge" id="badgeMandats">3 mandats municipaux (6 ans)</span>
+      </div>
+      <div class="rangeRow">
+        <label style="min-width:160px">Âge de départ : <strong id="valAge">62 ans</strong> <span class="small">(décote si <62)</span></label>
+        <input id="rangeAge" type="range" min="55" max="67" value="62" step="1">
+        <span class="small" id="infoAge"></span>
+      </div>
+
+      <div class="kpiRow">
+        <div class="kpiBox" style="border-color:#d97706;background:#fffbeb"><div class="small">Pension brute estimée / mois</div><strong id="kpiPension">—</strong><div class="small" id="kpiPensionSub"></div></div>
+        <div class="kpiBox"><div class="small">Taux de remplacement</div><strong id="kpiTaux">—</strong><div class="small">pension / indemnité</div></div>
+        <div class="kpiBox"><div class="small">Vs retraite moyenne FR</div><strong id="kpiVsMoy">—</strong><div class="small">1 531€ net moyenne (DREES)</div></div>
+      </div>
+
+      <div class="chartWrap"><canvas id="chartRetraite" height="220"></canvas></div>
+      <div class="callout" id="insightRetraite" style="margin-top:10px"></div>
+
+      <div class="tableWrap" style="margin-top:12px"><table class="dataTable" id="tblRetraite"></table></div>
+      <p class="small" style="margin-top:8px">Hypothèses : <strong>Élu local</strong> = IRCANTEC seul, 1 an ≈ 0,78% de l'indemnité en pension (ex. maire 1 027€ → ~8€/an, vérifié DGCL 20 ans → 160€). <strong>Parlementaire</strong> (député/sénateur/eurodéputé) = double cotisation + régime général, 1 an ≈ 4,06% de l'indemnité (ex. député 7 638€ → ~310€/an, observé 5 ans → ~1 550€). Décote 1,25%/trimestre avant 62 ans. Plafond parlementaire 75% de l'indemnité. <a href="methodologie.html">Sources</a>.</p>
+    </div>
+  </section>
+
+  <!-- CUMUL -->
+  <section id="panel-cumul" class="simPanel">
+    <div class="panel" style="padding:18px">
+      <h2>Cumule plusieurs indemnités</h2>
+      <p class="small">Loi 2014 : on ne peut plus cumuler exécutif local + parlementaire (maire + député interdit). Reste possible : député + conseiller municipal simple, ou maire + conseiller régional/départemental + président EPCI. Le total est <strong>écrêté au plafond 8 434,85€ brut / mois</strong> (2024 = 1,5× l'indemnité de base parlementaire 5 623,23€, art. L2123-20 CGCT). Au-delà, la part écrêtée est reversée au budget de la collectivité.</p>
+
+      <div id="mandatList"></div>
+      <button id="btnAddMandat" style="width:auto;padding:8px 12px;font-size:13px;margin-top:8px">+ Ajouter un mandat</button>
+
+      <div class="kpiRow">
+        <div class="kpiBox"><div class="small">Total brut avant écrêtement</div><strong id="kpiTotalBrut">—</strong><div class="small" id="kpiTotalNet">— net</div></div>
+        <div class="kpiBox" id="boxPlafond"><div class="small">Plafond 2024</div><strong>8 434,85 € brut</strong><div class="small">1,5× base parlementaire</div></div>
+        <div class="kpiBox" id="boxEcret" style="border-color:#dc2626"><div class="small">Écrêtement</div><strong id="kpiEcret">—</strong><div class="small" id="kpiNetApres">—</div></div>
+      </div>
+
+      <div class="chartWrap"><canvas id="chartCumul" height="200"></canvas></div>
+      <div class="callout" id="insightCumul"></div>
+
+      <div class="tableWrap" style="margin-top:12px"><table class="dataTable" id="tblCumul"></table></div>
+
+      <h3 style="margin-top:14px">Presets rapides</h3>
+      <div class="presetRow">
+        <button data-preset="depute_regional" style="width:auto;padding:6px 10px;font-size:12px;background:#f1f5f9;border:1px solid var(--border)">Député + conseiller régional</button>
+        <button data-preset="maire_departement" style="width:auto;padding:6px 10px;font-size:12px;background:#f1f5f9;border:1px solid var(--border)">Maire 20k + départemental</button>
+        <button data-preset="maxi" style="width:auto;padding:6px 10px;font-size:12px;background:#f1f5f9;border:1px solid var(--border)">Maire 100k + région + département</button>
+        <button data-preset="clear" style="width:auto;padding:6px 10px;font-size:12px;background:white;border:1px solid var(--border)">✕ Tout effacer</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Ce que ça démontre</h2>
+    <div class="grid3">
+      <div class="card"><h3>Retraite : pas en or massif</h3><p class="small">Maire village 20 ans → ~160€/mois. Même un député 15 ans → ~4 100€ mais après 15 ans à 5 925€ net, et plafonné. Loin du fantasme "retraite à vie après 5 ans à 6 000€".</p></div>
+      <div class="card"><h3>Écrêtement : le garde-fou existe</h3><p class="small">Tu ne peux pas toucher 5 639€ (maire) + 5 925€ (député) = 11 564€. Tu seras écrêté à 8 434€, la différence repart à ta commune.</p></div>
+      <div class="card"><h3>Le non-cumul a changé la donne</h3><p class="small">Depuis 2017, 80% des parlementaires ne peuvent plus être maire. Le cumul exécutif local + national, qui faisait les gros totaux, est interdit.</p></div>
+    </div>
+  </section>
+</main>
+<footer><div class="container small">Données : <a href="data/france.json">france.json</a> + IRCANTEC 2024 + CGCT L2123-20 • <a href="methodologie.html">Méthodologie</a></div></footer>
+<script>
+let franceData=null, chartRet=null, chartCumul=null;
+const PLAFOND=8434.85;
+const RETRAITE_MOY=1531;
+
+async function init(){
+  franceData=await fetch('data/france.json').then(r=>r.json());
+  // select retraite
+  const sel=document.getElementById('selRetraite');
+  sel.innerHTML=franceData.elus.map(e=> `<option value="${e.id}">${e.label} — ${e.brut_mensuel.toLocaleString('fr-FR')}€ brut</option>`).join('');
+  sel.value='maire_500';
+  sel.addEventListener('change', onRetraiteChange);
+  document.getElementById('rangeAnnees').addEventListener('input', updateRetraite);
+  document.getElementById('rangeAge').addEventListener('input', updateRetraite);
+  document.getElementById('inpIndemnite').addEventListener('input', updateRetraite);
+  // tabs
+  document.querySelectorAll('.tabBtn').forEach(b=> b.addEventListener('click', ()=>{
+    document.querySelectorAll('.tabBtn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('.simPanel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-'+b.dataset.tab).classList.add('active');
+    if(b.dataset.tab==='cumul' && chartCumul) chartCumul.resize();
+    if(b.dataset.tab==='retraite' && chartRet) chartRet.resize();
+  }));
+  onRetraiteChange();
+  // cumul init
+  initCumul();
+}
+
+function onRetraiteChange(){
+  const id=document.getElementById('selRetraite').value;
+  const elu=franceData.elus.find(e=>e.id===id);
+  document.getElementById('inpIndemnite').value=elu.brut_mensuel;
+  const isParl = elu.categorie.includes('Parlement');
+  document.getElementById('infoRetraite').innerHTML = isParl ? 'Parlementaire : double cotisation, 1 an ≈ 4,06% de l\'indemnité en pension (observé 5 ans → 1 550€).' : 'Élu local : IRCANTEC seul, 1 an ≈ 0,78% de l\'indemnité (20 ans maire 1 027€ → ~160€).';
+  updateRetraite();
+}
+
+function calcPension(indemnMensBrut, annees, age, isParl){
+  // coeff per year
+  const coeff = isParl ? 0.0406 : 0.0078;
+  let pension = indemnMensBrut * coeff * annees;
+  // plafond parlementaire 75%
+  if(isParl){
+    const plafond = indemnMensBrut * 0.75;
+    if(pension > plafond) pension = plafond;
+  }
+  // décote si age <62 : 1,25% par trimestre => 5% par an
+  if(age < 62){
+    const decote = (62 - age) * 0.05;
+    pension = pension * (1 - decote);
+  }
+  // surcote si >62 : 0,75% par trimestre => 3% par an, cap 10%
+  if(age > 62){
+    const surcote = Math.min((age - 62)*0.03, 0.10);
+    pension = pension * (1 + surcote);
+  }
+  return Math.max(0, Math.round(pension));
+}
+
+function updateRetraite(){
+  const id=document.getElementById('selRetraite').value;
+  const elu=franceData.elus.find(e=>e.id===id);
+  const isParl=elu.categorie.includes('Parlement');
+  const indemn=parseInt(document.getElementById('inpIndemnite').value)||0;
+  const annees=parseInt(document.getElementById('rangeAnnees').value);
+  const age=parseInt(document.getElementById('rangeAge').value);
+  document.getElementById('valAnnees').textContent=annees+' ans';
+  document.getElementById('valAge').textContent=age+' ans';
+  // mandats badge
+  let mandats='';
+  if(elu.id.includes('maire') || elu.id.includes('president_region')) mandats = Math.ceil(annees/6)+' mandats de 6 ans';
+  else if(isParl) mandats = Math.ceil(annees/5)+' mandats de 5 ans';
+  else mandats = annees+' ans';
+  document.getElementById('badgeMandats').textContent=mandats;
+  let infoAge='';
+  if(age<62) infoAge=`Décote ${(62-age)*5}%`;
+  else if(age>62) infoAge=`Surcote +${Math.min((age-62)*3,10)}%`;
+  else infoAge='Taux plein';
+  document.getElementById('infoAge').textContent=infoAge;
+
+  const pension=calcPension(indemn, annees, age, isParl);
+  const taux = indemn? (pension/indemn*100).toFixed(1) : 0;
+  document.getElementById('kpiPension').textContent=pension.toLocaleString('fr-FR')+' € brut / mois';
+  document.getElementById('kpiPensionSub').textContent='soit ~'+Math.round(pension*0.88).toLocaleString('fr-FR')+'€ net (IRCANTEC ~12% cot.)';
+  document.getElementById('kpiTaux').textContent=taux+' %';
+  document.getElementById('kpiVsMoy').textContent=(pension/ RETRAITE_MOY).toFixed(2)+'×';
+  // insight
+  let insight='';
+  if(indemn===0) insight='Conseiller bénévole : 0€ d\'indemnité → 0€ de pension (logique).';
+  else if(isParl){
+    if(annees<=5) insight=`Après un seul mandat de 5 ans à ${indemn.toLocaleString('fr-FR')}€ brut, pension ~<strong>${pension.toLocaleString('fr-FR')}€ brut</strong> (≈${Math.round(pension*0.88)}€ net). Loin des 5 925€ d'activité. Et si tu pars à 55 ans, décote -35% → ${Math.round(pension*0.65).toLocaleString('fr-FR')}€.`;
+    else insight=`Après ${annees} ans comme parlementaire, pension ~<strong>${pension.toLocaleString('fr-FR')}€ brut</strong> (${taux}% de l'indemnité). Plafonnée à 75% même après 30 ans.`;
+  } else {
+    if(pension<300) insight=`Maire village ${annees} ans → <strong>${pension}€ brut</strong> de pension. C'est une retraite de complément, pas un revenu : ${(pension/RETRAITE_MOY*100).toFixed(0)}% de la retraite moyenne française.`;
+    else insight=`Élu local ${annees} ans à ${indemn}€ brut → pension ~<strong>${pension}€ brut</strong> (${taux}%). Même après 30 ans à 5 639€ (grande ville), tu restes sous 1 400€ de pension.`;
+  }
+  document.getElementById('insightRetraite').innerHTML=insight;
+  // chart progression
+  const labels=[...Array(annees+1).keys()].slice(1);
+  const data=labels.map(a=> calcPension(indemn, a, 62, isParl));
+  const ctx=document.getElementById('chartRetraite');
+  if(chartRet) chartRet.destroy();
+  chartRet=new Chart(ctx,{type:'line',data:{labels:labels.map(a=>a+' ans'), datasets:[{label:'Pension brute / mois', data, borderColor:'#0f3b5e', backgroundColor:'rgba(15,59,94,0.08)', fill:true, tension:0.2, borderWidth:3, pointRadius:2}]},options:{responsive:true, plugins:{legend:{display:false}, title:{display:true,text:'Pension en fonction de la durée (départ à 62 ans, taux plein)'}}, scales:{y:{title:{display:true,text:'€ brut / mois'}, beginAtZero:true}}}});
+  // table
+  const tbl=document.getElementById('tblRetraite');
+  const rows=[5,10,15,20,30,42].filter(a=> a<=42).map(a=>{
+    const pen=calcPension(indemn, a, 62, isParl);
+    return `<tr><td><strong>${a} ans</strong> <small>(${isParl? Math.ceil(a/5)+' mandats' : Math.ceil(a/6)+' mandats'})</small></td><td><strong>${pen.toLocaleString('fr-FR')}€ brut</strong> / ${Math.round(pen*0.88).toLocaleString('fr-FR')}€ net</td><td>${(pen/indemn*100).toFixed(1)}%</td><td><span class="small">${pen<500?'Complément': pen<1500?'Modeste':'Confortable mais plafonnée'}</span></td></tr>`;
+  }).join('');
+  tbl.innerHTML='<thead><tr><th>Durée</th><th>Pension estimée</th><th>Taux remplacement</th><th>Ordre de grandeur</th></tr></thead><tbody>'+rows+'</tbody>';
+}
+
+// CUMUL
+let cumulList=[];
+function initCumul(){
+  cumulList=[ {id:'depute', label:'Député'} ];
+  renderCumulList();
+  updateCumul();
+  document.getElementById('btnAddMandat').addEventListener('click', ()=>{
+    if(cumulList.length>=5){ alert('Max 5 mandats pour la démo'); return; }
+    cumulList.push({id:'conseiller_regional', label:'Conseiller régional'});
+    renderCumulList(); updateCumul();
+  });
+  document.querySelectorAll('[data-preset]').forEach(b=> b.addEventListener('click', ()=>{
+    const p=b.dataset.preset;
+    if(p==='clear'){ cumulList=[]; renderCumulList(); updateCumul(); return; }
+    if(p==='depute_regional'){ cumulList=[{id:'depute'}, {id:'conseiller_regional'}]; }
+    if(p==='maire_departement'){ cumulList=[{id:'maire_50000'}, {id:'conseiller_departemental'}]; }
+    if(p==='maxi'){ cumulList=[{id:'maire_100000'}, {id:'president_region'}, {id:'conseiller_departemental'}]; }
+    // fix labels
+    cumulList.forEach(c=>{ const e=franceData.elus.find(x=>x.id===c.id); if(e) c.label=e.label; });
+    renderCumulList(); updateCumul();
+  }));
+}
+function renderCumulList(){
+  const cont=document.getElementById('mandatList');
+  cont.innerHTML=cumulList.map((c,i)=> `
+    <div class="mandatRow">
+      <select data-idx="${i}" class="selCumul">${franceData.elus.map(e=> `<option value="${e.id}" ${e.id===c.id?'selected':''}>${e.label} — ${e.brut_mensuel}€ brut</option>`).join('')}</select>
+      <button data-del="${i}" style="width:auto;padding:6px 10px;background:#fee2e2;color:#991b1b;border:1px solid #fecaca">✕</button>
+    </div>
+  `).join('');
+  cont.querySelectorAll('.selCumul').forEach(s=> s.addEventListener('change', (e)=>{
+    const idx=parseInt(e.target.dataset.idx);
+    const nid=e.target.value;
+    cumulList[idx].id=nid;
+    const elu=franceData.elus.find(x=>x.id===nid);
+    cumulList[idx].label=elu?elu.label:nid;
+    updateCumul();
+  }));
+  cont.querySelectorAll('[data-del]').forEach(b=> b.addEventListener('click', (e)=>{
+    const idx=parseInt(e.target.dataset.del);
+    cumulList.splice(idx,1);
+    renderCumulList(); updateCumul();
+  }));
+}
+function updateCumul(){
+  const details=cumulList.map(c=>{
+    const e=franceData.elus.find(x=>x.id===c.id);
+    return {label:e?e.label:c.id, brut:e?e.brut_mensuel:0, net:e?e.net_mensuel_estime:0};
+  });
+  const totalBrut=details.reduce((s,d)=>s+d.brut,0);
+  const totalNet=details.reduce((s,d)=>s+d.net,0);
+  const ecret=Math.max(0, totalBrut-PLAFOND);
+  const netApres= totalBrut>PLAFOND ? PLAFOND*0.855 : totalBrut*0.855; // approx net 85.5%
+  document.getElementById('kpiTotalBrut').textContent=totalBrut.toLocaleString('fr-FR')+' € brut';
+  document.getElementById('kpiTotalNet').textContent='soit ~'+Math.round(totalBrut*0.855).toLocaleString('fr-FR')+'€ net';
+  document.getElementById('kpiEcret').textContent= ecret>0 ? '-'+ecret.toLocaleString('fr-FR')+' €' : '0 €';
+  document.getElementById('kpiNetApres').textContent= ecret>0 ? 'Net après écrêtement ~'+Math.round(netApres).toLocaleString('fr-FR')+'€' : 'Pas d\'écrêtement';
+  const box=document.getElementById('boxEcret');
+  if(ecret>0){ box.style.background='#fef2f2'; box.style.borderColor='#fecaca'; box.querySelector('strong').style.color='#991b1b'; }
+  else { box.style.background='white'; box.style.borderColor='var(--border)'; box.querySelector('strong').style.color='var(--primary)'; }
+  // chart
+  const ctx=document.getElementById('chartCumul');
+  if(chartCumul) chartCumul.destroy();
+  const labels=details.map(d=> d.label);
+  const dataBrut=details.map(d=> d.brut);
+  chartCumul=new Chart(ctx,{type:'bar',data:{labels, datasets:[{label:'Brut mensuel', data:dataBrut, backgroundColor:details.map((_,i)=> i===0?'#0f3b5e':'#38bdf8'), borderRadius:6}]},options:{indexAxis:'y', responsive:true, plugins:{legend:{display:false}, title:{display:true,text:'Composition du cumul (brut)'}, annotation:{},}, scales:{x:{max: Math.max(PLAFOND+1000, totalBrut+500), title:{display:true,text:'€ brut / mois'}}, y:{}}}});
+  // add plafond line via plugin alternative: draw after
+  // insight
+  let insight='';
+  if(details.length===0) insight='Ajoute un mandat ci-dessus pour voir le calcul.';
+  else if(ecret>0) insight=`⚠️ <strong>Écrêté de ${ecret.toLocaleString('fr-FR')}€</strong> : tu déclares ${totalBrut.toLocaleString('fr-FR')}€ brut mais tu ne toucheras que <strong>${PLAFOND.toLocaleString('fr-FR')}€ brut</strong> (${Math.round(PLAFOND*0.855).toLocaleString('fr-FR')}€ net). La différence (${ecret.toLocaleString('fr-FR')}€) est reversée au budget de ta collectivité, pas dans ta poche.`;
+  else if(totalBrut>7000) insight=`✅ Pas d'écrêtement, mais tu es proche du plafond (${PLAFOND.toLocaleString('fr-FR')}€). Un mandat supplémentaire te ferait écrêter.`;
+  else insight=`✅ Pas d'écrêtement : ${totalBrut.toLocaleString('fr-FR')}€ < plafond ${PLAFOND.toLocaleString('fr-FR')}€. Tu touches l'intégralité.`;
+  document.getElementById('insightCumul').innerHTML=insight;
+  // table
+  const tbl=document.getElementById('tblCumul');
+  if(details.length===0) tbl.innerHTML='<tr><td class="small">Aucun mandat sélectionné</td></tr>';
+  else {
+    tbl.innerHTML='<thead><tr><th>Mandat</th><th>Brut / mois</th><th>Net estimé</th><th>Part du total</th></tr></thead><tbody>'+
+      details.map(d=> `<tr><td><strong>${d.label}</strong></td><td>${d.brut.toLocaleString('fr-FR')}€</td><td>${d.net.toLocaleString('fr-FR')}€</td><td>${(d.brut/totalBrut*100).toFixed(0)}%</td></tr>`).join('')+
+      `<tr style="background:#f8fafc;font-weight:800"><td>Total avant écrêtement</td><td>${totalBrut.toLocaleString('fr-FR')}€</td><td>${totalNet.toLocaleString('fr-FR')}€</td><td>100%</td></tr>`+
+      (ecret>0? `<tr style="background:#fef2f2;color:#991b1b;font-weight:800"><td>Écrêtement</td><td>-${ecret.toLocaleString('fr-FR')}€</td><td>reversé</td><td></td></tr><tr style="background:#f0fdf4;font-weight:800"><td>Touché après écrêtement</td><td>${PLAFOND.toLocaleString('fr-FR')}€ brut</td><td>${Math.round(PLAFOND*0.855).toLocaleString('fr-FR')}€ net</td><td></td></tr>` : '')+
+      '</tbody>';
+  }
+  // draw plafond line manually via chart overlay? simple text
+}
+
+init();
+</script>
+</body>
+</html>
