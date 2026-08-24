@@ -14,6 +14,7 @@
       <a href="index.html">Comparateur</a>
       <a href="france.html">France</a>
       <a href="monde.html">Monde</a>
+      <a href="cout.html">Coût complet</a>
       <a class="active" href="methodologie.html">Méthodologie</a>
     </nav>
   </div>
@@ -23,13 +24,14 @@
     <h1>Méthodologie : comment on compare sans tricher</h1>
     <p class="muted">Objectif : démonter les idées reçues avec des chiffres vérifiables, pas les remplacer par d'autres idées reçues.</p>
 
-    <h2>1. France : ce qu'on compte</h2>
+    <h2>1. France : ce qu'on compte (+ coût complet)</h2>
     <ul>
       <li><strong>Brut mensuel</strong> = traitement de base voté (ex: 7 638€ député). Source : décrets JO, Assemblée nationale, Sénat, DGCL.</li>
-      <li><strong>Net estimé</strong> = brut - cotisations sociales (IRCANTEC, CSG-CRDS) hors IR. Estimation à ~77% du brut pour les parlementaires (taux réel variable selon situation).</li>
-      <li><strong>AFM / Frais mandat</strong> : avance de frais mandat, justifiée et contrôlée par le déontologue depuis 2018 (remplace l'IRFM forfaitaire). Plafond 5 950€ (AN). Ce n'est pas du revenu.</li>
-      <li><strong>Enveloppe collaborateurs</strong> : crédit pour payer l'équipe (charges comprises). Le député est employeur, le reliquat non utilisé est rendu. Ce n'est pas du revenu.</li>
-      <li><strong>Avantages</strong> : listés en clair (SNCF, logement, voiture). Quand ils sont chiffrables, on le dit ; sinon on indique « forfait ».</li>
+      <li><strong>Net estimé</strong> = brut - cotisations sociales (IRCANTEC, CSG-CRDS) hors IR. Estimation à ~77% du brut pour les parlementaires.</li>
+      <li><strong>AFM / Frais mandat</strong> : avance de frais mandat, justifiée et contrôlée par le déontologue depuis 2018 (plafond 5 950€ AN). Ce n'est pas du revenu.</li>
+      <li><strong>Enveloppe collaborateurs</strong> : crédit pour payer l'équipe (charges comprises). Le député est employeur, reliquat rendu.</li>
+      <li><strong>Avantages</strong> : listés en clair (SNCF, logement, voiture).</li>
+      <li><strong>Coût complet (page <a href="cout.html">Coût complet</a>)</strong> : <code>brut×12×1,15 (charges patronales) + staff×12 + AFM×12 + forfait logistique</code>. Hypothèses dans <code>data/france.json → hypotheses_cout</code> (charges 15%, logistique forfaitaire documentée). Hors immobilier mutualisé (Palais Bourbon etc.). Le calculateur est transparent et modifiable.</li>
     </ul>
 
     <h2>2. Monde : 3 métriques obligatoires</h2>

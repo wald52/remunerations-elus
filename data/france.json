@@ -4,6 +4,12 @@
   "smic_net_mensuel": 1398,
   "salaire_median_net": 1940,
   "salaire_moyen_net": 2587,
+  "hypotheses_cout": {
+    "note": "Coût complet = coût employeur de l'indemnité (brut + charges patronales) + enveloppe collaborateurs + frais de mandat (AFM) + forfait logistique valorisé. Hors coûts immobiliers mutualisés (bâtiments, sécurité, etc.).",
+    "charges_patronales_pct_defaut": 15,
+    "charges_detail": "IRCANTEC élu (tranche A 2,8% + tranche B 8,64% part patronale) + CET + divers ≈ 12-15%. On retient 15% pour lisibilité. Pour les collaborateurs, l'enveloppe est déjà chargée (coût employeur).",
+    "logistique_detail": "Estimations forfaitaires fondées sur rapports Cour des comptes, Questure, DGCL : SNCF 1ère (~9600€/an valeur faciale), hébergement Paris (~6000€/an moyen), voiture/frais représentation pour exécutifs locaux. Montants indiqués comme 'forfait logistique' et séparés du total cash."
+  },
   "elus": [
     {
       "id": "president",
@@ -14,10 +20,13 @@
       "avantages": "Logement à l'Élysée, voiture et déplacements pris en charge, budget de fonctionnement de la Présidence (~110M€/an pour l'institution, pas sa poche)",
       "enveloppe_collaborateurs": null,
       "frais_mandat": null,
+      "cout_charges_pct": 15,
+      "cout_logistique_annuel": 0,
+      "cout_logistique_detail": "Non chiffré ici : inclus dans budget Élysée 110M€/an (300 personnes, sécurité, déplacements). L'indemnité perso. est minoritaire.",
       "retraite": "Retraite d'ancien président : ~6000€ brut/mois + moyens matériels (bureau, collaborateurs, protection)",
       "cumul": "Non",
       "source": "Décret n°2012-983, JO 2012 et 2017 (non revalorisé depuis)",
-      "commentaire": "Rémunération gelée depuis 2012. Non imposable sur les avantages en nature logement."
+      "commentaire": "Rémunération gelée depuis 2012."
     },
     {
       "id": "premier_ministre",
@@ -28,6 +37,9 @@
       "avantages": "Logement à Matignon, voiture de fonction, frais de représentation",
       "enveloppe_collaborateurs": null,
       "frais_mandat": null,
+      "cout_charges_pct": 15,
+      "cout_logistique_annuel": 0,
+      "cout_logistique_detail": "Inclus dans budget Matignon (~40M€/an). Non ventilable par personne.",
       "retraite": "Pas de régime spécial, régime général + IRCANTEC",
       "cumul": "Non (démission du mandat parlementaire si nommé)",
       "source": "Décret n°2012-983",
@@ -39,13 +51,16 @@
       "categorie": "Exécutif national",
       "brut_mensuel": 11560,
       "net_mensuel_estime": 9500,
-      "avantages": "Logement de fonction possible, voiture, frais",
+      "avantages": "Logement de fonction possible, voiture avec chauffeur, frais",
       "enveloppe_collaborateurs": null,
       "frais_mandat": null,
+      "cout_charges_pct": 15,
+      "cout_logistique_annuel": 28000,
+      "cout_logistique_detail": "Forfait voiture/chauffeur/carburant ~28k€/an (estimation Cour des comptes 2022, hors sécurité). Variable selon ministère.",
       "retraite": "Régime général",
       "cumul": "Non",
       "source": "Décret n°2012-983, traitement à 1,4x l'indice 1015",
-      "commentaire": "Ministre délégué/secrétaire d'État : ~10800€ brut"
+      "commentaire": "Ministre délégué/secrétaire d'État : ~10800€ brut, logistique ~20k€/an."
     },
     {
       "id": "depute",
@@ -53,13 +68,16 @@
       "categorie": "Parlement national",
       "brut_mensuel": 7638,
       "net_mensuel_estime": 5925,
-      "avantages": "Gratuité SNCF 1ère classe, prise en charge hébergement Paris (hôtel ou logement), forfait téléphonie, assurance",
+      "avantages": "Gratuité SNCF 1ère classe, prise en charge hébergement Paris (forfait), forfait téléphonie, assurance",
       "enveloppe_collaborateurs": 10581,
       "frais_mandat": 5950,
+      "cout_charges_pct": 15,
+      "cout_logistique_annuel": 9600,
+      "cout_logistique_detail": "Valeur faciale SNCF ~9600€/an (Cour des comptes). Hébergement déjà partiellement dans AFM si hors IDF, donc compté ici à 0 pour éviter double compte.",
       "retraite": "IRCANTEC + régime général, pension moyenne ~1650€ après 1 mandat complet",
       "cumul": "Très encadré (loi 2014) : ne peut plus être maire, mais peut rester conseiller municipal",
-      "source": "Assemblée nationale, Bureau du 01/2024",
-      "commentaire": "Les 10581€ et 5950€ ne sont PAS dans sa poche : ce sont des avances de frais contrôlées (AFM) et salaires de l'équipe. Depuis 2018 l'IRFM a été remplacée par l'AFM justifiable."
+      "source": "Assemblée nationale, Bureau du 01/2024 + Rapport Questure 2023",
+      "commentaire": "Les 10581€ et 5950€ ne sont PAS dans sa poche : ce sont des avances de frais contrôlées (AFM) et salaires de l'équipe."
     },
     {
       "id": "senateur",
@@ -70,8 +88,9 @@
       "avantages": "Gratuité SNCF, logement possible, régime similaire député",
       "enveloppe_collaborateurs": 8456,
       "frais_mandat": 6100,
-      "retraite": "IRCANTEC",
-      "cumul": "Idem député",
+      "cout_charges_pct": 15,
+      "cout_logistique_annuel": 9600,
+      "cout_logistique_detail": "SNCF ~9600€/an. Même logique que député.",
       "source": "Sénat, arrêté de Questure 2024",
       "commentaire": "Enveloppe collaborateurs légèrement inférieure à l'AN."
     },
@@ -84,8 +103,9 @@
       "avantages": "Mêmes avantages que députés nationaux + régime UE",
       "enveloppe_collaborateurs": 28412,
       "frais_mandat": 4950,
-      "retraite": "Régime UE",
-      "cumul": "Oui avec mandat local (sauf exécutif local)",
+      "cout_charges_pct": 15,
+      "cout_logistique_annuel": 18000,
+      "cout_logistique_detail": "Forfait transport UE + indemnité journalière de présence (350€/jour non incluse ici car variable). On retient 18k€ transports.",
       "source": "Parlement européen - statut des députés 2024",
       "commentaire": "Rémunération unique pour tous les eurodéputés (38,5% du traitement d'un juge CJUE). L'enveloppe 28412€ paie 2-4 assistants accrédités."
     },
@@ -97,11 +117,14 @@
       "net_mensuel_estime": 880,
       "avantages": "Aucun (souvent aucun bureau, pas de voiture)",
       "enveloppe_collaborateurs": null,
-      "frais_mandat": "Remboursement sur justificatifs",
+      "frais_mandat": 0,
+      "cout_charges_pct": 15,
+      "cout_logistique_annuel": 600,
+      "cout_logistique_detail": "Frais de déplacement/téléphone modestes, remboursés sur justificatifs (~50€/mois estimé).",
       "retraite": "IRCANTEC élu local (cotisation)",
       "cumul": "Oui, souvent avec emploi principal",
       "source": "CGCT art. L2123-20, barème DGCL 2024 (indice 1027)",
-      "commentaire": "42% des maires en France. Indemnité maximale, souvent votée en-dessous du plafond. 100% imposable depuis 2017."
+      "commentaire": "42% des maires en France. Indemnité maximale, souvent votée en-dessous du plafond."
     },
     {
       "id": "maire_3500",
@@ -111,9 +134,10 @@
       "net_mensuel_estime": 1850,
       "avantages": "Frais de représentation possibles",
       "enveloppe_collaborateurs": null,
-      "frais_mandat": "Remboursement sur justificatifs",
-      "retraite": "IRCANTEC",
-      "cumul": "Oui",
+      "frais_mandat": 0,
+      "cout_charges_pct": 15,
+      "cout_logistique_annuel": 3000,
+      "cout_logistique_detail": "Forfait représentation/déplacements ~250€/mois.",
       "source": "DGCL 2024",
       "commentaire": "Ville moyenne type chef-lieu de canton."
     },
@@ -125,9 +149,10 @@
       "net_mensuel_estime": 3150,
       "avantages": "Voiture de fonction dans grandes villes, frais de représentation",
       "enveloppe_collaborateurs": null,
-      "frais_mandat": "Remboursement sur justificatifs",
-      "retraite": "IRCANTEC",
-      "cumul": "Non avec mandat parlementaire",
+      "frais_mandat": 0,
+      "cout_charges_pct": 15,
+      "cout_logistique_annuel": 15000,
+      "cout_logistique_detail": "Voiture/chauffeur partiel + représentation ~15k€/an (très variable).",
       "source": "DGCL 2024",
       "commentaire": ""
     },
@@ -139,9 +164,10 @@
       "net_mensuel_estime": 4450,
       "avantages": "Voiture, logement de fonction rare, frais",
       "enveloppe_collaborateurs": null,
-      "frais_mandat": "Remboursement sur justificatifs",
-      "retraite": "IRCANTEC",
-      "cumul": "Non",
+      "frais_mandat": 0,
+      "cout_charges_pct": 15,
+      "cout_logistique_annuel": 28000,
+      "cout_logistique_detail": "Cabinet + voiture + représentation. Hors budget cabinet de la ville (plusieurs centaines de k€ non comptés ici).",
       "source": "DGCL 2024 - Plafond indemnité maire",
       "commentaire": "Seuls ~42 maires en France touchent ce montant. Paris/Marseille/Lyon : régime particulier."
     },
@@ -154,10 +180,13 @@
       "avantages": "Aucun",
       "enveloppe_collaborateurs": null,
       "frais_mandat": null,
+      "cout_charges_pct": 0,
+      "cout_logistique_annuel": 0,
+      "cout_logistique_detail": "Bénévole, 0€.",
       "retraite": "Aucune",
       "cumul": "Oui",
       "source": "CGCT",
-      "commentaire": "Bénévole. 90% des 500 000 élus locaux français ne touchent aucune indemnité ou <200€."
+      "commentaire": "90% des 500 000 élus locaux français ne touchent aucune indemnité ou <200€."
     },
     {
       "id": "president_region",
@@ -167,9 +196,10 @@
       "net_mensuel_estime": 4450,
       "avantages": "Voiture, frais, cabinet",
       "enveloppe_collaborateurs": null,
-      "frais_mandat": "Frais remboursés",
-      "retraite": "IRCANTEC",
-      "cumul": "Non avec mandat parlementaire",
+      "frais_mandat": 0,
+      "cout_charges_pct": 15,
+      "cout_logistique_annuel": 28000,
+      "cout_logistique_detail": "Voiture + représentation, hors budget cabinet régional.",
       "source": "CGCT art L4135-10",
       "commentaire": "Même plafond que maire >100k hab."
     },
@@ -182,8 +212,9 @@
       "avantages": "Indemnité transport",
       "enveloppe_collaborateurs": null,
       "frais_mandat": null,
-      "retraite": "IRCANTEC",
-      "cumul": "Oui",
+      "cout_charges_pct": 15,
+      "cout_logistique_annuel": 1200,
+      "cout_logistique_detail": "Transport, ~100€/mois.",
       "source": "CGCT",
       "commentaire": "Montant maximal, modulé selon présence."
     },
@@ -196,8 +227,9 @@
       "avantages": "Indemnité transport",
       "enveloppe_collaborateurs": null,
       "frais_mandat": null,
-      "retraite": "IRCANTEC",
-      "cumul": "Oui",
+      "cout_charges_pct": 15,
+      "cout_logistique_annuel": 1200,
+      "cout_logistique_detail": "Transport.",
       "source": "CGCT",
       "commentaire": ""
     }

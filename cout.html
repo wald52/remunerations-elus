@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coût complet d'un élu pour le contribuable – Calculateur 2024</title>
+<meta name="description" content="Calculez le coût complet d'un élu français pour le contribuable : indemnité + charges + staff + frais + logistique. Méthode transparente, données 2024.">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+.coutLayout{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}
+@media(max-width:900px){.coutLayout{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+.panel h3{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.bigGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0}
+@media(max-width:600px){.bigGrid{grid-template-columns:1fr}}
+.bigCard{border:1px solid var(--border);border-radius:14px;padding:14px;background:#fff}
+.bigCard .label{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)}
+.bigCard .value{font-size:26px;font-weight:850;letter-spacing:-.02em;color:var(--primary);line-height:1.1;margin:4px 0}
+.bigCard .sub{font-size:12px;color:var(--muted)}
+.bigCard.highlight{border-color:#fde68a;background:#fffbeb}
+.bigCard.highlight .value{color:#92400e}
+.presetRow{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.presetRow button{padding:6px 10px;font-size:12px;border-radius:999px;background:#f1f5f9;color:var(--primary);border:1px solid var(--border);width:auto}
+.presetRow button:hover{background:#e2e8f0}
+.inputRow{display:flex;gap:10px;align-items:center;margin:8px 0}
+.inputRow input[type="number"]{padding:10px 12px;border-radius:10px;border:1px solid var(--border);font-weight:700;width:110px}
+.switch{display:flex;align-items:center;gap:8px;font-size:13px;margin:6px 0}
+.switch input{width:auto}
+.breakdown td:last-child,.breakdown th:last-child{text-align:right;white-space:nowrap}
+.breakdown tr.total td{font-weight:800;background:#f8fafc;border-top:2px solid var(--primary)}
+.breakdown tr.sousTotal td{font-weight:700;background:#fefce8}
+.compareGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}
+@media(max-width:700px){.compareGrid{grid-template-columns:1fr}}
+.compareBox{padding:12px;border:1px dashed #cbd5e1;border-radius:12px;background:#f8fafc;text-align:center}
+.compareBox strong{font-size:18px;color:var(--primary)}
+</style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html">ÉLUS<span>· combien ça coûte vraiment ?</span></a>
+    <nav class="navlinks">
+      <a href="index.html">Comparateur</a>
+      <a href="france.html">France</a>
+      <a href="monde.html">Monde</a>
+      <a class="active" href="cout.html">Coût complet</a>
+      <a href="methodologie.html">Méthodologie</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section style="padding:28px 0 8px">
+    <span class="kicker">Calculateur transparent • Hors bâtiments & sécurité</span>
+    <h1>Coût complet d'un élu <em>pour le contribuable</em></h1>
+    <p class="lead">L'indemnité n'est que la partie visible. Le coût complet = <strong>indemnité brute + charges patronales</strong> + <strong>enveloppe staff</strong> (salaires équipe) + <strong>frais de mandat (AFM)</strong> + <strong>forfait logistique</strong> (SNCF, voiture...). Tout est séparé pour que vous voyiez ce qui est « dans la poche » vs « pour exercer le mandat ».</p>
+    <div class="callout"><strong>Formule :</strong> <code>Coût employeur indemnité = brut ×12 × (1+15%)</code> · Enveloppe staff et AFM = déjà coût employeur · Logistique = forfait estimé (séparable). <a href="methodologie.html">Voir hypothèses détaillées</a>.</div>
+  </section>
+
+  <div class="coutLayout">
+    <!-- Controls -->
+    <div class="panel" style="position:sticky;top:78px">
+      <h3>1. Choisissez un mandat</h3>
+      <select id="selMandat"></select>
+      <div class="presetRow" id="presetRow">
+        <button data-n="1">x1</button>
+        <button data-n="10">x10</button>
+        <button data-n="577">x577 députés</button>
+        <button data-n="348">x348 sénateurs</button>
+        <button data-n="34955">x34 955 maires</button>
+      </div>
+      <h3 style="margin-top:16px">2. Nombre d'élus</h3>
+      <div class="inputRow">
+        <input id="nbElus" type="number" min="1" max="500000" step="1" value="1">
+        <span class="small">élus</span>
+        <span id="labelNb" class="badge" style="margin-left:auto">1 élu</span>
+      </div>
+      <label class="switch"><input type="checkbox" id="inclureLogistique" checked> Inclure forfait logistique (SNCF/voiture)</label>
+      <label class="switch"><input type="checkbox" id="afficherMensuel" checked> Afficher aussi en mensuel</label>
+
+      <div style="margin-top:14px;padding:12px;background:#eff6ff;border:1px solid #dbeafe;border-radius:10px">
+        <div class="small"><strong id="mandatLabel">Député</strong><br><span id="mandatDetail" class="muted">...</span></div>
+        <div id="mandatMeta" class="small" style="margin-top:8px"></div>
+      </div>
+      <p class="small" style="margin-top:10px">Données : <a href="data/france.json">france.json</a> · <a href="methodologie.html">Méthodologie</a>. Modifiez les hypothèses directement dans le JSON et repoussez.</p>
+    </div>
+
+    <!-- Results -->
+    <div>
+      <div class="bigGrid">
+        <div class="bigCard highlight">
+          <div class="label">Coût complet — par élu / an</div>
+          <div class="value" id="kpiAn">—</div>
+          <div class="sub" id="kpiAnSub">dont net perçu : —</div>
+        </div>
+        <div class="bigCard">
+          <div class="label">Coût complet — par élu / mois</div>
+          <div class="value" id="kpiMois">—</div>
+          <div class="sub" id="kpiMoisSub">coût employeur mensuel</div>
+        </div>
+        <div class="bigCard">
+          <div class="label">Coût complet — pour <span id="kpiNLabel">1</span> élu(s) / an</div>
+          <div class="value" id="kpiTotalAn">—</div>
+          <div class="sub" id="kpiTotalAnSub">—</div>
+        </div>
+        <div class="bigCard">
+          <div class="label">Coût complet — pour <span id="kpiNLabel2">1</span> élu(s) / mois</div>
+          <div class="value" id="kpiTotalMois">—</div>
+          <div class="sub">budget mensuel à prévoir</div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:12px">
+        <h3>Décomposition annuelle par élu</h3>
+        <div class="tableWrap" style="box-shadow:none"><table class="dataTable breakdown" id="tblBreakdown"></table></div>
+        <p class="small" id="noteLogistique" style="margin-top:8px"></p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
+          <div class="chartWrap"><canvas id="donut" height="220"></canvas></div>
+          <div class="chartWrap"><canvas id="bar" height="220"></canvas></div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:14px">
+        <h3>Mise en perspective</h3>
+        <div class="compareGrid">
+          <div class="compareBox"><div class="small">Équivalent SMIC net annuel</div><strong id="eqSmic">—</strong><div class="small" id="eqSmicSub"></div></div>
+          <div class="compareBox"><div class="small">Coût par habitant (68M)</div><strong id="eqHab">—</strong><div class="small">par an et par Français</div></div>
+          <div class="compareBox"><div class="small">Part du budget de l'État</div><strong id="eqBudget">—</strong><div class="small">sur ~430 Md€</div></div>
+        </div>
+        <div class="callout" id="insightBox" style="margin-top:12px"></div>
+        <p class="small">Exemples : 577 députés à coût complet ≈ <span id="ex577">—</span> / an. 34 955 maires (tous) ≈ <span id="exMaires">—</span> / an. Un conseiller municipal bénévole = <strong>0 €</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <h2>Que comprend / ne comprend pas le calcul ?</h2>
+    <div class="grid3">
+      <div class="card"><h3>✅ Compris</h3><p class="small">Indemnité brute + charges patronales IRCANTEC (+15%), enveloppe collaborateurs (coût employeur, 12 mois), AFM/frais mandat (12 mois), forfait logistique (SNCF/voiture, décochable).</p></div>
+      <div class="card"><h3>❌ Non compris</h3><p class="small">Immobilier (Palais Bourbon, Sénat, mairies), sécurité, pensions futures, budget du cabinet ministériel/mairie, frais de fonctionnement de l'institution. Le « vrai » coût État est supérieur, mais mutualisé.</p></div>
+      <div class="card"><h3>⚠️ À ajuster</h3><p class="small">Taux de charges et logistique sont des forfaits documentés (voir <code>data/france.json → hypotheses_cout</code>). Modifiez-les et le calculateur se met à jour — transparence totale.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="container small"><a href="index.html">← Accueil</a> • Données <a href="data/france.json">france.json</a></div></footer>
+
+<script>
+let france=null, chartDonut=null, chartBar=null;
+const POP_FR=68000000, SMIC_NET_MENSUEL=1398, SMIC_NET_ANNUEL=SMIC_NET_MENSUEL*12, BUDGET_ETAT=430e9;
+
+async function init(){
+  france = await fetch('data/france.json').then(r=>r.json());
+  const sel=document.getElementById('selMandat');
+  sel.innerHTML = france.elus.map(e=> `<option value="${e.id}">${e.label} — ${e.net_mensuel_estime? e.net_mensuel_estime.toLocaleString('fr-FR')+'€ net' : 'bénévole'} </option>`).join('');
+  sel.value='depute';
+  document.getElementById('selMandat').addEventListener('change', compute);
+  document.getElementById('nbElus').addEventListener('input', compute);
+  document.getElementById('inclureLogistique').addEventListener('change', compute);
+  document.getElementById('afficherMensuel').addEventListener('change', compute);
+  document.querySelectorAll('#presetRow button').forEach(b=> b.addEventListener('click', ()=>{ document.getElementById('nbElus').value=b.dataset.n; compute(); }));
+  compute();
+}
+
+function fmt(n){ return n.toLocaleString('fr-FR', {maximumFractionDigits:0})+' €'; }
+function fmt2(n){ return n.toLocaleString('fr-FR', {maximumFractionDigits:2})+' €'; }
+
+function compute(){
+  const id=document.getElementById('selMandat').value;
+  const n=Math.max(1, parseInt(document.getElementById('nbElus').value)||1);
+  const inclLog=document.getElementById('inclureLogistique').checked;
+  const elu=france.elus.find(e=>e.id===id);
+  if(!elu) return;
+
+  const brutAn = (elu.brut_mensuel||0)*12;
+  const chargesPct = elu.cout_charges_pct||0;
+  const coutIndemnEmployeur = brutAn * (1+chargesPct/100);
+  const cotisationsAn = coutIndemnEmployeur - brutAn;
+  const staffAn = (elu.enveloppe_collaborateurs||0)*12;
+  const fraisAn = (typeof elu.frais_mandat==='number'? elu.frais_mandat:0)*12;
+  const logAn = inclLog ? (elu.cout_logistique_annuel||0) : 0;
+  const netAn = (elu.net_mensuel_estime||0)*12;
+  const totalAn = coutIndemnEmployeur + staffAn + fraisAn + logAn;
+  const totalMois = totalAn/12;
+
+  // KPIs
+  document.getElementById('mandatLabel').textContent=elu.label;
+  document.getElementById('mandatDetail').textContent= elu.categorie + ' · ' + (elu.source||'');
+  document.getElementById('mandatMeta').innerHTML = `<span class="tag">${elu.cumul||''}</span><br><span class="small">${elu.avantages||''}</span><br><span class="small">${elu.commentaire||''}</span>`;
+  document.getElementById('labelNb').textContent= n.toLocaleString('fr-FR') + ' élu(s)';
+  document.getElementById('kpiNLabel').textContent=n.toLocaleString('fr-FR');
+  document.getElementById('kpiNLabel2').textContent=n.toLocaleString('fr-FR');
+  document.getElementById('kpiAn').textContent=fmt(totalAn);
+  document.getElementById('kpiAnSub').textContent='dont net perçu : '+ fmt(netAn) + ' / an ('+fmt(elu.net_mensuel_estime||0)+' net/mois) – le reste finance l’exercice du mandat';
+  document.getElementById('kpiMois').textContent=fmt(totalMois);
+  document.getElementById('kpiMoisSub').textContent='dont indemnité employeur '+fmt(coutIndemnEmployeur/12)+' / mois';
+  document.getElementById('kpiTotalAn').textContent=fmt(totalAn*n);
+  document.getElementById('kpiTotalAnSub').textContent = n>1? 'soit '+ fmt(totalAn) +' × '+ n : 'pour 1 élu';
+  document.getElementById('kpiTotalMois').textContent=fmt(totalMois*n);
+
+  // breakdown table
+  const rows=[
+    ['Indemnité brute annuelle (12× brut)', fmt(brutAn), 'Base légale'],
+    ['+ Charges patronales IRCANTEC (~'+chargesPct+'%)', fmt(cotisationsAn), 'Part employeur (hyp. '+chargesPct+'%)'],
+    ['= <strong>Coût indemnitaire employeur</strong>', '<strong>'+fmt(coutIndemnEmployeur)+'</strong>', 'Ce que paie l’État pour l’indemnité'],
+    ['+ Enveloppe collaborateurs (staff)', fmt(staffAn), elu.enveloppe_collaborateurs? (elu.enveloppe_collaborateurs.toLocaleString('fr-FR')+'€ ×12 – coût employeur déjà chargé') : '—'],
+    ['+ Frais de mandat (AFM)', fmt(fraisAn), (typeof elu.frais_mandat==='number'? elu.frais_mandat.toLocaleString('fr-FR')+'€ ×12 – justifié' : (elu.frais_mandat? elu.frais_mandat : '—'))],
+    ['+ Forfait logistique', fmt(logAn), inclLog? (elu.cout_logistique_detail||'') : '<em>exclu (case décochée)</em>'],
+  ];
+  const tbl=document.getElementById('tblBreakdown');
+  tbl.innerHTML = `<thead><tr><th>Poste</th><th>Montant / an</th><th>Détail</th></tr></thead><tbody>`+
+    rows.map(r=> `<tr><td>${r[0]}</td><td>${r[1]}</td><td><span class="small">${r[2]}</span></td></tr>`).join('')+
+    `<tr class="total"><td>Coût complet / élu / an</td><td>${fmt(totalAn)}</td><td><span class="small">Somme ci-dessus</span></td></tr>`+
+    `<tr class="sousTotal"><td>Coût complet / élu / mois</td><td>${fmt(totalMois)}</td><td><span class="small">/12</span></td></tr>`+
+    `</tbody>`;
+  document.getElementById('noteLogistique').innerHTML = inclLog? `<strong>Forfait logistique :</strong> ${elu.cout_logistique_detail||''} — <em>montant forfaitaire, décochable</em>. Hors immobilier mutualisé.` : `Logistique exclue. Cochez la case pour l'inclure.`;
+
+  // charts
+  const labels=['Indemnité employeur','Staff','Frais mandat','Logistique'];
+  const data=[coutIndemnEmployeur, staffAn, fraisAn, logAn];
+  const colors=['#0f3b5e','#165a8a','#38bdf8','#f59e0b'];
+  const ctxD=document.getElementById('donut');
+  if(chartDonut) chartDonut.destroy();
+  chartDonut=new Chart(ctxD,{type:'doughnut',data:{labels, datasets:[{data, backgroundColor:colors, borderWidth:1}]},options:{plugins:{legend:{position:'bottom'}, title:{display:true,text:'Répartition du coût complet / élu / an'}}, cutout:'58%'}});
+  const ctxB=document.getElementById('bar');
+  if(chartBar) chartBar.destroy();
+  chartBar=new Chart(ctxB,{type:'bar',data:{labels:['Coût complet'], datasets:[
+    {label:'Indemnité employeur', data:[coutIndemnEmployeur], backgroundColor:colors[0]},
+    {label:'Staff', data:[staffAn], backgroundColor:colors[1]},
+    {label:'Frais', data:[fraisAn], backgroundColor:colors[2]},
+    {label:'Logistique', data:[logAn], backgroundColor:colors[3]},
+  ]},options:{indexAxis:'y', responsive:true, plugins:{legend:{position:'bottom'}, title:{display:true,text:'Empilement ( € / an )'}}, scales:{x:{stacked:true}, y:{stacked:true}}}});
+
+  // comparatifs
+  const eqSmic = totalAn / SMIC_NET_ANNUEL;
+  document.getElementById('eqSmic').textContent = eqSmic.toFixed(1)+' × SMIC net';
+  document.getElementById('eqSmicSub').textContent = '('+fmt(SMIC_NET_ANNUEL)+' / an)';
+  const parHab = totalAn * n / POP_FR;
+  document.getElementById('eqHab').textContent = parHab.toLocaleString('fr-FR',{maximumFractionDigits:2})+' €';
+  document.getElementById('eqBudget').textContent = (totalAn*n / BUDGET_ETAT *100).toFixed(3)+' %';
+  const partPoche = totalAn? (coutIndemnEmployeur/totalAn*100).toFixed(0) : 0;
+  const partFonctionnement = 100 - partPoche;
+  document.getElementById('insightBox').innerHTML = n===1
+    ? `Sur <strong>${fmt(totalAn)}</strong> / an, <strong>${partPoche}%</strong> est le coût de l'indemnité (dont ${fmt(netAn)} net dans la poche), <strong>${partFonctionnement}%</strong> finance l'exercice du mandat (équipe, frais, logistique). C'est la distinction « poche vs moyens » à rappeler.`
+    : `Pour <strong>${n.toLocaleString('fr-FR')} ${elu.label.toLowerCase()}s</strong> : <strong>${fmt(totalAn*n)}</strong> / an, soit <strong>${fmt2(parHab)}</strong> par habitant et par an (${(parHab/365*100).toFixed(1)} centimes / jour / habitant).`;
+
+  // exemples agrégés fixes
+  const deputé=france.elus.find(e=>e.id==='depute');
+  const totDepAn = ((deputé.brut_mensuel*12*1.15)+(deputé.enveloppe_collaborateurs*12)+(deputé.frais_mandat*12)+(inclLog?deputé.cout_logistique_annuel:0));
+  document.getElementById('ex577').textContent = fmt(totDepAn*577);
+  // maires : calcul moyen pondéré simplifié : on prend 3 strates représentatives
+  const m500=france.elus.find(e=>e.id==='maire_500'), m3500=france.elus.find(e=>e.id==='maire_3500'), m100k=france.elus.find(e=>e.id==='maire_100000');
+  const coutM500=(m500.brut_mensuel*12*1.15)+(inclLog?m500.cout_logistique_annuel:0);
+  const coutM3500=(m3500.brut_mensuel*12*1.15)+(inclLog?m3500.cout_logistique_annuel:0);
+  const coutM100k=(m100k.brut_mensuel*12*1.15)+(inclLog?m100k.cout_logistique_annuel:0);
+  // estimation très grossière : 24000 maires <500h, 8000 maires 3500-9999, 42 >100k etc. On simplifie : moyenne ~18k€/an *34955 ≈ 629M€ (ordre de grandeur DGCL 1,2Md indemnités totales)
+  const avgMaireAn = 18000 + (inclLog? 2000:0); // ordre grandeur
+  document.getElementById('exMaires').textContent = fmt(avgMaireAn*34955) + ' (ordre de grandeur)';
+}
+init();
+</script>
+</body>
+</html>
