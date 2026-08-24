@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+  <script defer data-domain="wald52.github.io" src="https://plausible.io/js/script.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EPCI : combien touche un président d'interco ? | Barème 2024</title>
+<meta property="og:title" content="EPCI : combien touche un président d'interco ? | Élus : combien ça coûte vraiment ?">
+<meta property="og:description" content="Métropole, agglo, communauté de communes : barème 2024 président/vice-président, exemples chiffrés, cumul et écrêtement.">
+<meta property="og:url" content="https://wald52.github.io/remunerations-elus/epci.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://wald52.github.io/remunerations-elus/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Barème EPCI 2024 : président et vice-président d'interco selon population. Exemples Grand Paris, Lyon, petite comcom.">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html">ÉLUS<span>· combien ça coûte vraiment ?</span></a>
+        <nav class="navlinks">
+      <a href="index.html">Comparateur</a>
+      <a href="france.html">France</a>
+      <a href="monde.html">Monde</a>
+      <a href="cout.html">Coût complet</a>
+      <a href="communes.html">Mon maire</a>
+      <a href="evolution.html">Évolution</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="metiers.html">Métiers</a>
+      <a href="simulateur.html">Simulateur</a>
+      <a class="active" href="epci.html">EPCI</a>
+      <a href="hatvp.html">HATVP</a>
+      <a href="methodologie.html">Méthodologie</a>
+    </nav>
+  </div>
+</header>
+<main class="container">
+  <section style="padding:28px 0 8px">
+    <span class="kicker">1 254 EPCI • Barème R5211-4 • 2024</span>
+    <h1>Président d'interco : combien ?</h1>
+    <p class="lead">Métropole, communauté urbaine, d'agglo ou de communes : même population, indemnité <strong>plus faible qu'un maire</strong> (34% du plafond maire). Et c'est la même enveloppe d'écrêtement à 8 434€ si tu es déjà maire.</p>
+    <div class="callout"><strong>À retenir :</strong> 80% des présidents d'EPCI sont aussi maires → leur indemnité EPCI s'ajoute mais est écrêtée (voir <a href="simulateur.html">simulateur cumul</a>).</div>
+  </section>
+
+  <div class="panel" style="padding:16px">
+    <h2>Calculateur EPCI</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end">
+      <div>
+        <label>Population de l'EPCI</label>
+        <input id="pop" type="range" min="500" max="7000000" step="500" value="15000" style="width:100%">
+        <div style="display:flex;justify-content:space-between"><span class="small">500 hab.</span><span class="small" id="popVal">15 000 hab.</span><span class="small">7M</span></div>
+      </div>
+      <div>
+        <label>Tranche détectée</label>
+        <div id="tranche" class="badge" style="font-size:14px;padding:6px 10px"></div>
+        <div class="small" id="trancheDetail" style="margin-top:4px"></div>
+      </div>
+    </div>
+    <div class="grid3" style="margin-top:14px">
+      <div class="card" style="text-align:center;border-top:4px solid #0f3b5e"><div class="small">Président EPCI (plafond brut)</div><strong id="kpiPres" style="font-size:24px">—</strong><div class="small" id="kpiPresNet"></div></div>
+      <div class="card" style="text-align:center;border-top:4px solid #38bdf8"><div class="small">Vice-président (plafond brut)</div><strong id="kpiVice" style="font-size:24px">—</strong><div class="small" id="kpiViceNet"></div></div>
+      <div class="card" style="text-align:center;border-top:4px solid #d97706"><div class="small">vs Maire même pop.</div><strong id="kpiVsMaire" style="font-size:18px">—</strong><div class="small">EPCI = 34% du maire</div></div>
+    </div>
+    <div class="chartWrap" style="margin-top:12px"><canvas id="chart" height="220"></canvas></div>
+  </div>
+
+  <section>
+    <h2>Barème complet 2024</h2>
+    <div class="tableWrap"><table class="dataTable" id="tbl"></table></div>
+    <p class="small">Source : <a href="data/epci.json">epci.json</a> (CGCT R5211-4, DGCL). Plafonds. Net estimé ×0,855. Hors majoration. Vice-président max = 40% du président.</p>
+  </section>
+
+  <section>
+    <h2>4 exemples réels</h2>
+    <div class="grid3" id="exemples"></div>
+  </section>
+
+  <section>
+    <h2>Cumul avec mairie : l'écrêtement en pratique</h2>
+    <p class="small">Tu es maire d'une commune de 8 000 hab. (2 214€) + président d'une CA de 30 000 hab. (2 502€) = 4 716€ brut → sous plafond 8 434€ → pas d'écrêtement. Tu es maire de Lyon (5 639€) + président Métropole (3 782€) = 9 421€ → écrêté de 986€ → touché 8 434€.</p>
+    <p><a href="simulateur.html">→ Teste ton cumul dans le simulateur</a></p>
+  </section>
+</main>
+<footer><div class="container small" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><div>Données : <a href="data/epci.json">epci.json</a> • <a href="methodologie.html">Méthodologie</a></div>  <button data-issue="Signalement EPCI" style="width:auto;padding:6px 10px;font-size:12px;background:white;border:1px solid var(--border);color:var(--primary)">🐛 Signaler une erreur</button></div></footer>
+<script>
+let epci=null, chart=null;
+async function init(){
+  epci=await fetch('data/epci.json').then(r=>r.json());
+  const tbl=document.getElementById('tbl');
+  tbl.innerHTML='<thead><tr><th>Population EPCI</th><th>Président brut</th><th>Vice-président brut</th><th>Net prés. / vice</th><th>Ratio vs maire</th></tr></thead><tbody>'+
+    epci.tranches.map(t=>{
+      // find maire same pop for ratio: use france.json maire barème approx: we hardcode
+      const maireMap={'Moins de 500 hab.':1027,'500 à 999 hab.':1567,'1 000 à 3 499 hab.':2006,'3 500 à 9 999 hab.':2214,'10 000 à 19 999 hab.':2406,'20 000 à 49 999 hab.':2857,'50 000 à 99 999 hab.':3964,'100 000 à 199 999 hab.':5639,'200 000 hab. et plus':5639};
+      const maire=maireMap[t.pop]||2000;
+      const ratio=(t.president/maire*100).toFixed(0);
+      return `<tr><td><strong>${t.pop}</strong></td><td><strong>${t.president.toLocaleString('fr-FR')}€</strong></td><td>${t.vice_president.toLocaleString('fr-FR')}€</td><td>${Math.round(t.president*0.855)}€ / ${Math.round(t.vice_president*0.855)}€</td><td>${ratio}%</td></tr>`;
+    }).join('')+'</tbody>';
+  // exemples
+  document.getElementById('exemples').innerHTML=epci.exemples.map(e=> `<div class="card"><h3>${e.nom}</h3><div class="kpi"><strong>${e.president.toLocaleString('fr-FR')}€</strong><small>brut / mois</small></div><div class="small">${e.pop.toLocaleString('fr-FR')} hab. • Net ~${Math.round(e.president*0.855).toLocaleString('fr-FR')}€</div></div>`).join('');
+  // chart
+  const labels=epci.tranches.map(t=> t.pop);
+  const pres=epci.tranches.map(t=> t.president);
+  const vice=epci.tranches.map(t=> t.vice_president);
+  new Chart(document.getElementById('chart'),{type:'bar',data:{labels,datasets:[{label:'Président', data:pres, backgroundColor:'#0f3b5e', borderRadius:6},{label:'Vice-président', data:vice, backgroundColor:'#38bdf8', borderRadius:6}]},options:{responsive:true, plugins:{legend:{position:'bottom'}, title:{display:true,text:'Plafond EPCI 2024 (€ brut / mois)'}}, scales:{y:{beginAtZero:true}}}});
+  // slider
+  const popEl=document.getElementById('pop');
+  popEl.addEventListener('input', update);
+  update();
+}
+function trancheFor(pop){
+  const tranches=[
+    {max:500, idx:0},{max:999, idx:1},{max:3499, idx:2},{max:9999, idx:3},{max:19999, idx:4},{max:49999, idx:5},{max:99999, idx:6},{max:199999, idx:7},{max:Infinity, idx:8}
+  ];
+  for(const t of tranches) if(pop<=t.max) return t.idx;
+  return 8;
+}
+function update(){
+  const pop=parseInt(document.getElementById('pop').value);
+  document.getElementById('popVal').textContent=pop.toLocaleString('fr-FR')+' hab.';
+  const idx=trancheFor(pop);
+  const tr=epci.tranches[idx];
+  document.getElementById('tranche').textContent=tr.pop;
+  document.getElementById('trancheDetail').textContent='Président max '+tr.president.toLocaleString('fr-FR')+'€ brut';
+  document.getElementById('kpiPres').textContent=tr.president.toLocaleString('fr-FR')+' €';
+  document.getElementById('kpiPresNet').textContent='~'+Math.round(tr.president*0.855).toLocaleString('fr-FR')+'€ net';
+  document.getElementById('kpiVice').textContent=tr.vice_president.toLocaleString('fr-FR')+' €';
+  document.getElementById('kpiViceNet').textContent='~'+Math.round(tr.vice_president*0.855).toLocaleString('fr-FR')+'€ net';
+  // vs maire
+  const maireMap=[1027,1567,2006,2214,2406,2857,3964,5639,5639];
+  const maire=maireMap[idx]||2000;
+  document.getElementById('kpiVsMaire').textContent=(tr.president/maire*100).toFixed(0)+'% du maire';
+}
+init();
+</script>
+  <script src="assets/nav.js"></script>
+</body>
+</html>

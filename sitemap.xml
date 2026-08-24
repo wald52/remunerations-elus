@@ -55,6 +55,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://wald52.github.io/remunerations-elus/epci.html</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://wald52.github.io/remunerations-elus/hatvp.html</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://wald52.github.io/remunerations-elus/methodologie.html</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>monthly</changefreq>

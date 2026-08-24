@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+  <script defer data-domain="wald52.github.io" src="https://plausible.io/js/script.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HATVP : patrimoine & intérêts des élus | Liens directs</title>
+<meta property="og:title" content="HATVP : patrimoine & intérêts des élus | Élus : combien ça coûte vraiment ?">
+<meta property="og:description" content="Cherche un élu et ouvre sa déclaration HATVP en 1 clic. Pas de scraping, lien direct vers la fiche officielle.">
+<meta property="og:url" content="https://wald52.github.io/remunerations-elus/hatvp.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://wald52.github.io/remunerations-elus/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Retrouve la déclaration HATVP d'un élu (patrimoine, intérêts) en 1 clic. Lien direct, pas de copie.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html">ÉLUS<span>· combien ça coûte vraiment ?</span></a>
+        <nav class="navlinks">
+      <a href="index.html">Comparateur</a>
+      <a href="france.html">France</a>
+      <a href="monde.html">Monde</a>
+      <a href="cout.html">Coût complet</a>
+      <a href="communes.html">Mon maire</a>
+      <a href="evolution.html">Évolution</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="metiers.html">Métiers</a>
+      <a href="simulateur.html">Simulateur</a>
+      <a href="epci.html">EPCI</a>
+      <a class="active" href="hatvp.html">HATVP</a>
+      <a href="methodologie.html">Méthodologie</a>
+    </nav>
+  </div>
+</header>
+<main class="container">
+  <section style="padding:28px 0 8px">
+    <span class="kicker">Transparence • Pas de scraping • Lien officiel</span>
+    <h1>HATVP : le patrimoine des élus, en 1 clic</h1>
+    <p class="lead">On ne copie pas les déclarations. On t'envoie directement sur la <strong>fiche officielle HATVP</strong> (Haute Autorité pour la transparence). Recherche par nom, on construit le lien direct <code>hatvp.fr/fiche-nominative/?q=Nom</code>.</p>
+    <div class="callout">Respect vie privée : on ne stocke rien, on ne scrape pas. La HATVP est la source primaire, on y renvoie.</div>
+  </section>
+
+  <div class="panel" style="padding:18px;max-width:680px;margin:0 auto">
+    <label for="q">Nom de l'élu (ex. Dupont, Le Maire, Hidalgo)</label>
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <input id="q" placeholder="Tape un nom..." style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);font-size:16px">
+      <button id="btnSearch" style="width:auto;padding:12px 18px">Ouvrir HATVP →</button>
+    </div>
+    <div id="links" style="margin-top:12px;display:grid;gap:8px"></div>
+    <p class="small" style="margin-top:8px">Exemples : <a href="#" data-ex="Hidalgo">Hidalgo</a> • <a href="#" data-ex="Le Maire">Le Maire</a> • <a href="#" data-ex="Bardella">Bardella</a> • <a href="#" data-ex="Mélenchon">Mélenchon</a></p>
+    <div class="small" style="margin-top:12px;background:#f8fafc;padding:10px;border-radius:8px;border:1px solid var(--border)">
+      <strong>Astuce :</strong> la HATVP n'indexe pas toujours bien les accents. Essaie sans accent si pas de résultat (ex. <code>Le Maire</code> → <code>Le Maire</code>).
+    </div>
+  </div>
+
+  <section style="max-width:680px;margin:0 auto">
+    <h2>Que trouve-t-on sur la fiche HATVP ?</h2>
+    <ul class="small">
+      <li><strong>Déclaration d'intérêts</strong> : activités, participations, fonctions bénévoles</li>
+      <li><strong>Déclaration de patrimoine</strong> (pour exécutifs & parlementaires fin de mandat) : biens immobiliers, valeurs mobilières, dettes</li>
+      <li><strong>Historique</strong> : évolution entre début et fin de mandat</li>
+    </ul>
+    <p class="small">Obligatoire pour : Président, ministres, parlementaires, maires >20k hab., présidents EPCI >20k, conseillers régionaux/départementaux, etc. (loi 2013).</p>
+    <h2>Liens directs utiles</h2>
+    <ul>
+      <li><a href="https://www.hatvp.fr/fiche-nominative/" target="_blank">Recherche nominative HATVP →</a></li>
+      <li><a href="https://www.hatvp.fr/espacedeclaration/" target="_blank">Comprendre les déclarations →</a></li>
+      <li><a href="https://www.vie-publique.fr/fiches/268416-hatvp-role-et-missions" target="_blank">Vie-publique : rôle HATVP →</a></li>
+    </ul>
+    <div class="callout"><strong>Pour le site :</strong> on ne duplique pas les montants HATVP (ils sont déclaratifs et hétérogènes). On renvoie à la source pour éviter toute erreur d'interprétation.</div>
+  </section>
+</main>
+<footer><div class="container small" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><div>Source : <a href="https://www.hatvp.fr">hatvp.fr</a> • <a href="methodologie.html">Méthodologie</a></div>  <button data-issue="Signalement HATVP" style="width:auto;padding:6px 10px;font-size:12px;background:white;border:1px solid var(--border);color:var(--primary)">🐛 Signaler une erreur</button></div></footer>
+<script>
+const q=document.getElementById('q'), btn=document.getElementById('btnSearch'), links=document.getElementById('links');
+function buildLinks(name){
+  const n=name.trim();
+  if(!n) return;
+  const enc=encodeURIComponent(n);
+  const urls=[
+    {label:`Fiche HATVP pour “${n}”`, url:`https://www.hatvp.fr/fiche-nominative/?q=${enc}`, desc:'Résultats nominatifs officiels'},
+    {label:`Recherche Google site:hatvp.fr “${n}”`, url:`https://www.google.com/search?q=site:hatvp.fr+${enc}`, desc:'Fallback si pas indexé'},
+    {label:`NosDéputés.fr “${n}” (activité)`, url:`https://www.nosdeputes.fr/recherche/${enc}`, desc:'Pour députés'},
+    {label:`NosSénateurs.fr “${n}”`, url:`https://www.nossenateurs.fr/recherche/${enc}`, desc:'Pour sénateurs'},
+  ];
+  links.innerHTML=urls.map(u=> `<a href="${u.url}" target="_blank" style="display:block;padding:10px;border:1px solid var(--border);border-radius:10px;background:white;text-decoration:none"><strong>${u.label} →</strong><br><span class="small">${u.desc}</span><br><span class="small" style="color:var(--primary)">${u.url}</span></a>`).join('');
+  history.replaceState(null,'','?q='+enc);
+}
+btn.addEventListener('click', ()=> buildLinks(q.value));
+q.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); buildLinks(q.value); }});
+document.querySelectorAll('[data-ex]').forEach(a=> a.addEventListener('click', e=>{ e.preventDefault(); q.value=a.dataset.ex; buildLinks(a.dataset.ex); }));
+const params=new URLSearchParams(location.search);
+const qp=params.get('q');
+if(qp){ q.value=decodeURIComponent(qp); buildLinks(decodeURIComponent(qp)); }
+</script>
+  <script src="assets/nav.js"></script>
+</body>
+</html>
