@@ -65,6 +65,18 @@
       <button id="btnMapToggle" style="width:auto;padding:8px 12px;font-size:13px;background:white;color:var(--primary);border:1px solid var(--border)">🗺️ Voir la carte choroplèthe</button>
       <button id="btnClearDept" style="width:auto;padding:8px 12px;font-size:13px;display:none;background:#f1f5f9;color:var(--primary);border:1px solid var(--border)">✕ Effacer filtre</button>
     </div>
+    <div class="deptControls" style="margin-top:6px;background:#f8fafc;padding:8px 10px;border-radius:10px;border:1px dashed #cbd5e1">
+      <label for="sortDept" style="font-size:11px">Trier départements</label>
+      <select id="sortDept" style="max-width:180px;padding:6px 8px;font-size:12px">
+        <option value="code">Par code (01→976)</option>
+        <option value="avgDesc">Moyenne indemnité ↓ (urbain d'abord)</option>
+        <option value="avgAsc">Moyenne indemnité ↑ (rural d'abord)</option>
+        <option value="countDesc">Nb communes ↓</option>
+        <option value="popDesc">Population totale ↓</option>
+      </select>
+      <button id="btnExportCsv" style="width:auto;padding:6px 10px;font-size:12px;background:white;color:var(--primary);border:1px solid var(--border);margin-left:auto">⬇️ Exporter CSV du filtre</button>
+      <span id="exportInfo" class="small" style="display:none;color:green"></span>
+    </div>
     <div class="small" id="stats" style="color:var(--muted)">Chargement des 34 969 communes…</div>
     <div class="presetRow" style="margin-top:8px">
       <button data-ex="75056">Paris</button>
@@ -214,19 +226,38 @@ async function init(){
   for(const d of deptStats.keys()){
     if(!deptNames.has(d)) deptNames.set(d, 'Dept '+d);
   }
-  // populate select sorted by code numeric-ish
+  // populate select - with sorting
   const sel=document.getElementById('selDept');
-  const sortedDepts=[...deptStats.entries()].sort((a,b)=>{
-    // sort by code
-    return a[0].localeCompare(b[0], 'fr', {numeric:true});
-  });
-  for(const [code, st] of sortedDepts){
-    const opt=document.createElement('option');
-    opt.value=code;
-    const avg=(st.sumI/st.count).toFixed(0);
-    opt.textContent = code+' – '+(deptNames.get(code)||code)+' ('+st.count.toLocaleString('fr-FR')+' communes, moy. '+avg+'€)';
-    sel.appendChild(opt);
+  const sortSel=document.getElementById('sortDept');
+  function populateDeptSelect(){
+    const mode = sortSel ? sortSel.value : 'code';
+    // clear except first
+    sel.querySelectorAll('option:not(:first-child)').forEach(o=>o.remove());
+    let entries=[...deptStats.entries()];
+    if(mode==='avgDesc') entries.sort((a,b)=> (b[1].sumI/b[1].count)-(a[1].sumI/a[1].count));
+    else if(mode==='avgAsc') entries.sort((a,b)=> (a[1].sumI/a[1].count)-(b[1].sumI/b[1].count));
+    else if(mode==='countDesc') entries.sort((a,b)=> b[1].count-a[1].count);
+    else if(mode==='popDesc') entries.sort((a,b)=> b[1].sumPop-a[1].sumPop);
+    else entries.sort((a,b)=> a[0].localeCompare(b[0], 'fr', {numeric:true}));
+    for(const [code, st] of entries){
+      const opt=document.createElement('option');
+      opt.value=code;
+      const avg=(st.sumI/st.count).toFixed(0);
+      const cnt=st.count.toLocaleString('fr-FR');
+      const pop=(st.sumPop/1000).toFixed(0)+'k hab.';
+      let extra='';
+      if(mode==='avgDesc'||mode==='avgAsc') extra=avg+'€ moy.';
+      else if(mode==='countDesc') extra=cnt+' communes';
+      else if(mode==='popDesc') extra=pop;
+      else extra='moy. '+avg+'€';
+      opt.textContent = code+' – '+(deptNames.get(code)||code)+' ('+extra+')';
+      sel.appendChild(opt);
+    }
+    // restore selected if still exists
+    if(selectedDept && deptStats.has(selectedDept)) sel.value=selectedDept;
   }
+  populateDeptSelect();
+  if(sortSel) sortSel.addEventListener('change', populateDeptSelect);
   sel.addEventListener('change', ()=>{
     const v=sel.value;
     if(v){
@@ -239,6 +270,34 @@ async function init(){
       clearDept();
     }
   });
+  // CSV export
+  const btnCsv=document.getElementById('btnExportCsv');
+  if(btnCsv){
+    btnCsv.addEventListener('click', ()=>{
+      const pool = selectedDept ? deptStats.get(selectedDept).communes : communes;
+      const deptLabel = selectedDept ? deptNames.get(selectedDept)+'_'+selectedDept : 'France_tous';
+      const headers=['code_insee','nom','codes_postaux','population','tranche','indemnite_maire_brut','indemnite_adjoint_brut','cout_complet_an'];
+      const rows=[headers.join(';')];
+      for(const c of pool){
+        let log=600; if(c.p>=100000) log=28000; else if(c.p>=50000) log=15000; else if(c.p>=3500) log=3000; else if(c.p>=1000) log=800;
+        const cout=c.i*12*1.15+log;
+        const cp=(c.cp||[]).join('|');
+        // escape ; in nom
+        const nom=c.n.replace(/;/g, ',');
+        rows.push([c.c, '"'+nom+'"', cp, c.p, '"'+c.t+'"', c.i.toFixed(2), c.a.toFixed(2), cout.toFixed(0)].join(';'));
+      }
+      const csv=rows.join('\n');
+      const blob=new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download='maires_'+deptLabel+'_'+new Date().toISOString().slice(0,10)+'.csv';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+      const info=document.getElementById('exportInfo');
+      if(info){ info.textContent='CSV '+pool.length.toLocaleString('fr-FR')+' communes téléchargé'; info.style.display='inline'; setTimeout(()=>info.style.display='none', 3000); }
+    });
+  }
   document.getElementById('btnClearDept').addEventListener('click', clearDept);
   document.getElementById('btnMapToggle').addEventListener('click', toggleMap);
 
