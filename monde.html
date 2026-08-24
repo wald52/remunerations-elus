@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Monde – Comparatif des rémunérations parlementaires | 12 pays</title>
+<meta property="og:title" content="Monde – Comparatif 12 pays | Élus : combien ça coûte vraiment ?">
+<meta property="og:description" content="Un député français est-il trop payé vs Allemagne, USA, UK ? Comparatif en × médian et pouvoir d'achat.">
+<meta property="og:url" content="https://wald52.github.io/remunerations-elus/monde.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://wald52.github.io/remunerations-elus/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
@@ -11,12 +18,15 @@
 <header>
   <div class="container nav">
     <a class="brand" href="index.html">ÉLUS<span>· combien ça coûte vraiment ?</span></a>
-    <nav class="navlinks">
+        <nav class="navlinks">
       <a href="index.html">Comparateur</a>
       <a href="france.html">France</a>
       <a class="active" href="monde.html">Monde</a>
       <a href="cout.html">Coût complet</a>
       <a href="communes.html">Mon maire</a>
+      <a href="evolution.html">Évolution</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="metiers.html">Métiers</a>
       <a href="methodologie.html">Méthodologie</a>
     </nav>
   </div>
@@ -27,7 +37,7 @@
     <p class="muted">3 métriques pour éviter les comparaisons truquées : <strong>1) en € au taux de change</strong>, <strong>2) en € PPA (pouvoir d'achat OCDE)</strong>, <strong>3) en multiples du salaire médian local</strong>. C'est la 3e qui dit si être élu est un privilège dans son pays. Source centrale : <a href="https://data.ipu.org" target="_blank">IPU Parline</a> + sites officiels des parlements (2024).</p>
     <div class="chartWrap" style="margin:14px 0"><canvas id="chartMedian" height="140"></canvas></div>
     <div class="tableWrap"><table class="dataTable" id="tbl"><thead><tr><th>Pays / Mandat</th><th>Brut €/mois</th><th>PPA €</th><th>× médian local</th><th>Avantages / Enveloppe</th><th>Source</th></tr></thead><tbody id="tbody"></tbody></table></div>
-    <p class="small">Taux 2024 moyens : 1 USD=0.92€, 1 GBP=1.17€, 1 CHF=1.05€, 1 CAD=0.67€, 1 JPY=0.0061€. PPA OCDE 2024. Classement par × médian croissant (privilège relatif).</p>
+    <p class="small">Taux 2024 moyens : 1 USD=0.92€, 1 GBP=1.17€, 1 CHF=1.05€, 1 CAD=0.67€, 1 JPY=0.0061€. PPA OCDE 2024. Classement par × médian croissant (privilège relatif). <button id="btnExportMonde" style="width:auto;padding:6px 10px;font-size:12px;background:white;border:1px solid var(--border);margin-left:8px">⬇️ Exporter CSV</button></p>
   </section>
   <section>
     <h2>Lecture : où la France se situe</h2>
@@ -60,6 +70,13 @@ async function load(){
       <td><span class="small">${p.avantages}</span></td>
       <td><span class="small">${p.source}</span></td></tr>`;
   }).join('');
+  document.getElementById('btnExportMonde').addEventListener('click', async ()=>{
+    const r=await fetch('data/monde.json'); const j=await r.json();
+    const headers=['pays','mandat','brut_eur_mois','ppa_eur','ratio_median','avantages','source'];
+    const rows=[headers.join(';')];
+    for(const p of j.pays) rows.push([p.pays, `"${p.mandat}"`, p.brut_mensuel_eur, p.ppa_eur, p.ratio_median, `"${p.avantages.replace(/"/g,'')}"`, `"${p.source.replace(/"/g,'')}"`].join(';'));
+    const blob=new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='monde_'+new Date().toISOString().slice(0,10)+'.csv'; a.click(); URL.revokeObjectURL(url);
+  });
   // chart
   const labels = all.map(p=> p.pays + ' ' + p.mandat.split(' ')[0]);
   const dataMedian = all.map(p=>p.ratio_median);

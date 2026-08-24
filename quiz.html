@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quiz : Devine le salaire des élus | 5 questions</title>
+<meta property="og:title" content="Quiz : Devine le salaire des élus | Élus : combien ça coûte vraiment ?">
+<meta property="og:description" content="5 questions en 2 min pour tester tes idées reçues. 90% surestiment le maire ×3.">
+<meta property="og:url" content="https://wald52.github.io/remunerations-elus/quiz.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://wald52.github.io/remunerations-elus/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="5 questions pour tester tes idées reçues sur les salaires des élus. Score + explications sourcées.">
+<link rel="stylesheet" href="style.css">
+<style>
+.quizCard{max-width:680px;margin:14px auto;background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:22px}
+.qTitle{font-size:18px;font-weight:800;color:var(--primary);margin:0 0 8px}
+.qSub{color:var(--muted);font-size:14px;margin-bottom:14px}
+.choices{display:grid;gap:8px}
+.choice{padding:12px 14px;border:2px solid var(--border);border-radius:10px;background:white;cursor:pointer;text-align:left;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.choice:hover{border-color:var(--primary);background:#eff6ff}
+.choice.correct{border-color:#16a34a;background:#f0fdf4}
+.choice.wrong{border-color:#dc2626;background:#fef2f2}
+.choice:disabled{cursor:default}
+.progress{height:6px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin:8px 0}
+.progress i{display:block;height:100%;background:var(--primary);transition:width .3s}
+.scoreBig{font-size:36px;font-weight:850;color:var(--primary);text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html">ÉLUS<span>· combien ça coûte vraiment ?</span></a>
+        <nav class="navlinks">
+      <a href="index.html">Comparateur</a>
+      <a href="france.html">France</a>
+      <a href="monde.html">Monde</a>
+      <a href="cout.html">Coût complet</a>
+      <a href="communes.html">Mon maire</a>
+      <a href="evolution.html">Évolution</a>
+      <a class="active" href="quiz.html">Quiz</a>
+      <a href="metiers.html">Métiers</a>
+      <a href="methodologie.html">Méthodologie</a>
+    </nav>
+  </div>
+</header>
+<main class="container" style="max-width:740px">
+  <section style="padding:28px 0 8px;text-align:center">
+    <span class="kicker">5 questions • 2 min • Sources officielles</span>
+    <h1>Devine le salaire des élus</h1>
+    <p class="lead" style="max-width:640px;margin:0 auto">Teste tes idées reçues. À chaque réponse, l'explication sourcée + le vrai chiffre. Partage ton score.</p>
+    <div class="progress" style="max-width:680px;margin:14px auto"><i id="bar" style="width:0%"></i></div>
+    <div class="small" id="counter">Question 1 / 5</div>
+  </section>
+
+  <div id="quiz"></div>
+
+  <div id="result" style="display:none;max-width:680px;margin:14px auto" class="panel">
+    <div class="scoreBig" id="score"></div>
+    <div id="verdict" style="text-align:center;margin:6px 0;font-weight:700"></div>
+    <p id="detail" class="small" style="text-align:center"></p>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px">
+      <button id="btnRestart" style="width:auto;padding:10px 16px">🔁 Rejouer</button>
+      <button id="btnShare" style="width:auto;padding:10px 16px;background:white;color:var(--primary);border:1px solid var(--border)">📋 Copier mon score</button>
+      <a id="btnCommunes" href="communes.html" style="padding:10px 16px;background:var(--accent);color:white;border-radius:10px;font-weight:700;text-decoration:none">🏠 Voir mon maire →</a>
+    </div>
+    <div class="callout" style="margin-top:14px"><strong>À partager :</strong> 90% des gens surestiment le salaire d'un maire de village ×3 et sous-estiment celui d'un député allemand. Et toi ?</div>
+  </div>
+</main>
+<footer><div class="container small" style="text-align:center">Quiz basé sur <a href="data/france.json">france.json</a> + <a href="data/monde.json">monde.json</a> • <a href="methodologie.html">Méthodologie</a></div></footer>
+<script>
+const questions=[
+  {
+    q:"Un maire d'un village de 300 habitants, combien touche-t-il (plafond brut) ?",
+    sub:"Barème DGCL 2024, indice 1027 — le plus fréquent (52% des communes)",
+    choices:["5 639 € (comme une grande ville)","2 214 €","1 027 €","0 € (bénévole)"],
+    correct:2,
+    expl:"<strong>1 027€ brut (880€ net)</strong> — plafond légal. 18 270 communes sur 35 000 sont dans ce cas. Beaucoup votent même en dessous. <a href='communes.html'>Vérifie ta commune →</a>"
+  },
+  {
+    q:"Un député français, combien encaisse-t-il vraiment dans sa poche ?",
+    sub:"Net avant IR, hors équipe et frais (qui ne sont pas son revenu)",
+    choices:["24 169 € (7 638+10 581+5 950)","12 500 € net","5 925 € net","3 100 € net"],
+    correct:2,
+    expl:"<strong>5 925€ net</strong> (7 638€ brut). Les 10 581€ paient ses collaborateurs, les 5 950€ sont des frais justifiés (AFM). Confondre les 3 = l'erreur #1. <a href='cout.html'>Voir le coût complet →</a>"
+  },
+  {
+    q:"Un député allemand gagne plus qu'un député français ?",
+    sub:"Bundestag 2024, brut mensuel",
+    choices:["Non, moins (7 000€)","Égal (7 600€)","Oui, 11 227€ brut + 4 725€ forfait","Oui, 18 000€"],
+    correct:2,
+    expl:"<strong>11 227€ brut + 4 725€ forfait non imposable + 25 000€ staff</strong>. L'Allemagne paie nettement plus en brut (3,9× le médian vs 3,1× en France). <a href='monde.html'>Comparatif monde →</a>"
+  },
+  {
+    q:"Le Président français est-il le mieux payé d'Europe ?",
+    sub:"Brut mensuel 2024",
+    choices:["Oui, 30 000€","Oui, 20 000€","Non, 15 900€ — moins que Chancelier DE (22k) et PM UK","Non, 7 600€"],
+    correct:2,
+    expl:"<strong>15 900€ brut (13 000€ net)</strong>, gelé depuis 2012. Chancelier allemand 22 080€, Président US 30 670€, PM UK ~16k€+avantages. <a href='france.html'>Détail France →</a>"
+  },
+  {
+    q:"Un conseiller municipal sans délégation, combien ?",
+    sub:"90% des élus locaux",
+    choices:["1 027 €","557 €","246 €","0 € (bénévole)"],
+    correct:3,
+    expl:"<strong>0€</strong>. 500 000 conseillers municipaux sont bénévoles. Seuls maire/adjoints avec délégation touchent une indemnité. C'est l'armée invisible de la République."
+  },
+];
+
+let idx=0, score=0;
+const quizEl=document.getElementById('quiz'), bar=document.getElementById('bar'), counter=document.getElementById('counter');
+function render(){
+  if(idx>=questions.length){ showResult(); return; }
+  const qq=questions[idx];
+  bar.style.width = (idx/questions.length*100)+'%';
+  counter.textContent=`Question ${idx+1} / ${questions.length} — Score : ${score}/${idx}`;
+  quizEl.innerHTML = `<div class="quizCard">
+    <div class="qTitle">${idx+1}. ${qq.q}</div>
+    <div class="qSub">${qq.sub}</div>
+    <div class="choices" id="choices">${qq.choices.map((c,i)=> `<button class="choice" data-i="${i}"><span>${c}</span><span>→</span></button>`).join('')}</div>
+    <div id="feedback" style="display:none;margin-top:12px" class="callout"></div>
+    <button id="btnNext" style="display:none;margin-top:12px;width:auto;padding:8px 14px">Suivant →</button>
+  </div>`;
+  quizEl.querySelectorAll('.choice').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const chosen=parseInt(b.dataset.i);
+      const correct=qq.correct;
+      const choices=quizEl.querySelectorAll('.choice');
+      choices.forEach((ch,i)=>{
+        ch.disabled=true;
+        if(i===correct) ch.classList.add('correct');
+        if(i===chosen && i!==correct) ch.classList.add('wrong');
+      });
+      const fb=document.getElementById('feedback');
+      const isOk=chosen===correct;
+      if(isOk) score++;
+      fb.style.display='block';
+      fb.innerHTML = (isOk? '✅ <strong>Bonne réponse !</strong> ' : '❌ <strong>Mauvaise réponse.</strong> ') + qq.expl;
+      document.getElementById('btnNext').style.display='block';
+      counter.textContent=`Question ${idx+1} / ${questions.length} — Score : ${score}/${idx+1}`;
+      bar.style.width = ((idx+1)/questions.length*100)+'%';
+    });
+  });
+  document.getElementById('btnNext').addEventListener('click', ()=>{ idx++; render(); });
+}
+function showResult(){
+  quizEl.style.display='none';
+  counter.textContent=`Terminé !`;
+  bar.style.width='100%';
+  const res=document.getElementById('result');
+  res.style.display='block';
+  document.getElementById('score').textContent=score+' / 5';
+  let verdict='';
+  if(score===5) verdict='🏆 Expert ! Tu connais mieux que 95% des Français.';
+  else if(score>=3) verdict='👏 Pas mal, tu as déjoué la moitié des mythes.';
+  else verdict='😬 Beaucoup d\'idées reçues — refais un tour sur le site.';
+  document.getElementById('verdict').textContent=verdict;
+  document.getElementById('detail').textContent=`Tu as ${score} bonnes réponses sur 5. Le mythe le plus fréquent : confondre indemnité et enveloppe staff.`;
+  document.getElementById('btnRestart').onclick=()=>{ idx=0; score=0; quizEl.style.display='block'; res.style.display='none'; render(); };
+  document.getElementById('btnShare').onclick=()=>{
+    const txt=`J'ai fait ${score}/5 au quiz "Devine le salaire des élus" sur https://wald52.github.io/remunerations-elus/quiz.html — et toi ?`;
+    navigator.clipboard.writeText(txt).then(()=>{ const b=document.getElementById('btnShare'); const old=b.textContent; b.textContent='✅ Copié !'; setTimeout(()=> b.textContent=old, 2000); });
+  };
+  // update URL for sharing
+  history.replaceState(null,'','?score='+score);
+}
+render();
+</script>
+</body>
+</html>

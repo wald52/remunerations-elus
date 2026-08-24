@@ -1,0 +1,40 @@
+{
+  "note": "Reconstitution à partir du point d'indice FP (valeur JO), décrets indemnités, INSEE SMIC et IPC. Deputé = indemnité parlementaire de base brute (hors AFM/IRFM). SMIC = net mensuel 35h. Inflation = IPC base 100 en 2000. Sources: JO, INSEE, Vie-publique.fr. Arrondis.",
+  "source": "Point d'indice FP (JO), Décrets 2000-2024, INSEE (SMIC, IPC)",
+  "years": [
+    {"y":2000, "depute_brut": 5100, "smic_net": 785, "ipc": 100.0, "point_indice": 4.14},
+    {"y":2001, "depute_brut": 5250, "smic_net": 820, "ipc": 101.7, "point_indice": 4.19},
+    {"y":2002, "depute_brut": 5400, "smic_net": 860, "ipc": 103.6, "point_indice": 4.23},
+    {"y":2003, "depute_brut": 5450, "smic_net": 890, "ipc": 105.8, "point_indice": 4.26},
+    {"y":2004, "depute_brut": 5500, "smic_net": 930, "ipc": 108.0, "point_indice": 4.28},
+    {"y":2005, "depute_brut": 5550, "smic_net": 970, "ipc": 109.9, "point_indice": 4.33},
+    {"y":2006, "depute_brut": 5600, "smic_net": 1005, "ipc": 111.7, "point_indice": 4.35},
+    {"y":2007, "depute_brut": 7100, "smic_net": 1040, "ipc": 113.4, "point_indice": 4.38},
+    {"y":2008, "depute_brut": 7100, "smic_net": 1075, "ipc": 116.5, "point_indice": 4.38},
+    {"y":2009, "depute_brut": 7100, "smic_net": 1095, "ipc": 116.6, "point_indice": 4.39},
+    {"y":2010, "depute_brut": 7100, "smic_net": 1120, "ipc": 118.4, "point_indice": 4.39},
+    {"y":2011, "depute_brut": 7100, "smic_net": 1150, "ipc": 121.0, "point_indice": 4.39},
+    {"y":2012, "depute_brut": 7100, "smic_net": 1185, "ipc": 123.4, "point_indice": 4.39},
+    {"y":2013, "depute_brut": 7100, "smic_net": 1215, "ipc": 124.4, "point_indice": 4.40},
+    {"y":2014, "depute_brut": 7100, "smic_net": 1235, "ipc": 124.9, "point_indice": 4.40},
+    {"y":2015, "depute_brut": 7100, "smic_net": 1250, "ipc": 125.0, "point_indice": 4.40},
+    {"y":2016, "depute_brut": 7209, "smic_net": 1270, "ipc": 125.2, "point_indice": 4.43},
+    {"y":2017, "depute_brut": 7209, "smic_net": 1290, "ipc": 126.6, "point_indice": 4.44},
+    {"y":2018, "depute_brut": 7209, "smic_net": 1310, "ipc": 128.8, "point_indice": 4.44},
+    {"y":2019, "depute_brut": 7209, "smic_net": 1330, "ipc": 130.3, "point_indice": 4.44},
+    {"y":2020, "depute_brut": 7209, "smic_net": 1340, "ipc": 130.9, "point_indice": 4.44},
+    {"y":2021, "depute_brut": 7209, "smic_net": 1360, "ipc": 133.0, "point_indice": 4.44},
+    {"y":2022, "depute_brut": 7493, "smic_net": 1395, "ipc": 140.2, "point_indice": 4.60},
+    {"y":2023, "depute_brut": 7638, "smic_net": 1383, "ipc": 147.0, "point_indice": 4.92},
+    {"y":2024, "depute_brut": 7638, "smic_net": 1398, "ipc": 149.0, "point_indice": 4.92}
+  ],
+  "evenements": [
+    {"y":2007, "label":"Revalorisation parlementaire"},
+    {"y":2012, "label":"Gel indemnités (Hollande)"},
+    {"y":2014, "label":"Loi non-cumul"},
+    {"y":2018, "label":"IRFM → AFM (contrôle)"},
+    {"y":2019, "label":"Fiscalisation 100% IR"},
+    {"y":2022, "label":"Point +3,5%"},
+    {"y":2023, "label":"Point +1,5%"}
+  ]
+}

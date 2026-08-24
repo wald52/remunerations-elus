@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Élus vs Métiers : qui gagne combien vraiment ? | SMIC, infirmier, prof</title>
+<meta property="og:title" content="Élus vs Métiers du quotidien | Élus : combien ça coûte vraiment ?">
+<meta property="og:description" content="Député vs infirmier, prof, SMIC, cadre : comparatif en net et × SMIC. 2024.">
+<meta property="og:url" content="https://wald52.github.io/remunerations-elus/metiers.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://wald52.github.io/remunerations-elus/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Compare le salaire d'un député, d'un maire et de 8 métiers du quotidien (SMIC, infirmier, prof, policier, cadre, médecin) en net, en × SMIC et pouvoir d'achat.">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html">ÉLUS<span>· combien ça coûte vraiment ?</span></a>
+        <nav class="navlinks">
+      <a href="index.html">Comparateur</a>
+      <a href="france.html">France</a>
+      <a href="monde.html">Monde</a>
+      <a href="cout.html">Coût complet</a>
+      <a href="communes.html">Mon maire</a>
+      <a href="evolution.html">Évolution</a>
+      <a href="quiz.html">Quiz</a>
+      <a class="active" href="metiers.html">Métiers</a>
+      <a href="methodologie.html">Méthodologie</a>
+    </nav>
+  </div>
+</header>
+<main class="container">
+  <section style="padding:28px 0 8px">
+    <span class="kicker">Net mensuel avant IR • 2024 • Primes incluses</span>
+    <h1>Un élu gagne combien vs un <em>vrai métier</em> ?</h1>
+    <p class="lead">On compare à périmètre constant : <strong>net mensuel avant impôt</strong> (après cotisations). Un député à 5 925€ net, c'est <strong>4,2× le SMIC</strong>, <strong>2,8× un infirmier</strong>, <strong>3,2× un prof débutant</strong>. Un maire de village à 880€ net est <strong>sous le SMIC</strong>. Les graphiques remettent l'échelle.</p>
+    <div class="callout"><strong>Piège :</strong> ne compare pas brut et net. Ici tout est en net (ce qui arrive sur le compte avant IR) pour être honnête. Sources en bas.</div>
+  </section>
+
+  <div class="panel" style="padding:16px">
+    <div class="chartWrap"><canvas id="chart" height="140"></canvas></div>
+    <p class="small" style="margin-top:6px">Barres bleues = métiers du quotidien, orange = élus. Le SMIC = référence.</p>
+  </div>
+
+  <section>
+    <div style="text-align:right;margin-bottom:6px"><button id="btnExportMetiers" style="width:auto;padding:6px 10px;font-size:12px;background:white;border:1px solid var(--border)">⬇️ Exporter CSV</button></div>
+    <div class="tableWrap"><table class="dataTable" id="tbl"></table></div>
+    <p class="small">Classé par net croissant. Élus en orange. Net estimé avant IR. SMIC 1 398€ net 35h. Cadre moyen = salaire moyen FR INSEE.</p>
+  </section>
+
+  <div class="grid3">
+    <div class="card"><h3>Le maire de village n'est pas un privilégié</h3><p class="small">880€ net plafond (< SMIC), souvent avec un autre emploi. 52% des maires. Coût pour la commune : ~14 700€/an tout compris — moins qu'un mi-temps au SMIC.</p></div>
+    <div class="card"><h3>Le député : cadre sup, pas ultra-riche</h3><p class="small">5 925€ net = entre cadre sup (3 800€) et médecin libéral (5 500€). 3,1× le médian. Au-dessus d'un infirmier (2,8×) mais sous un député allemand (11k brut).</p></div>
+    <div class="card"><h3>Le vrai écart : avec le SMIC</h3><p class="small">Un député gagne 4,2 SMIC. C'est beaucoup, mais c'est l'écart standard d'un cadre sup en France. Un député brésilien = 13,8× le médian local (voir <a href="monde.html">Monde</a>).</p></div>
+  </div>
+
+  <section>
+    <h2>Combien d'heures de SMIC pour payer un élu ?</h2>
+    <div class="panel" style="padding:14px">
+      <div class="chartWrap"><canvas id="chartSmic" height="140"></canvas></div>
+      <p class="small">Lecture : "Un député = 4,2 SMIC" = il faut 4,2 salaires SMIC pour égaliser un député. Un maire village = 0,63 SMIC (moins d'un SMIC).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Méthodologie</h2>
+    <p class="small">Sources : INSEE DADS 2023, DREES (hôpital), Ministère Éducation (revalorisation 2023 socle 2 000€ brut), DGCL pour élus. Nets = après cotisations, avant IR, primes Ségur incluses pour soignants. Fichier <a href="data/metiers.json">metiers.json</a> éditable.</p>
+  </section>
+</main>
+<footer><div class="container small">Données : <a href="data/metiers.json">metiers.json</a> • <a href="data/france.json">france.json</a></div></footer>
+<script>
+async function init(){
+  const j=await fetch('data/metiers.json').then(r=>r.json());
+  const metiers=[...j.metiers].sort((a,b)=> a.net-b.net);
+  const labels=metiers.map(m=> m.label);
+  const vals=metiers.map(m=> m.net);
+  const colors=metiers.map(m=> m.categorie==='Élu' ? '#d97706' : '#0f3b5e');
+  new Chart(document.getElementById('chart'),{
+    type:'bar',
+    data:{labels, datasets:[{label:'Net mensuel €', data:vals, backgroundColor:colors, borderRadius:6}]},
+    options:{indexAxis:'y', responsive:true, plugins:{legend:{display:false}, title:{display:true,text:'Net mensuel avant IR — élus vs métiers (2024)'}}, scales:{x:{title:{display:true,text:'€ net / mois'}}}}
+  });
+  // smic multiples
+  const smic=1398;
+  const mults=metiers.map(m=> (m.net/smic).toFixed(2));
+  new Chart(document.getElementById('chartSmic'),{
+    type:'bar',
+    data:{labels, datasets:[{label:'× SMIC', data:mults, backgroundColor:colors, borderRadius:6}]},
+    options:{indexAxis:'y', responsive:true, plugins:{legend:{display:false}, title:{display:true,text:'En × SMIC (1 = un SMIC net)'}}, scales:{x:{title:{display:true,text:'× SMIC'}}}}
+  });
+  document.getElementById('btnExportMetiers').addEventListener('click', async ()=>{
+    const r=await fetch('data/metiers.json'); const j=await r.json();
+    const rows=['metier;categorie;net_mensuel;commentaire'];
+    for(const m of j.metiers) rows.push([`"${m.label}"`,m.categorie,m.net,`"${m.commentaire.replace(/"/g,'')}"`].join(';'));
+    const blob=new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='metiers_'+new Date().toISOString().slice(0,10)+'.csv'; a.click(); URL.revokeObjectURL(url);
+  });
+  // table
+  const tbl=document.getElementById('tbl');
+  tbl.innerHTML='<thead><tr><th>Métier / Mandat</th><th>Catégorie</th><th>Net / mois</th><th>× SMIC</th><th>× médian (1 940€)</th><th>Commentaire</th></tr></thead><tbody>'+
+    metiers.map(m=> `<tr style="${m.categorie==='Élu' ? 'background:#fffbeb;font-weight:700' : ''}"><td><strong>${m.label}</strong> ${m.categorie==='Élu'?'🏛️':''}</td><td><span class="tag">${m.categorie}</span></td><td><strong>${m.net.toLocaleString('fr-FR')} €</strong></td><td>${(m.net/smic).toFixed(2)}×</td><td>${(m.net/1940).toFixed(2)}×</td><td><span class="small">${m.commentaire}</span></td></tr>`).join('')+'</tbody>';
+}
+init();
+</script>
+</body>
+</html>

@@ -4,18 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>France – Toutes les rémunérations des élus | Détail 2024</title>
+<meta property="og:title" content="France – Toutes les rémunérations | Élus : combien ça coûte vraiment ?">
+<meta property="og:description" content="Atlas complet des indemnités en France : Président, députés, maires, conseillers. Barème DGCL 2024.">
+<meta property="og:url" content="https://wald52.github.io/remunerations-elus/france.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://wald52.github.io/remunerations-elus/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
   <div class="container nav">
     <a class="brand" href="index.html">ÉLUS<span>· combien ça coûte vraiment ?</span></a>
-    <nav class="navlinks">
+        <nav class="navlinks">
       <a href="index.html">Comparateur</a>
       <a class="active" href="france.html">France</a>
       <a href="monde.html">Monde</a>
       <a href="cout.html">Coût complet</a>
       <a href="communes.html">Mon maire</a>
+      <a href="evolution.html">Évolution</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="metiers.html">Métiers</a>
       <a href="methodologie.html">Méthodologie</a>
     </nav>
   </div>
@@ -29,7 +39,7 @@
       <input id="q" placeholder="Filtrer : ex. maire, député, région...">
       <select id="cat"><option value="">Toutes catégories</option><option>Exécutif national</option><option>Parlement national</option><option>Parlement européen</option><option>Élu local</option></select>
     </div>
-    <div class="legend"><span class="tag exec">Exécutif</span><span class="tag parl">Parlement</span><span class="tag local">Local</span></div>
+    <div class="legend"><span class="tag exec">Exécutif</span><span class="tag parl">Parlement</span><span class="tag local">Local</span> <button id="btnExport" style="margin-left:auto;width:auto;padding:6px 10px;font-size:12px;background:white;border:1px solid var(--border)">⬇️ Exporter CSV</button></div>
     <div class="tableWrap"><table class="dataTable" id="tbl">
       <thead><tr><th>Mandat</th><th>Brut / mois</th><th>Net estimé</th><th>× SMIC net</th><th>× médian</th><th>Frais mandat (AFM)</th><th>Enveloppe staff</th><th>Avantages / Cumul</th><th>Source</th></tr></thead>
       <tbody id="tbody"></tbody>
@@ -77,6 +87,14 @@ async function load(){
     });
   }
   q.addEventListener('input', filter); cat.addEventListener('change', filter);
+  document.getElementById('btnExport').addEventListener('click', ()=>{
+    const headers=['mandat','categorie','brut_mensuel','net_mensuel','frais_mandat','enveloppe_collaborateurs','avantages','source'];
+    const rows=[headers.join(';')];
+    for(const e of j.elus){
+      rows.push([`"${e.label}"`,e.categorie,e.brut_mensuel||0,e.net_mensuel_estime||0, typeof e.frais_mandat==='number'?e.frais_mandat:'', e.enveloppe_collaborateurs||'', `"${(e.avantages||'').replace(/"/g,'')}"`, `"${(e.source||'').replace(/"/g,'')}"`].join(';'));
+    }
+    const blob=new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='france_elus_'+new Date().toISOString().slice(0,10)+'.csv'; a.click(); URL.revokeObjectURL(url);
+  });
 }
 load();
 </script>

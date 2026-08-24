@@ -1,0 +1,18 @@
+{
+  "maj": "2024-01-01",
+  "source": "INSEE DADS 2023, DREES, Ministère Éducation, MESR, revalorisations 2023-2024. Nets mensuels avant IR, primes incluses.",
+  "metiers": [
+    {"id":"smic", "label":"SMIC temps plein", "net":1398, "categorie":"Référence", "commentaire":"35h, net après cotisations, 2024"},
+    {"id":"aide_soignant", "label":"Aide-soignant hôpital", "net":1680, "categorie":"Hôpital", "commentaire":"Début, primes Ségur incluses"},
+    {"id":"infirmier", "label":"Infirmier hospitalier", "net":2100, "categorie":"Hôpital", "commentaire":"Début ~1 950€, 5 ans ~2 100€ (Ségur)"},
+    {"id":"prof_ecole", "label":"Prof des écoles (début)", "net":1850, "categorie":"Éducation", "commentaire":"Après revalorisation 2023 (socle 2 000€ brut ~1 850€ net)"},
+    {"id":"prof_certifie", "label":"Prof certifié collège (5 ans)", "net":2050, "categorie":"Éducation", "commentaire":"Milieu carrière ~2 400€"},
+    {"id":"policier", "label":"Gardien de la paix", "net":1950, "categorie":"Sécurité", "commentaire":"Début, primes"},
+    {"id":"cadre_moyen", "label":"Cadre moyen (salaire moyen FR)", "net":2587, "categorie":"Référence", "commentaire":"Moyenne INSEE 2023-2024, net"},
+    {"id":"cadre_sup", "label":"Cadre supérieur / Ingénieur", "net":3800, "categorie":"Référence", "commentaire":"Médiane cadres ~3 800€ net"},
+    {"id":"medecin_gen", "label":"Médecin généraliste libéral", "net":5500, "categorie":"Libéral", "commentaire":"Revenu net moyen libéral DREES 2022, très variable"},
+    {"id":"depute", "label":"Député national", "net":5925, "categorie":"Élu", "commentaire":"Pour comparaison — voir france.json"},
+    {"id":"maire_500", "label":"Maire <500 hab.", "net":880, "categorie":"Élu", "commentaire":"Plafond, souvent moins"},
+    {"id":"maire_100k", "label":"Maire >100k hab.", "net":4450, "categorie":"Élu", "commentaire":"Seules 42 communes"}
+  ]
+}
