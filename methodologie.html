@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Méthodologie & Sources – Transparence totale</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html">ÉLUS<span>· combien ça coûte vraiment ?</span></a>
+    <nav class="navlinks">
+      <a href="index.html">Comparateur</a>
+      <a href="france.html">France</a>
+      <a href="monde.html">Monde</a>
+      <a class="active" href="methodologie.html">Méthodologie</a>
+    </nav>
+  </div>
+</header>
+<main class="container">
+  <section>
+    <h1>Méthodologie : comment on compare sans tricher</h1>
+    <p class="muted">Objectif : démonter les idées reçues avec des chiffres vérifiables, pas les remplacer par d'autres idées reçues.</p>
+
+    <h2>1. France : ce qu'on compte</h2>
+    <ul>
+      <li><strong>Brut mensuel</strong> = traitement de base voté (ex: 7 638€ député). Source : décrets JO, Assemblée nationale, Sénat, DGCL.</li>
+      <li><strong>Net estimé</strong> = brut - cotisations sociales (IRCANTEC, CSG-CRDS) hors IR. Estimation à ~77% du brut pour les parlementaires (taux réel variable selon situation).</li>
+      <li><strong>AFM / Frais mandat</strong> : avance de frais mandat, justifiée et contrôlée par le déontologue depuis 2018 (remplace l'IRFM forfaitaire). Plafond 5 950€ (AN). Ce n'est pas du revenu.</li>
+      <li><strong>Enveloppe collaborateurs</strong> : crédit pour payer l'équipe (charges comprises). Le député est employeur, le reliquat non utilisé est rendu. Ce n'est pas du revenu.</li>
+      <li><strong>Avantages</strong> : listés en clair (SNCF, logement, voiture). Quand ils sont chiffrables, on le dit ; sinon on indique « forfait ».</li>
+    </ul>
+
+    <h2>2. Monde : 3 métriques obligatoires</h2>
+    <div class="tableWrap"><table class="dataTable"><thead><tr><th>Métrique</th><th>Ce qu'elle montre</th><th>Limite</th></tr></thead>
+      <tbody>
+        <tr><td><strong>€ au taux de change</strong></td><td>Combien ça ferait en France</td><td>Ignore le coût de la vie local</td></tr>
+        <tr><td><strong>€ PPA (OCDE)</strong></td><td>Pouvoir d'achat réel local</td><td>PPA national moyen, pas Paris vs province</td></tr>
+        <tr><td><strong>× salaire médian net</strong></td><td>Privilège relatif dans son pays – la seule honnête pour « trop payé »</td><td>Médian différent selon source (on prend INSEE/OCDE 2023-2024)</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small">Exemple : 1 400€ en Inde paraît peu, mais c'est 7,8× le médian indien (180€). Un Français à 1 400€ est sous le médian.</p>
+
+    <h2>3. Sources primaires (toutes vérifiables)</h2>
+    <ul>
+      <li><strong>France exécutif :</strong> Décrets n°2012-983 et 2017-1098 (JO 15/08/2012, 27/05/2017) – traitements gelés depuis.</li>
+      <li><strong>France parlement :</strong> <a href="https://www.assemblee-nationale.fr/dyn/remuneration-deputes">Assemblée nationale – Rémunération</a>, <a href="https://www.senat.fr/role/fiche/remuneration_senateur.html">Sénat</a>, <a href="https://www.hatvp.fr">HATVP</a>, <a href="https://www.vie-publique.fr">Vie-publique.fr</a>.</li>
+      <li><strong>France locaux :</strong> CGCT art. L2123-20 à L2123-24, L4135-10, barèmes DGCL 2024 (indice brut 1027 = 4 110,52€), <a href="https://www.data.gouv.fr">data.gouv.fr</a>.</li>
+      <li><strong>Monde :</strong> <a href="https://data.ipu.org">IPU Parline – Parline database</a> (Union interparlementaire, 190 chambres), sites officiels : Bundestag.de, Congress.gov, IPSA (UK), Camera.it, Congreso.es, Riksdagen.se, Parl.ca, Parlament.ch.</li>
+      <li><strong>PPA & Médians :</strong> OCDE Data Explorer (PPA 2024), INSEE Revenus et patrimoine (médian net FR 1 940€ 2024), ONS (UK), Destatis (DE), Census (US).</li>
+    </ul>
+
+    <h2>4. Limites et biais assumés</h2>
+    <ul>
+      <li>Avantages en nature (logement Elysée, voiture) impossibles à valoriser au € près – on les décrit sans les monétiser.</li>
+      <li>Pensions / retraites : régimes très différents (capitalisation US vs répartition FR) – on donne l'ordre de grandeur, pas de comparaison fine.</li>
+      <li>Coût de la vie intra-pays : être député à Paris ≠ à Aurillac ; être Congress à Washington DC ≠ en Iowa. On compare des moyennes nationales.</li>
+      <li>Taux de change volatile : on fige au taux moyen 2024 (voir monde.json) et on l'indique.</li>
+      <li>Impôt : on compare en brut/net avant IR car l'IR dépend de la situation familiale. Tous les élus FR sont imposables depuis 2019.</li>
+    </ul>
+
+    <h2>5. Comment contribuer / corriger</h2>
+    <p>Le site est <strong>open source</strong>. Données en <a href="data/france.json">france.json</a> et <a href="data/monde.json">monde.json</a> (Licence Ouverte 2.0). Une erreur ? Ouvre une Issue/PR sur GitHub ou écris à l'adresse indiquée sur le repo. Toute correction doit citer une source primaire (JO, site du parlement).</p>
+
+    <div class="callout"><strong>Dernière mise à jour des données :</strong> 01/07/2024 (FR) et 01/12/2024 (Monde). Prochaine vérification prévue : après revalorisation du point d'indice.</div>
+
+    <h2>6. Mentions</h2>
+    <p class="small">Éditeur : site citoyen indépendant, sans affiliation partisane, sans publicité, sans tracking. Hébergé sur GitHub Pages. Conception : ultra-simple HTML/CSS/JS statique – pas de cookies, pas de base de données. Code MIT.</p>
+  </section>
+</main>
+<footer><div class="container small"><a href="index.html">← Retour à l'accueil</a></div></footer>
+</body>
+</html>

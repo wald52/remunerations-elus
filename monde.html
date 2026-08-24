@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Monde – Comparatif des rémunérations parlementaires | 12 pays</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html">ÉLUS<span>· combien ça coûte vraiment ?</span></a>
+    <nav class="navlinks">
+      <a href="index.html">Comparateur</a>
+      <a href="france.html">France</a>
+      <a class="active" href="monde.html">Monde</a>
+      <a href="methodologie.html">Méthodologie</a>
+    </nav>
+  </div>
+</header>
+<main class="container">
+  <section>
+    <h1>Monde : comparer à méthode constante</h1>
+    <p class="muted">3 métriques pour éviter les comparaisons truquées : <strong>1) en € au taux de change</strong>, <strong>2) en € PPA (pouvoir d'achat OCDE)</strong>, <strong>3) en multiples du salaire médian local</strong>. C'est la 3e qui dit si être élu est un privilège dans son pays. Source centrale : <a href="https://data.ipu.org" target="_blank">IPU Parline</a> + sites officiels des parlements (2024).</p>
+    <div class="chartWrap" style="margin:14px 0"><canvas id="chartMedian" height="140"></canvas></div>
+    <div class="tableWrap"><table class="dataTable" id="tbl"><thead><tr><th>Pays / Mandat</th><th>Brut €/mois</th><th>PPA €</th><th>× médian local</th><th>Avantages / Enveloppe</th><th>Source</th></tr></thead><tbody id="tbody"></tbody></table></div>
+    <p class="small">Taux 2024 moyens : 1 USD=0.92€, 1 GBP=1.17€, 1 CHF=1.05€, 1 CAD=0.67€, 1 JPY=0.0061€. PPA OCDE 2024. Classement par × médian croissant (privilège relatif).</p>
+  </section>
+  <section>
+    <h2>Lecture : où la France se situe</h2>
+    <div class="grid3">
+      <div class="card"><h3>France : 3,1× médian</h3><p class="small">Député FR à 5 925€ net = 3,1× le médian net (1 940€). Sous la médiane des 12 pays (3,9×). Moins privilégié que DE (3,9×), BE (4,0×), IT (6,3×), US (4,2×).</p></div>
+      <div class="card"><h3>Suède : le modèle sobre</h3><p class="small">7 200€ brut mais seulement 2,7× médian, logement modeste (studio), transparence totale. Référence souvent citée pour une réforme.</p></div>
+      <div class="card"><h3>Brésil/Inde : le gouffre</h3><p class="small">En € ils paraissent « peu payés », mais 13,8× et 7,8× le médian local = le plus grand privilège relatif. Comparer en brut seul est trompeur.</p></div>
+    </div>
+    <div class="callout"><strong>Piège à éviter :</strong> L'UE (Parlement européen) paie 10 075€ brut identique pour un Bulgare et un Luxembourgeois. En × médian bulgare c'est 10×, en × médian luxembourgeois c'est 2×. D'où l'importance du PPA et du médian.</div>
+  </section>
+</main>
+<footer><div class="container small">Données : <a href="data/monde.json">monde.json</a> • <a href="data/france.json">france.json</a></div></footer>
+<script>
+async function load(){
+  const res=await fetch('data/monde.json'); const rmonde=await res.json();
+  const res2=await fetch('data/france.json'); const rfr=await res2.json();
+  const fr = rfr.elus.find(e=>e.id==='depute');
+  const frMedian = 1940;
+  const frEntry = {pays:'France', mandat:'Député national', brut_mensuel_eur: fr.net_mensuel_estime, ppa_eur: fr.net_mensuel_estime, ratio_median: +(fr.net_mensuel_estime/frMedian).toFixed(1), avantages: fr.avantages+' | AFM 5950€ + staff 10581€', source: fr.source, isFR:true};
+  let all = [...rmonde.pays.map(p=>({...p, _brut:p.brut_mensuel_eur})), {...frEntry, _brut: frEntry.brut_mensuel_eur}];
+  // sort by ratio
+  all.sort((a,b)=>a.ratio_median - b.ratio_median);
+  const tbody=document.getElementById('tbody');
+  tbody.innerHTML = all.map(p=>{
+    const hl = p.isFR? 'style="background:#eff6ff;font-weight:700"':'';
+    return `<tr ${hl}><td><strong>${p.pays==='France'?'🇫🇷':''} ${p.pays}</strong><br><span class="small">${p.mandat}</span></td>
+      <td><strong>${p.brut_mensuel_eur.toLocaleString('fr-FR')} €</strong></td>
+      <td>${p.ppa_eur.toLocaleString('fr-FR')} €</td>
+      <td><span class="badge">${p.ratio_median}×</span></td>
+      <td><span class="small">${p.avantages}</span></td>
+      <td><span class="small">${p.source}</span></td></tr>`;
+  }).join('');
+  // chart
+  const labels = all.map(p=> p.pays + ' ' + p.mandat.split(' ')[0]);
+  const dataMedian = all.map(p=>p.ratio_median);
+  const bg = all.map(p=>p.isFR?'#d97706':'#0f3b5e');
+  new Chart(document.getElementById('chartMedian'), {
+    type:'bar',
+    data:{labels, datasets:[{label:'× salaire médian', data:dataMedian, backgroundColor:bg, borderRadius:6}]},
+    options:{indexAxis:'y', responsive:true, plugins:{legend:{display:false}, title:{display:true, text:'Privilège relatif : rémunération en multiples du salaire médian local (plus petit = moins privilégié)'}}, scales:{x:{title:{display:true,text:'× médian'}}}}
+  });
+}
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+{
+  "maj": "2024-12-01",
+  "taux_change": {"USD_EUR": 0.92, "GBP_EUR": 1.17, "CHF_EUR": 1.05, "CAD_EUR": 0.67, "JPY_EUR": 0.0061, "AUD_EUR": 0.60},
+  "sources": "IPU Parline (data.ipu.org), sites officiels des parlements, OCDE PPA 2024",
+  "pays": [
+    {
+      "code": "US",
+      "pays": "États-Unis",
+      "mandat": "Représentant / Sénateur (Congrès)",
+      "brut_mensuel_eur": 13350,
+      "ppa_eur": 13350,
+      "salaire_median_pays_eur": 3200,
+      "ratio_median": 4.2,
+      "avantages": "Enveloppe staff 1,1M$ /an à gérer, frais de bureau, pas de gratuité transport, pas de logement",
+      "source": "Congress.gov, Senate.gov - 174 000$ / an depuis 2009 (gelé)"
+    },
+    {
+      "code": "US-PRES",
+      "pays": "États-Unis",
+      "mandat": "Président",
+      "brut_mensuel_eur": 30670,
+      "ppa_eur": 30670,
+      "salaire_median_pays_eur": 3200,
+      "ratio_median": 9.6,
+      "avantages": "Maison Blanche, Air Force One, 50k$ frais + 100k$ déplacements imposables, pension 230k$/an à vie",
+      "source": "3 U.S.C. §102 - 400 000$ / an"
+    },
+    {
+      "code": "DE",
+      "pays": "Allemagne",
+      "mandat": "Député Bundestag",
+      "brut_mensuel_eur": 11227,
+      "ppa_eur": 11200,
+      "salaire_median_pays_eur": 2850,
+      "ratio_median": 3.9,
+      "avantages": "4725€/mois indemnité forfaitaire non imposable (bureau, hébergement Berlin), 12400€/an transport, enveloppe staff 25000€/mois",
+      "source": "Bundestag.de, Abgeordnetengesetz 2024"
+    },
+    {
+      "code": "DE-CH",
+      "pays": "Allemagne",
+      "mandat": "Chancelier",
+      "brut_mensuel_eur": 22080,
+      "ppa_eur": 22000,
+      "salaire_median_pays_eur": 2850,
+      "ratio_median": 7.7,
+      "avantages": "Logement, voiture, pension ~50% du traitement",
+      "source": "Bundesministergesetz"
+    },
+    {
+      "code": "GB",
+      "pays": "Royaume-Uni",
+      "mandat": "Député (MP) Chambre des Communes",
+      "brut_mensuel_eur": 8920,
+      "ppa_eur": 7800,
+      "salaire_median_pays_eur": 2600,
+      "ratio_median": 3.4,
+      "avantages": "Frais logement Londres (si circonscription éloignée), enveloppe staff ~230k£/an, frais bureau",
+      "source": "IPSA - 91346£ / an au 04/2024"
+    },
+    {
+      "code": "IT",
+      "pays": "Italie",
+      "mandat": "Député Chambre",
+      "brut_mensuel_eur": 11703,
+      "ppa_eur": 12200,
+      "salaire_median_pays_eur": 1850,
+      "ratio_median": 6.3,
+      "avantages": "3690€/mois frais mandat + 1200€ transport + 3098-4100€ staff. Total l'un des plus élevés d'Europe",
+      "source": "Camera.it 2024"
+    },
+    {
+      "code": "ES",
+      "pays": "Espagne",
+      "mandat": "Député Congrès",
+      "brut_mensuel_eur": 4250,
+      "ppa_eur": 4800,
+      "salaire_median_pays_eur": 1750,
+      "ratio_median": 2.4,
+      "avantages": "1800€ indemnité hébergement si élu hors Madrid + transports gratuits + 1000€ frais",
+      "source": "Congreso.es - sueldo base 3243€ + compléments"
+    },
+    {
+      "code": "BE",
+      "pays": "Belgique",
+      "mandat": "Député fédéral",
+      "brut_mensuel_eur": 9800,
+      "ppa_eur": 9500,
+      "salaire_median_pays_eur": 2450,
+      "ratio_median": 4.0,
+      "avantages": "Indemnité forfaitaire 28% non imposable, transport gratuit",
+      "source": "lachambre.be 2024"
+    },
+    {
+      "code": "CH",
+      "pays": "Suisse",
+      "mandat": "Conseiller national",
+      "brut_mensuel_eur": 7000,
+      "ppa_eur": 4800,
+      "salaire_median_pays_eur": 5200,
+      "ratio_median": 1.3,
+      "avantages": "440 CHF / jour de session + 33k CHF/an frais + transport 1ère classe. Mandat à temps partiel (conçu comme milice)",
+      "source": "Parlament.ch - ~80000 CHF/an en moyenne"
+    },
+    {
+      "code": "JP",
+      "pays": "Japon",
+      "mandat": "Diète (parlementaire)",
+      "brut_mensuel_eur": 7900,
+      "ppa_eur": 10500,
+      "salaire_median_pays_eur": 2100,
+      "ratio_median": 3.8,
+      "avantages": "Enveloppe 12M JPY/an pour staff + logement Tokyo + transport + 3M JPY/an frais communication",
+      "source": "National Diet Act - 15.5M JPY/an (2024)"
+    },
+    {
+      "code": "CA",
+      "pays": "Canada",
+      "mandat": "Député Chambre des Communes",
+      "brut_mensuel_eur": 11350,
+      "ppa_eur": 11800,
+      "salaire_median_pays_eur": 2600,
+      "ratio_median": 4.4,
+      "avantages": "Frais bureau, déplacements circonscription pris en charge",
+      "source": "Parl.ca - 203100 CAD/an 2024"
+    },
+    {
+      "code": "SE",
+      "pays": "Suède",
+      "mandat": "Député Riksdag",
+      "brut_mensuel_eur": 7200,
+      "ppa_eur": 6800,
+      "salaire_median_pays_eur": 2700,
+      "ratio_median": 2.7,
+      "avantages": "Appartement 1 pièce à Stockholm si >50km, peu de frais supplémentaires, transparence totale",
+      "source": "Riksdagen.se - 75600 SEK/mois 2024"
+    },
+    {
+      "code": "BR",
+      "pays": "Brésil",
+      "mandat": "Député fédéral",
+      "brut_mensuel_eur": 6200,
+      "ppa_eur": 11500,
+      "salaire_median_pays_eur": 450,
+      "ratio_median": 13.8,
+      "avantages": "45000 BRL/mois frais (gabinete, logement, transport aérien), l'un des écarts au médian les plus élevés au monde",
+      "source": "Portal da Câmara - 41250 BRL/mois 2024"
+    },
+    {
+      "code": "IN",
+      "pays": "Inde",
+      "mandat": "Député Lok Sabha",
+      "brut_mensuel_eur": 1400,
+      "ppa_eur": 4800,
+      "salaire_median_pays_eur": 180,
+      "ratio_median": 7.8,
+      "avantages": "Logement New Delhi, train/avion gratuit, 70000 INR/mois frais circonscription",
+      "source": "Salary Allowances of MPs Act - 100000 INR/mois + allowances 2023"
+    },
+    {
+      "code": "EU",
+      "pays": "Union européenne",
+      "mandat": "Député européen",
+      "brut_mensuel_eur": 10075,
+      "ppa_eur": 10075,
+      "salaire_median_pays_eur": 1940,
+      "ratio_median": 5.2,
+      "avantages": "4950€ frais généraux + 28412€ staff + 350€/jour présence + remboursement vols",
+      "source": "Statut des députés européens 2024 (38.5% traitement juge CJUE = 10775€ brut, net ~7850€ après impôt UE)"
+    }
+  ]
+}

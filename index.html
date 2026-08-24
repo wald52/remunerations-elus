@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rémunérations des élus – France vs Monde | Combien ça coûte vraiment ?</title>
+<meta name="description" content="Analyse factuelle et sourcée des salaires, indemnités et avantages des élus français comparés aux élus du monde entier. Données 2024 vérifiables.">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html">ÉLUS<span>· combien ça coûte vraiment ?</span></a>
+    <nav class="navlinks">
+      <a class="active" href="index.html">Comparateur</a>
+      <a href="france.html">France</a>
+      <a href="monde.html">Monde</a>
+      <a href="methodologie.html">Méthodologie</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <span class="kicker">Données 2024 • Sources officielles • Vérifiable</span>
+    <h1>Les élus français sont-ils <em>trop payés</em> ?</h1>
+    <p class="lead">On entend tout et son contraire. Ce site rassemble toutes les indemnités, salaires et avantages en nature des élus français — du maire de 300 habitants au Président — et les compare <strong>à méthode constante</strong> avec les élus de 12 pays. La métrique honnête : en €, en pouvoir d'achat, et surtout <strong>en multiples du salaire médian du pays</strong>.</p>
+    <div class="callout"><strong>À retenir :</strong> ne jamais confondre <em>indemnité personnelle</em> (dans la poche) et <em>enveloppe de fonctionnement</em> (payer l'équipe, louer la permanence). 80% de la polémique vient de là.</div>
+  </div>
+
+  <div class="grid3">
+    <div class="card"><h3>🇫🇷 Député français</h3><div class="kpi"><strong>5 925 €</strong><small>net / mois (hors cotisations)</small></div><div class="small">+ 5 950 € AFM (frais justifiés) + 10 581 € pour payer 2-3 collaborateurs. Brut 7 638 €.</div><span class="badge">3,1 × salaire médian FR</span></div>
+    <div class="card"><h3>🇩🇪 Député allemand</h3><div class="kpi"><strong>11 227 €</strong><small>brut / mois</small></div><div class="small">+ 4 725 € forfait non imposable + 25 000 € staff. Largement au-dessus du FR en brut.</div><span class="badge">3,9 × médian DE</span></div>
+    <div class="card"><h3>🇺🇸 Congress US</h3><div class="kpi"><strong>13 350 €</strong><small>équivalent / mois</small></div><div class="small">174 000 $/an gelé depuis 2009. Pas de transport gratuit, pas de logement.</div><span class="badge">4,2 × médian US</span></div>
+  </div>
+
+  <div class="comparator" id="comparator">
+    <h2>⚖️ Comparateur interactif</h2>
+    <p>Choisis un mandat français et compare-le à son équivalent étranger. Le tableau normalise en € et en pouvoir d'achat, et calcule l'écart au niveau de vie local.</p>
+    <div class="controls">
+      <div>
+        <label for="selFr">Mandat français</label>
+        <select id="selFr"></select>
+      </div>
+      <div>
+        <label for="selMonde">Mandat étranger</label>
+        <select id="selMonde"></select>
+      </div>
+      <div><button id="btnCompare">Comparer</button></div>
+    </div>
+
+    <div class="result" id="result" style="display:none">
+      <div>
+        <table class="resultTable" id="resultTable"></table>
+        <div class="highlight" id="insight" style="margin-top:12px"></div>
+        <p class="small" style="margin-top:10px">Sources : france.json et monde.json (IPU Parline, JO, Assemblée nationale). Taux de change moyens 2024. PPA OCDE.</p>
+      </div>
+      <div class="chartWrap">
+        <canvas id="chart" height="260"></canvas>
+        <p class="small" style="margin-top:8px">Lecture : barre plus haute = rémunération plus élevée en €. La 2e barre (× médian) mesure le privilège réel dans son pays.</p>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <h2>Ce que montrent les données (en bref)</h2>
+    <div class="grid3">
+      <div class="card"><h3>1. Le Président français n'est pas parmi les mieux payés</h3><p class="muted">15 900 € brut (13 000 € net). Moins que le Chancelier allemand (22 080 €), le PM britannique (16k€/mois avec compléments) et très loin du Président US (30k€/mois).</p></div>
+      <div class="card"><h3>2. Un député FR est dans la moyenne européenne</h3><p class="muted">En brut, il est sous l'Allemagne, l'Italie et la Belgique, au-dessus de l'Espagne et de la Suède. En × médian (3,1×), il est <em>moins privilégié</em> que la moyenne des 12 pays (4,2×).</p></div>
+      <div class="card"><h3>3. Le vrai scandale est ailleurs</h3><p class="muted">Brésil (13,8× médian) et Inde (7,8×) : être parlementaire y est un immense privilège relatif. Suisse (1,3×) : mandat conçu comme à temps partiel.</p></div>
+    </div>
+    <p><a href="france.html">→ Voir le détail complet France (tous les mandats)</a> · <a href="monde.html">→ Voir le tableau monde complet</a></p>
+  </section>
+
+  <section>
+    <h2>Mythes vs Réalité (aperçu)</h2>
+    <div class="tableWrap"><table class="dataTable">
+      <thead><tr><th>Mythe</th><th>Réalité sourcée</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td>« Les députés s'augmentent eux-mêmes »</td><td>Indemnité indexée sur le point d'indice de la fonction publique, votée en loi. 7 638€ brut depuis revalorisation point 2023-2024, identique sénateurs.</td><td><span class="tag">Faux</span></td></tr>
+        <tr><td>« Ils ne paient pas d'impôts »</td><td>Depuis 2019, indemnité 100% imposable à l'IR. Avant : abattement spécifique supprimé.</td><td><span class="tag">Faux</span></td></tr>
+        <tr><td>« Les maires gagnent des fortunes »</td><td>42% des maires <1 027€ brut. Seuls 42 maires >100k hab. à 5 639€. 500 000 conseillers municipaux bénévoles.</td><td><span class="tag">Trompeur</span></td></tr>
+        <tr><td>« La France a trop d'élus payés »</td><td>~600k élus mais ~90% non indemnisés ou <500€/mois.</td><td><span class="tag">Trompeur</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footerGrid">
+    <div><strong>Élus : combien ça coûte vraiment ?</strong><br><span class="small">Site citoyen, open source, sans pub. Données 2024. Méthode transparente. Code sur GitHub – contributions bienvenues.</span></div>
+    <div><strong>Navigation</strong><br><a href="france.html">France</a><br><a href="monde.html">Monde</a><br><a href="methodologie.html">Méthodologie & Sources</a></div>
+    <div><strong>Licence</strong><br><span class="small">Données sous Licence Ouverte 2.0 (Etalab). Code MIT. Hébergé sur GitHub Pages.</span></div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>France – Toutes les rémunérations des élus | Détail 2024</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html">ÉLUS<span>· combien ça coûte vraiment ?</span></a>
+    <nav class="navlinks">
+      <a href="index.html">Comparateur</a>
+      <a class="active" href="france.html">France</a>
+      <a href="monde.html">Monde</a>
+      <a href="methodologie.html">Méthodologie</a>
+    </nav>
+  </div>
+</header>
+<main class="container">
+  <section>
+    <h1>France : l'atlas complet</h1>
+    <p class="muted">Tous les mandats, mêmes colonnes. <strong>Brut = base légale</strong>, <strong>Net estimé = après cotisations hors IR</strong>, <strong>Frais/Enveloppe = pas dans la poche</strong> (justifié ou paye l'équipe). Mise à jour : juillet 2024 (point d'indice +1,5% 2023 répercuté).</p>
+    <div class="callout"><strong>Lire correctement :</strong> Un député n'encaisse pas 7 638 + 5 950 + 10 581 = 24 169€. Il encaisse 5 925€ net. Le reste est une <em>avance de frais</em> contrôlée par le déontologue et une <em>enveloppe pour payer ses collaborateurs</em> (charges comprises).</div>
+    <div class="searchRow">
+      <input id="q" placeholder="Filtrer : ex. maire, député, région...">
+      <select id="cat"><option value="">Toutes catégories</option><option>Exécutif national</option><option>Parlement national</option><option>Parlement européen</option><option>Élu local</option></select>
+    </div>
+    <div class="legend"><span class="tag exec">Exécutif</span><span class="tag parl">Parlement</span><span class="tag local">Local</span></div>
+    <div class="tableWrap"><table class="dataTable" id="tbl">
+      <thead><tr><th>Mandat</th><th>Brut / mois</th><th>Net estimé</th><th>× SMIC net</th><th>× médian</th><th>Frais mandat (AFM)</th><th>Enveloppe staff</th><th>Avantages / Cumul</th><th>Source</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table></div>
+    <p class="small">SMIC net 1 398€, médian net 1 940€ (INSEE 2024). Les montants <500 hab à >100k hab sont des <em>plafonds</em> votés par le conseil municipal, souvent en-dessous.</p>
+  </section>
+  <section>
+    <h2>Focus : les élus locaux, 95% des élus français</h2>
+    <div class="grid3">
+      <div class="card"><h3>Le maire bénévole n'existe plus, mais...</h3><p class="small">Même à 1 027€ brut (<500 hab), la charge est énorme : état civil, budget, urbanisme, souvent avec un emploi à côté. 55% des maires se déclarent en difficulté financière liée au mandat (AMF 2023).</p></div>
+      <div class="card"><h3>Barème DGCL 2024 (plafonds)</h3><p class="small">< 500h : 1 027€ · 1 000h : 2 006€ · 10 000h : 2 406€ · 50 000h : 3 965€ · >100 000h : 5 639€. Adjoints touchent 30-40% de ces montants. Conseillers : 0€ sans délégation.</p></div>
+      <div class="card"><h3>500 000 conseillers municipaux</h3><p class="small">0€ d'indemnité s'ils n'ont pas de délégation du maire. C'est l'armée invisible de la République, bénévoles.</p></div>
+    </div>
+  </section>
+</main>
+<footer><div class="container small">Données : <a href="data/france.json">france.json</a> • <a href="methodologie.html">Méthodologie</a></div></footer>
+<script>
+async function load(){
+  const res = await fetch('data/france.json'); const j = await res.json();
+  const smic=1398, med=1940;
+  const tbody=document.getElementById('tbody');
+  function row(e){
+    const tag = e.categorie.includes('Exécutif')?'exec': e.categorie.includes('Parlement')?'parl':'local';
+    return `<tr data-cat="${e.categorie}" data-label="${e.label.toLowerCase()}">
+      <td><span class="tag ${tag}">${e.categorie}</span><br><strong>${e.label}</strong><br><span class="small">${e.commentaire||''}</span></td>
+      <td><strong>${e.brut_mensuel? e.brut_mensuel.toLocaleString('fr-FR')+' €': '0 €'}</strong></td>
+      <td>${e.net_mensuel_estime? e.net_mensuel_estime.toLocaleString('fr-FR')+' €': '—'}</td>
+      <td>${e.brut_mensuel? (e.net_mensuel_estime/smic).toFixed(1)+'×': '—'}</td>
+      <td>${e.brut_mensuel? (e.net_mensuel_estime/med).toFixed(1)+'×': '—'}</td>
+      <td>${e.frais_mandat? (typeof e.frais_mandat==='number'? e.frais_mandat.toLocaleString('fr-FR')+' €' : e.frais_mandat) : '—'}</td>
+      <td>${e.enveloppe_collaborateurs? e.enveloppe_collaborateurs.toLocaleString('fr-FR')+' €' : '—'}</td>
+      <td><span class="small">${e.avantages}<br><em>Cumul: ${e.cumul}</em></span></td>
+      <td><span class="small">${e.source}</span></td>
+    </tr>`;
+  }
+  tbody.innerHTML = j.elus.map(row).join('');
+  const q=document.getElementById('q'), cat=document.getElementById('cat');
+  function filter(){
+    const qq=q.value.toLowerCase(), cc=cat.value;
+    [...tbody.rows].forEach(r=>{
+      const okQ = !qq || r.dataset.label.includes(qq);
+      const okC = !cc || r.dataset.cat===cc;
+      r.style.display = (okQ && okC)? '' : 'none';
+    });
+  }
+  q.addEventListener('input', filter); cat.addEventListener('change', filter);
+}
+load();
+</script>
+</body>
+</html>
