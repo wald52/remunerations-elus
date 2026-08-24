@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mon maire, combien ? Indemnité par commune | 35 000 communes</title>
+<meta name="description" content="Tape ton code postal ou commune : découvre l'indemnité plafond de ton maire, adjoint, le coût complet et la tranche DGCL 2024. 35 000 communes.">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+.searchBox{position:relative;max-width:640px;margin:14px 0}
+.searchBox input{width:100%;padding:14px 16px;border-radius:12px;border:2px solid var(--primary);font-size:16px;font-weight:600;background:white}
+.searchBox input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px #fef3c7}
+.suggest{position:absolute;top:100%;left:0;right:0;background:white;border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px;box-shadow:var(--shadow);max-height:360px;overflow:auto;z-index:20;display:none}
+.suggest.open{display:block}
+.sugItem{padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid #f1f5f9}
+.sugItem:hover,.sugItem.active{background:#eff6ff}
+.sugItem strong{color:var(--primary)}
+.sugItem small{color:var(--muted);font-size:12px}
+.communeHero{display:grid;grid-template-columns:1.4fr .6fr;gap:16px;align-items:start}
+@media(max-width:860px){.communeHero{grid-template-columns:1fr}}
+.kpiBig{font-size:32px;font-weight:850;letter-spacing:-.02em;color:var(--primary);line-height:1}
+.trancheBar{display:flex;gap:4px;margin:8px 0}
+.trancheSeg{flex:1;height:10px;border-radius:999px;background:#e2e8f0;position:relative}
+.trancheSeg.active{background:var(--accent)}
+.trancheSeg span{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;white-space:nowrap;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="index.html">ÉLUS<span>· combien ça coûte vraiment ?</span></a>
+    <nav class="navlinks">
+      <a href="index.html">Comparateur</a>
+      <a href="france.html">France</a>
+      <a href="monde.html">Monde</a>
+      <a href="cout.html">Coût complet</a>
+      <a class="active" href="communes.html">Mon maire</a>
+      <a href="methodologie.html">Méthodologie</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section style="padding:28px 0 8px">
+    <span class="kicker">35 000 communes • Barème DGCL 2024 • Plafond légal</span>
+    <h1>Mon maire, combien ?</h1>
+    <p class="lead">Tape ton <strong>code postal</strong> ou <strong>nom de commune</strong>. On affiche le plafond légal d'indemnité du maire et des adjoints (barème officiel DGCL, indice 1027), le net estimé et le coût complet. La commune vote souvent <em>en dessous</em> du plafond.</p>
+
+    <div class="searchBox">
+      <input id="q" placeholder="Ex. 75001, Lyon, 33000, Trifouillis-les-Oies..." autocomplete="off" autofocus>
+      <div id="suggest" class="suggest"></div>
+    </div>
+    <div class="small" id="stats" style="color:var(--muted)">Chargement des 34 969 communes…</div>
+    <div class="presetRow" style="margin-top:8px">
+      <button data-ex="75056">Paris</button>
+      <button data-ex="69123">Lyon</button>
+      <button data-ex="13055">Marseille</button>
+      <button data-ex="33063">Bordeaux</button>
+      <button data-ex="59350">Lille</button>
+      <button data-ex="35238">Rennes</button>
+      <button data-ex="01400">Ex. petit village (01400)</button>
+    </div>
+  </section>
+
+  <section id="result" style="display:none">
+    <div class="communeHero">
+      <div class="panel" style="padding:20px">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <div>
+            <h2 id="cNom" style="margin:0;color:var(--primary)"></h2>
+            <div id="cSub" class="small" style="margin-top:4px"></div>
+            <div id="cTranche" class="badge" style="margin-top:8px"></div>
+          </div>
+          <div style="text-align:right">
+            <div class="small" style="text-transform:uppercase;letter-spacing:.5px;font-weight:700;color:var(--muted)">Indemnité maire (plafond brut)</div>
+            <div class="kpiBig" id="cIndemnite">—</div>
+            <div class="small" id="cNet">net ~ —</div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <div class="card" style="padding:12px;text-align:center"><div class="small">× SMIC net</div><strong id="cSmic" style="font-size:18px">—</strong></div>
+          <div class="card" style="padding:12px;text-align:center"><div class="small">× médian</div><strong id="cMedian" style="font-size:18px">—</strong></div>
+          <div class="card" style="padding:12px;text-align:center"><div class="small">Coût complet / an</div><strong id="cCout" style="font-size:18px;color:var(--accent)">—</strong><div class="small">avec charges 15% + logistique</div></div>
+        </div>
+
+        <div class="trancheBar" id="trancheBar"></div>
+        <div class="small" style="display:flex;justify-content:space-between"><span>&lt;500 hab.</span><span>100k+ hab.</span></div>
+
+        <div class="callout" id="cInsight" style="margin-top:14px"></div>
+
+        <div class="tableWrap" style="margin-top:12px;box-shadow:none"><table class="dataTable breakdown" id="tblDetail"></table></div>
+        <p class="small" id="cNote" style="margin-top:8px"></p>
+        <div style="margin-top:8px"><button id="btnShare" style="width:auto;padding:8px 12px;font-size:13px">📋 Copier lien vers cette commune</button> <span id="shareOk" class="small" style="margin-left:8px;color:green;display:none">Lien copié !</span></div>
+      </div>
+
+      <div>
+        <div class="chartWrap"><canvas id="chartTranche" height="240"></canvas></div>
+        <div class="panel" style="margin-top:14px;padding:14px">
+          <h3>Et les adjoints ?</h3>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="small">Adjoint au maire (plafond)</span><strong id="cAdjoint" style="color:var(--primary)">—</strong></div>
+          <div class="small" id="cAdjointNet"></div>
+          <p class="small" style="margin-top:8px">Le nombre d'adjoints max = 30% du conseil. Ex. commune 15 conseillers → 4 adjoints max. Chaque adjoint touche ce plafond au max, souvent moins.</p>
+          <div class="tableWrap" style="margin-top:8px;box-shadow:none"><table class="dataTable" id="tblAdjoints"></table></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="emptyState" style="text-align:center;padding:30px 0">
+    <p class="muted">Commence à taper ci-dessus. Exemples : <strong>69001</strong> (Lyon 1er), <strong>06088</strong> (Nice), <strong>29200</strong> (Brest), ou <strong>01400</strong> pour un village.</p>
+    <div class="grid3" style="text-align:left;margin-top:16px">
+      <div class="card"><h3>18270 communes &lt;500 hab.</h3><p class="small">52% des communes. Maire à 1 027€ brut max (880€ net), souvent à temps partiel avec un autre emploi.</p></div>
+      <div class="card"><h3>Seules 42 communes >100k hab.</h3><p class="small">Seules ces 42 maires peuvent toucher 5 639€ brut. C'est 0,12% des communes.</p></div>
+      <div class="card"><h3>Le plafond ≠ le réel</h3><p class="small">Le conseil municipal vote l'indemnité. Beaucoup de petits maires votent 20-40% en dessous du plafond (AMF 2023).</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Barème complet DGCL 2024 (plafonds brut / mois)</h2>
+    <p class="small">Indice brut terminal 1027 = 4 110,52€. Source : CGCT L2123-20, tableau DGCL. Montants au 01/01/2024.</p>
+    <div class="tableWrap"><table class="dataTable" id="tblBareme"></table></div>
+    <p class="small">Conseillers municipaux sans délégation : 0€. Avec délégation : max 6% de l'indice (246€) dans les petites communes, plus en grandes villes.</p>
+  </section>
+</main>
+
+<footer><div class="container small">Données : <a href="data/communes.json">communes.json</a> (geo.api.gouv.fr + population INSEE) + barème DGCL. <a href="methodologie.html">Méthodologie</a></div></footer>
+
+<script>
+let communes=[], chart=null;
+const SMIC=1398, MEDIAN=1940;
+
+async function init(){
+  // fetch communes.json (3.4MB)
+  const t0=performance.now();
+  try{
+    const r=await fetch('data/communes.json');
+    communes=await r.json();
+    const dt=(performance.now()-t0).toFixed(0);
+    document.getElementById('stats').textContent = communes.length.toLocaleString('fr-FR')+' communes chargées en '+dt+'ms • Tape 2 lettres ou un code postal';
+  }catch(e){
+    document.getElementById('stats').textContent='Erreur chargement communes.json : '+e;
+    return;
+  }
+
+  // bareme table
+  const bareme=[
+    ['Moins de 500 hab.',18270,'1 027,00 €','880 €','0,74× SMIC', '385,05 €'],
+    ['500 à 999 hab.',6600,'1 567,43 €','1 340 €','0,96×','569,95 €'],
+    ['1 000 à 3 499 hab.',6809,'2 006,93 €','1 715 €','1,23×','770,10 €'],
+    ['3 500 à 9 999 hab.',2223,'2 214,04 €','1 892 €','1,35×','855,67 €'],
+    ['10 000 à 19 999 hab.',575,'2 406,93 €','2 057 €','1,47×','924,34 €'],
+    ['20 000 à 34 999 hab.',251,'2 857,90 €','2 442 €','1,75×','1 094,10 €'],
+    ['35 000 à 49 999 hab.',106,'3 358,91 €','2 870 €','2,05×','1 286,86 €'],
+    ['50 000 à 99 999 hab.',93,'3 964,86 €','3 388 €','2,42×','1 525,43 €'],
+    ['100 000 hab. et plus',42,'5 639,63 €','4 820 €','3,45×','2 223,62 €'],
+  ];
+  document.getElementById('tblBareme').innerHTML = '<thead><tr><th>Tranche population</th><th>Nb communes</th><th>Maire brut max</th><th>Net estimé</th><th>× SMIC</th><th>Adjoint brut max</th></tr></thead><tbody>'+bareme.map(r=>'<tr><td><strong>'+r[0]+'</strong></td><td>'+r[1].toLocaleString('fr-FR')+'</td><td><strong>'+r[2]+'</strong></td><td>'+r[3]+'</td><td>'+r[4]+'</td><td>'+r[5]+'</td></tr>').join('')+'</tbody>';
+
+  // search
+  const q=document.getElementById('q'), sug=document.getElementById('suggest');
+  let activeIndex=-1;
+  function renderSuggest(list){
+    if(!list.length){ sug.classList.remove('open'); sug.innerHTML=''; return; }
+    sug.innerHTML = list.map((c,i)=> `<div class="sugItem ${i===activeIndex?'active':''}" data-code="${c.c}"><div><strong>${c.n}</strong> <small>(${c.cp[0]||c.c})</small><br><small>${c.p.toLocaleString('fr-FR')} hab. • ${c.t} • ${c.i.toLocaleString('fr-FR')}€ brut</small></div><div style="text-align:right"><small>${c.c}</small></div></div>`).join('');
+    sug.classList.add('open');
+    sug.querySelectorAll('.sugItem').forEach(el=> el.addEventListener('click', ()=> selectCommune(el.dataset.code)));
+  }
+  function search(query){
+    if(!query || query.length<2){ renderSuggest([]); return; }
+    const qq=query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const isNum=/^\d+$/.test(qq);
+    let res=[];
+    if(isNum){
+      // code postal prefix or insee
+      res = communes.filter(c=> c.cp.some(cp=> cp.startsWith(qq)) || c.c.startsWith(qq)).slice(0,8);
+      // sort by population for postal search
+      res.sort((a,b)=> b.p - a.p);
+    } else {
+      res = communes.filter(c=> c.n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(qq));
+      res.sort((a,b)=> {
+        // exact start first
+        const aStarts = a.n.toLowerCase().startsWith(qq)?0:1;
+        const bStarts = b.n.toLowerCase().startsWith(qq)?0:1;
+        if(aStarts!==bStarts) return aStarts-bStarts;
+        return b.p - a.p;
+      });
+      res=res.slice(0,8);
+    }
+    renderSuggest(res);
+  }
+  q.addEventListener('input', ()=>{ activeIndex=-1; search(q.value.trim()); });
+  q.addEventListener('keydown', (e)=>{
+    const items=sug.querySelectorAll('.sugItem');
+    if(e.key==='ArrowDown'){ e.preventDefault(); activeIndex=Math.min(activeIndex+1, items.length-1); items.forEach((el,i)=> el.classList.toggle('active', i===activeIndex)); }
+    else if(e.key==='ArrowUp'){ e.preventDefault(); activeIndex=Math.max(activeIndex-1, -1); items.forEach((el,i)=> el.classList.toggle('active', i===activeIndex)); }
+    else if(e.key==='Enter'){ e.preventDefault(); if(activeIndex>=0 && items[activeIndex]) selectCommune(items[activeIndex].dataset.code); else if(items[0]) selectCommune(items[0].dataset.code); }
+    else if(e.key==='Escape'){ sug.classList.remove('open'); }
+  });
+  document.addEventListener('click', (e)=>{ if(!e.target.closest('.searchBox')) sug.classList.remove('open'); });
+
+  // presets
+  document.querySelectorAll('[data-ex]').forEach(b=> b.addEventListener('click', ()=> selectCommune(b.dataset.ex)));
+
+  // URL param ?c=code or ?q=...
+  const params=new URLSearchParams(location.search);
+  const code=params.get('c')||params.get('code')||params.get('commune');
+  const qparam=params.get('q');
+  if(code){ const c=communes.find(x=>x.c===code); if(c){ q.value=c.n; selectCommune(c.c); } }
+  else if(qparam){ q.value=qparam; search(qparam); }
+
+  // share button
+  document.getElementById('btnShare').addEventListener('click', ()=>{
+    const url=location.href;
+    navigator.clipboard.writeText(url).then(()=>{
+      const ok=document.getElementById('shareOk');
+      ok.style.display='inline'; setTimeout(()=> ok.style.display='none', 2000);
+    });
+  });
+}
+
+function selectCommune(code){
+  const c=communes.find(x=>x.c===code);
+  if(!c) return;
+  document.getElementById('suggest').classList.remove('open');
+  document.getElementById('q').value = c.n + ' (' + (c.cp[0]||c.c) + ')';
+  // update URL without reload
+  history.replaceState(null,'','?c='+c.c);
+  showCommune(c);
+}
+
+function showCommune(c){
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('result').style.display='block';
+  document.getElementById('cNom').textContent = c.n;
+  document.getElementById('cSub').textContent = c.p.toLocaleString('fr-FR')+' habitants • INSEE '+c.c+' • '+(c.cp.join(', ')||'—');
+  document.getElementById('cTranche').textContent = c.t;
+  const net=c.i * 0.855; // approx 85.5% net (DGCL indemnité 85% net environ) - close to 880/1027=0.857
+  // use more precise: for small communes net ~85.7%, for large ~85.5% . We approximate 85.5%
+  const netEst = Math.round(c.i * 0.855);
+  document.getElementById('cIndemnite').textContent = c.i.toLocaleString('fr-FR')+' € brut / mois';
+  document.getElementById('cNet').textContent = 'soit ~'+ netEst.toLocaleString('fr-FR')+' € net / mois (85,5% du brut, imposable)';
+  document.getElementById('cSmic').textContent = (netEst/SMIC).toFixed(2)+'×';
+  document.getElementById('cMedian').textContent = (netEst/MEDIAN).toFixed(2)+'×';
+  const coutAn = c.i*12*1.15 + (c.p>=50000?15000: c.p>=3500?3000: c.p<500?600:800); // reuse logistique from france.json logic for mare
+  // more precise logistique per tranche from france.json: <500 600, 3500 3000, 50000 15000, 100k 28000
+  let log=600;
+  if(c.p>=100000) log=28000;
+  else if(c.p>=50000) log=15000;
+  else if(c.p>=3500) log=3000;
+  else if(c.p>=1000) log=800;
+  else log=600;
+  const coutAnPrecis = c.i*12*1.15 + log;
+  document.getElementById('cCout').textContent = coutAnPrecis.toLocaleString('fr-FR')+' € / an';
+  // bar
+  const tranches=['<500','500-999','1k-3.4k','3.5k-9.9k','10k-19k','20k-34k','35k-49k','50k-99k','100k+'];
+  const idx=['Moins de 500 hab.','500 à 999 hab.','1 000 à 3 499 hab.','3 500 à 9 999 hab.','10 000 à 19 999 hab.','20 000 à 34 999 hab.','35 000 à 49 999 hab.','50 000 à 99 999 hab.','100 000 hab. et plus'].indexOf(c.t);
+  document.getElementById('trancheBar').innerHTML = tranches.map((t,i)=> `<div class="trancheSeg ${i===idx?'active':''}">${i===idx?'<span>▼ '+c.t+'</span>':''}</div>`).join('');
+  // insight
+  const pctPetite = ((18270/34969)*100).toFixed(1);
+  let insight='';
+  if(c.p<500) insight = `Village de moins de 500 hab. : vous êtes dans les <strong>52% des communes</strong> les plus petites. Le plafond est de <strong>1 027€ brut</strong> (880€ net), soit <strong>0,74× le SMIC</strong>. Beaucoup de maires touchent moins (vote du conseil). Coût complet pour la commune : <strong>${coutAnPrecis.toLocaleString('fr-FR')}€/an</strong> tout compris.`;
+  else if(c.p>=100000) insight = `Grande ville (>100k) : seulement <strong>42 communes</strong> sur 35 000 (0,12%) peuvent toucher <strong>5 639€ brut</strong>. Coût complet ~<strong>${coutAnPrecis.toLocaleString('fr-FR')}€/an</strong> + budget cabinet municipal (non compté ici, plusieurs centaines de k€).`;
+  else insight = `Commune de <strong>${c.p.toLocaleString('fr-FR')} hab.</strong> : plafond <strong>${c.i.toLocaleString('fr-FR')}€ brut</strong>. Dans la moyenne des communes de cette tranche (${c.t}). Coût complet ~<strong>${coutAnPrecis.toLocaleString('fr-FR')}€/an</strong> (indemnité chargée + frais). Le conseil peut voter en dessous.`;
+  document.getElementById('cInsight').innerHTML = insight;
+
+  // detail table
+  const brutAn=c.i*12, charges=brutAn*0.15, coutEmployeur=brutAn*1.15;
+  document.getElementById('tblDetail').innerHTML = '<thead><tr><th>Poste</th><th>Par mois</th><th>Par an</th><th>Détail</th></tr></thead><tbody>'+
+    '<tr><td>Indemnité brute plafond</td><td><strong>'+c.i.toLocaleString('fr-FR')+' €</strong></td><td>'+brutAn.toLocaleString('fr-FR')+' €</td><td><span class="small">Barème DGCL L2123-20</span></td></tr>'+
+    '<tr><td>+ Charges patronales IRCANTEC 15%</td><td>'+(charges/12).toLocaleString('fr-FR',{maximumFractionDigits:0})+' €</td><td>'+charges.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €</td><td><span class="small">Part employeur</span></td></tr>'+
+    '<tr class="sousTotal"><td>= Coût indemnitaire employeur</td><td><strong>'+(coutEmployeur/12).toLocaleString('fr-FR',{maximumFractionDigits:0})+' €</strong></td><td><strong>'+coutEmployeur.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €</strong></td><td><span class="small">Ce que paie la commune</span></td></tr>'+
+    '<tr><td>+ Forfait logistique estimé</td><td>'+(log/12).toLocaleString('fr-FR',{maximumFractionDigits:0})+' €</td><td>'+log.toLocaleString('fr-FR')+' €</td><td><span class="small">'+(log===28000?'Voiture/représentation': log===15000?'Voiture partielle': log===3000?'Représentation': 'Déplacements/téléphone')+'</span></td></tr>'+
+    '<tr class="total"><td>Coût complet estimé / an</td><td><strong>'+(coutAnPrecis/12).toLocaleString('fr-FR',{maximumFractionDigits:0})+' € / mois</strong></td><td><strong>'+coutAnPrecis.toLocaleString('fr-FR')+' € / an</strong></td><td><span class="small">Hors cabinet/bâtiments</span></td></tr>'+
+    '</tbody>';
+  document.getElementById('cNote').textContent = 'Plafond légal : le conseil municipal peut voter un montant inférieur. Net estimé à 85,5% du brut (cotisations). Hors majoration outre-mer/chef-lieu et écrêtement si cumul. Source DGCL 2024.';
+
+  // adjoints
+  document.getElementById('cAdjoint').textContent = c.a.toLocaleString('fr-FR')+' € brut / mois';
+  document.getElementById('cAdjointNet').textContent = 'soit ~'+Math.round(c.a*0.855).toLocaleString('fr-FR')+' € net • Plafond adjoint ('+c.t+')';
+  document.getElementById('tblAdjoints').innerHTML = '<thead><tr><th>Poste</th><th>Plafond brut</th><th>Net estimé</th></tr></thead><tbody>'+
+    '<tr><td>Maire</td><td><strong>'+c.i.toLocaleString('fr-FR')+' €</strong></td><td>'+Math.round(c.i*0.855).toLocaleString('fr-FR')+' €</td></tr>'+
+    '<tr><td>Adjoint (max par adjoint)</td><td>'+c.a.toLocaleString('fr-FR')+' €</td><td>'+Math.round(c.a*0.855).toLocaleString('fr-FR')+' €</td></tr>'+
+    '</tbody>';
+
+  // chart tranche
+  const ctx=document.getElementById('chartTranche');
+  if(chart) chart.destroy();
+  const labels=['<500','500-999','1k-3.4k','3.5k-9.9k','10k-19k','20k-34k','35k-49k','50k-99k','100k+'];
+  const vals=[1027,1567.43,2006.93,2214.04,2406.93,2857.90,3358.91,3964.86,5639.63];
+  const bg=labels.map((_,i)=> i===idx?'#d97706':'#0f3b5e');
+  chart=new Chart(ctx,{type:'bar',data:{labels, datasets:[{label:'Plafond maire brut €/mois', data:vals, backgroundColor:bg, borderRadius:6}]},options:{responsive:true, plugins:{legend:{display:false}, title:{display:true,text:'Où se situe ta commune dans le barème ?'}}, scales:{y:{beginAtZero:true, title:{display:true,text:'€ brut / mois'}}}}});
+  // scroll to result
+  document.getElementById('result').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+init();
+</script>
+</body>
+</html>
