@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Mon maire, combien ? Indemnité par commune | 35 000 communes</title>
-<meta name="description" content="Tape ton code postal ou commune : découvre l'indemnité plafond de ton maire, adjoint, le coût complet et la tranche DGCL 2024. 35 000 communes.">
+<meta name="description" content="Tape ton code postal ou commune : découvre l'indemnité plafond de ton maire, adjoint, le coût complet et la tranche DGCL 2024. Filtre par département et carte choroplèthe.">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 .searchBox{position:relative;max-width:640px;margin:14px 0}
@@ -24,6 +25,12 @@
 .trancheSeg{flex:1;height:10px;border-radius:999px;background:#e2e8f0;position:relative}
 .trancheSeg.active{background:var(--accent)}
 .trancheSeg span{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;white-space:nowrap;color:var(--muted)}
+.deptControls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}
+.deptControls select{max-width:280px}
+#map{height:520px;border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow)}
+@media(max-width:860px){#map{height:380px}}
+.legend{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.legend i{width:16px;height:12px;display:inline-block;border:1px solid #cbd5e1}
 </style>
 </head>
 <body>
@@ -51,6 +58,13 @@
       <input id="q" placeholder="Ex. 75001, Lyon, 33000, Trifouillis-les-Oies..." autocomplete="off" autofocus>
       <div id="suggest" class="suggest"></div>
     </div>
+    <div class="deptControls">
+      <label for="selDept">Filtrer par département</label>
+      <select id="selDept"><option value="">Tous les départements (34 969 communes)</option></select>
+      <span id="deptBadge" class="badge" style="display:none"></span>
+      <button id="btnMapToggle" style="width:auto;padding:8px 12px;font-size:13px;background:white;color:var(--primary);border:1px solid var(--border)">🗺️ Voir la carte choroplèthe</button>
+      <button id="btnClearDept" style="width:auto;padding:8px 12px;font-size:13px;display:none;background:#f1f5f9;color:var(--primary);border:1px solid var(--border)">✕ Effacer filtre</button>
+    </div>
     <div class="small" id="stats" style="color:var(--muted)">Chargement des 34 969 communes…</div>
     <div class="presetRow" style="margin-top:8px">
       <button data-ex="75056">Paris</button>
@@ -61,6 +75,35 @@
       <button data-ex="35238">Rennes</button>
       <button data-ex="01400">Ex. petit village (01400)</button>
     </div>
+  </section>
+
+  <section id="deptPanel" style="display:none">
+    <div class="panel" style="padding:18px">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:start">
+        <div>
+          <h2 id="deptTitle" style="margin:0"></h2>
+          <div id="deptSub" class="small" style="margin-top:4px"></div>
+        </div>
+        <div style="text-align:right"><span class="small" style="text-transform:uppercase;letter-spacing:.5px;font-weight:700;color:var(--muted)">Indemnité moyenne des maires</span><div id="deptAvg" style="font-size:26px;font-weight:850;color:var(--primary)"></div><div class="small" id="deptAvgSub"></div></div>
+      </div>
+      <div class="grid3" id="deptKpis" style="margin-top:12px"></div>
+      <div class="callout" id="deptInsight" style="margin-top:12px"></div>
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="chartWrap"><canvas id="chartDeptTranche" height="220"></canvas></div>
+        <div class="chartWrap"><canvas id="chartDeptTop" height="220"></canvas></div>
+      </div>
+      <h3 style="margin-top:14px">Communes du département (tri par population)</h3>
+      <div class="tableWrap" style="max-height:360px;overflow:auto"><table class="dataTable" id="tblDeptCommunes"></table></div>
+      <p class="small" style="margin-top:6px">Clique sur une commune du tableau pour voir sa fiche détaillée ci-dessous.</p>
+    </div>
+  </section>
+
+  <section id="mapSection" style="display:none">
+    <h2>Carte choroplèthe : indemnité moyenne par département</h2>
+    <p class="small">Couleur = indemnité brute moyenne des maires du département (plus foncé = plus élevé). Un département très rural avec 300 villages à 1 027€ aura une moyenne basse, même s'il a une grande ville à 5 639€.</p>
+    <div id="map"></div>
+    <div class="legend" id="mapLegend"></div>
+    <p class="small">Fond : <a href="https://github.com/gregoiredavid/france-geojson" target="_blank">france-geojson</a> (GEOFLA) • Données indemnités = barème DGCL appliqué à la population INSEE. Clique sur un département pour filtrer.</p>
   </section>
 
   <section id="result" style="display:none">
@@ -109,7 +152,7 @@
   </section>
 
   <section id="emptyState" style="text-align:center;padding:30px 0">
-    <p class="muted">Commence à taper ci-dessus. Exemples : <strong>69001</strong> (Lyon 1er), <strong>06088</strong> (Nice), <strong>29200</strong> (Brest), ou <strong>01400</strong> pour un village.</p>
+    <p class="muted">Commence à taper ci-dessus ou choisis un département. Exemples : <strong>69001</strong> (Lyon 1er), <strong>06088</strong> (Nice), <strong>29200</strong> (Brest), ou <strong>01400</strong> pour un village.</p>
     <div class="grid3" style="text-align:left;margin-top:16px">
       <div class="card"><h3>18270 communes &lt;500 hab.</h3><p class="small">52% des communes. Maire à 1 027€ brut max (880€ net), souvent à temps partiel avec un autre emploi.</p></div>
       <div class="card"><h3>Seules 42 communes >100k hab.</h3><p class="small">Seules ces 42 maires peuvent toucher 5 639€ brut. C'est 0,12% des communes.</p></div>
@@ -125,24 +168,79 @@
   </section>
 </main>
 
-<footer><div class="container small">Données : <a href="data/communes.json">communes.json</a> (geo.api.gouv.fr + population INSEE) + barème DGCL. <a href="methodologie.html">Méthodologie</a></div></footer>
+<footer><div class="container small">Données : <a href="data/communes.json">communes.json</a> (geo.api.gouv.fr + population INSEE) + barème DGCL. <a href="methodologie.html">Méthodologie</a> • Carte : france-geojson (etalab)</div></footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-let communes=[], chart=null;
+let communes=[], chart=null, chartDeptTranche=null, chartDeptTop=null;
+let deptStats=new Map(), deptNames=new Map(), map=null, geoLayer=null, selectedDept=null;
 const SMIC=1398, MEDIAN=1940;
 
+function getDept(code){
+  if(code.startsWith('97')){
+    // 971,972,973,974,976
+    return code.substring(0,3);
+  }
+  if(code.startsWith('2A')||code.startsWith('2B')) return code.substring(0,2);
+  return code.substring(0,2);
+}
+
 async function init(){
-  // fetch communes.json (3.4MB)
   const t0=performance.now();
   try{
     const r=await fetch('data/communes.json');
     communes=await r.json();
     const dt=(performance.now()-t0).toFixed(0);
-    document.getElementById('stats').textContent = communes.length.toLocaleString('fr-FR')+' communes chargées en '+dt+'ms • Tape 2 lettres ou un code postal';
+    document.getElementById('stats').textContent = communes.length.toLocaleString('fr-FR')+' communes chargées en '+dt+'ms • Tape 2 lettres ou un code postal — ou filtre par département';
   }catch(e){
     document.getElementById('stats').textContent='Erreur chargement communes.json : '+e;
     return;
   }
+
+  // dept stats
+  for(const c of communes){
+    const d=getDept(c.c);
+    if(!deptStats.has(d)) deptStats.set(d,{count:0,sumI:0,sumPop:0, communes:[]});
+    const s=deptStats.get(d);
+    s.count++; s.sumI+=c.i; s.sumPop+=c.p; s.communes.push(c);
+  }
+  // fetch dept names
+  try{
+    const r=await fetch('https://geo.api.gouv.fr/departements?fields=nom,code');
+    const depts=await r.json();
+    for(const d of depts) deptNames.set(d.code, d.nom);
+  }catch(e){ console.warn('dept names fetch failed',e); }
+  // fallback: ensure all dept codes in stats have a name
+  for(const d of deptStats.keys()){
+    if(!deptNames.has(d)) deptNames.set(d, 'Dept '+d);
+  }
+  // populate select sorted by code numeric-ish
+  const sel=document.getElementById('selDept');
+  const sortedDepts=[...deptStats.entries()].sort((a,b)=>{
+    // sort by code
+    return a[0].localeCompare(b[0], 'fr', {numeric:true});
+  });
+  for(const [code, st] of sortedDepts){
+    const opt=document.createElement('option');
+    opt.value=code;
+    const avg=(st.sumI/st.count).toFixed(0);
+    opt.textContent = code+' – '+(deptNames.get(code)||code)+' ('+st.count.toLocaleString('fr-FR')+' communes, moy. '+avg+'€)';
+    sel.appendChild(opt);
+  }
+  sel.addEventListener('change', ()=>{
+    const v=sel.value;
+    if(v){
+      selectedDept=v;
+      document.getElementById('deptBadge').textContent = deptNames.get(v)+' ('+deptStats.get(v).count+' communes)';
+      document.getElementById('deptBadge').style.display='inline-block';
+      document.getElementById('btnClearDept').style.display='inline-block';
+      showDept(v);
+    } else {
+      clearDept();
+    }
+  });
+  document.getElementById('btnClearDept').addEventListener('click', clearDept);
+  document.getElementById('btnMapToggle').addEventListener('click', toggleMap);
 
   // bareme table
   const bareme=[
@@ -171,16 +269,17 @@ async function init(){
     if(!query || query.length<2){ renderSuggest([]); return; }
     const qq=query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
     const isNum=/^\d+$/.test(qq);
+    let pool=communes;
+    if(selectedDept){
+      pool = deptStats.get(selectedDept).communes;
+    }
     let res=[];
     if(isNum){
-      // code postal prefix or insee
-      res = communes.filter(c=> c.cp.some(cp=> cp.startsWith(qq)) || c.c.startsWith(qq)).slice(0,8);
-      // sort by population for postal search
+      res = pool.filter(c=> c.cp.some(cp=> cp.startsWith(qq)) || c.c.startsWith(qq)).slice(0,8);
       res.sort((a,b)=> b.p - a.p);
     } else {
-      res = communes.filter(c=> c.n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(qq));
+      res = pool.filter(c=> c.n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(qq));
       res.sort((a,b)=> {
-        // exact start first
         const aStarts = a.n.toLowerCase().startsWith(qq)?0:1;
         const bStarts = b.n.toLowerCase().startsWith(qq)?0:1;
         if(aStarts!==bStarts) return aStarts-bStarts;
@@ -200,17 +299,22 @@ async function init(){
   });
   document.addEventListener('click', (e)=>{ if(!e.target.closest('.searchBox')) sug.classList.remove('open'); });
 
-  // presets
   document.querySelectorAll('[data-ex]').forEach(b=> b.addEventListener('click', ()=> selectCommune(b.dataset.ex)));
 
-  // URL param ?c=code or ?q=...
   const params=new URLSearchParams(location.search);
   const code=params.get('c')||params.get('code')||params.get('commune');
   const qparam=params.get('q');
+  const deptParam=params.get('d')||params.get('dept');
+  if(deptParam && deptStats.has(deptParam)){
+    sel.value=deptParam; selectedDept=deptParam;
+    document.getElementById('deptBadge').textContent = deptNames.get(deptParam)+' ('+deptStats.get(deptParam).count+' communes)';
+    document.getElementById('deptBadge').style.display='inline-block';
+    document.getElementById('btnClearDept').style.display='inline-block';
+    showDept(deptParam);
+  }
   if(code){ const c=communes.find(x=>x.c===code); if(c){ q.value=c.n; selectCommune(c.c); } }
   else if(qparam){ q.value=qparam; search(qparam); }
 
-  // share button
   document.getElementById('btnShare').addEventListener('click', ()=>{
     const url=location.href;
     navigator.clipboard.writeText(url).then(()=>{
@@ -220,31 +324,182 @@ async function init(){
   });
 }
 
+function clearDept(){
+  selectedDept=null;
+  document.getElementById('selDept').value='';
+  document.getElementById('deptBadge').style.display='none';
+  document.getElementById('btnClearDept').style.display='none';
+  document.getElementById('deptPanel').style.display='none';
+  document.getElementById('emptyState').style.display='block';
+  history.replaceState(null,'', location.pathname);
+}
+
+function showDept(code){
+  const st=deptStats.get(code);
+  if(!st) return;
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('deptPanel').style.display='block';
+  document.getElementById('deptTitle').textContent = 'Département '+code+' – '+deptNames.get(code);
+  document.getElementById('deptSub').textContent = st.count.toLocaleString('fr-FR')+' communes • '+st.sumPop.toLocaleString('fr-FR')+' habitants cumulés • INSEE '+code;
+  const avg=st.sumI/st.count;
+  const avgNet=avg*0.855;
+  document.getElementById('deptAvg').textContent = avg.toLocaleString('fr-FR',{maximumFractionDigits:0})+' € brut';
+  document.getElementById('deptAvgSub').textContent = 'soit ~'+avgNet.toLocaleString('fr-FR',{maximumFractionDigits:0})+'€ net en moyenne';
+  // kpis
+  const totalCoutAn = st.communes.reduce((s,c)=>{
+    let log=600; if(c.p>=100000) log=28000; else if(c.p>=50000) log=15000; else if(c.p>=3500) log=3000; else if(c.p>=1000) log=800;
+    return s + c.i*12*1.15 + log;
+  },0);
+  const sumPop=st.sumPop;
+  const coutParHab = totalCoutAn / (sumPop||1);
+  document.getElementById('deptKpis').innerHTML = `
+    <div class="card" style="text-align:center"><div class="small">Nb communes</div><strong style="font-size:20px">${st.count.toLocaleString('fr-FR')}</strong><div class="small">${((st.count/34969)*100).toFixed(1)}% de la France</div></div>
+    <div class="card" style="text-align:center"><div class="small">Coût complet total maires</div><strong style="font-size:20px">${totalCoutAn.toLocaleString('fr-FR',{maximumFractionDigits:0})} € / an</strong><div class="small">${(totalCoutAn/12).toLocaleString('fr-FR',{maximumFractionDigits:0})}€ / mois</div></div>
+    <div class="card" style="text-align:center"><div class="small">Coût par habitant</div><strong style="font-size:20px">${coutParHab.toLocaleString('fr-FR',{maximumFractionDigits:2})} € / an</strong><div class="small">${(coutParHab/12).toLocaleString('fr-FR',{maximumFractionDigits:2})}€ / mois / hab.</div></div>
+  `;
+  // insight
+  let insight='';
+  if(avg<1300) insight=`Département très rural : beaucoup de petites communes à 1 027€, d'où une moyenne basse à <strong>${avg.toFixed(0)}€</strong>. Coût total des maires ~<strong>${totalCoutAn.toLocaleString('fr-FR',{maximumFractionDigits:0})}€/an</strong> pour ${st.count} maires.`;
+  else if(avg>2500) insight=`Département très urbain : peu de petites communes, moyenne élevée à <strong>${avg.toFixed(0)}€</strong>. Présence d'une ou plusieurs grandes villes (>50k) tire la moyenne.`;
+  else insight=`Département mixte : moyenne <strong>${avg.toFixed(0)}€ brut</strong> (${avgNet.toFixed(0)}€ net). Répartition proche de la moyenne nationale (1 420€ brut moyen France).`;
+  document.getElementById('deptInsight').innerHTML = insight;
+
+  // tranche répartition
+  const trancheOrder=['Moins de 500 hab.','500 à 999 hab.','1 000 à 3 499 hab.','3 500 à 9 999 hab.','10 000 à 19 999 hab.','20 000 à 34 999 hab.','35 000 à 49 999 hab.','50 000 à 99 999 hab.','100 000 hab. et plus'];
+  const counts=trancheOrder.map(t=> st.communes.filter(c=>c.t===t).length);
+  const ctx1=document.getElementById('chartDeptTranche');
+  if(chartDeptTranche) chartDeptTranche.destroy();
+  chartDeptTranche=new Chart(ctx1,{type:'bar',data:{labels:['<500','500-999','1k-3.4k','3.5k-9.9k','10k-19k','20k-34k','35k-49k','50k-99k','100k+'], datasets:[{label:'Nb communes', data:counts, backgroundColor:'#0f3b5e', borderRadius:6}]},options:{responsive:true, plugins:{legend:{display:false}, title:{display:true,text:'Répartition par tranche dans le '+code}}} });
+
+  // top communes
+  const top=[...st.communes].sort((a,b)=> b.p-a.p).slice(0,10);
+  const ctx2=document.getElementById('chartDeptTop');
+  if(chartDeptTop) chartDeptTop.destroy();
+  chartDeptTop=new Chart(ctx2,{type:'bar',data:{labels:top.map(c=> c.n), datasets:[{label:'Population', data:top.map(c=>c.p), backgroundColor:'#d97706', borderRadius:6},{label:'Indemnité brut €', data:top.map(c=>c.i), backgroundColor:'#165a8a', borderRadius:6, yAxisID:'y1'}]},options:{indexAxis:'y', responsive:true, plugins:{legend:{position:'bottom'}, title:{display:true,text:'Top 10 communes du '+code+' (pop. vs indemnité)'}}, scales:{y:{}, y1:{position:'right', grid:{drawOnChartArea:false}, title:{display:true,text:'€ brut'}}}} });
+
+  // table
+  const sorted=[...st.communes].sort((a,b)=> b.p-a.p);
+  document.getElementById('tblDeptCommunes').innerHTML = '<thead><tr><th>Commune</th><th>Pop.</th><th>Tranche</th><th>Maire brut</th><th>Coût complet / an</th></tr></thead><tbody>'+sorted.slice(0,200).map(c=>{
+    let log=600; if(c.p>=100000) log=28000; else if(c.p>=50000) log=15000; else if(c.p>=3500) log=3000; else if(c.p>=1000) log=800;
+    const cout=c.i*12*1.15+log;
+    return `<tr style="cursor:pointer" onclick="selectCommune('${c.c}')"><td><strong>${c.n}</strong> <small>(${c.cp[0]||c.c})</small></td><td>${c.p.toLocaleString('fr-FR')}</td><td><span class="small">${c.t}</span></td><td><strong>${c.i.toLocaleString('fr-FR')}€</strong></td><td>${cout.toLocaleString('fr-FR',{maximumFractionDigits:0})}€</td></tr>`;
+  }).join('')+'</tbody>';
+  if(sorted.length>200) document.getElementById('tblDeptCommunes').innerHTML += `<tfoot><tr><td colspan="5" class="small" style="text-align:center">… et ${sorted.length-200} autres communes. Utilise la recherche pour trouver une petite commune.</td></tr></tfoot>`;
+  // update URL
+  history.replaceState(null,'','?d='+code);
+  document.getElementById('deptPanel').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+let mapInitialized=false;
+async function toggleMap(){
+  const sec=document.getElementById('mapSection');
+  const isHidden=sec.style.display==='none';
+  if(isHidden){
+    sec.style.display='block';
+    document.getElementById('btnMapToggle').textContent='✕ Fermer la carte';
+    if(!mapInitialized){
+      await initMap();
+      mapInitialized=true;
+    }
+    setTimeout(()=> map.invalidateSize(), 300);
+    sec.scrollIntoView({behavior:'smooth'});
+  } else {
+    sec.style.display='none';
+    document.getElementById('btnMapToggle').textContent='🗺️ Voir la carte choroplèthe';
+  }
+}
+
+async function initMap(){
+  map=L.map('map').setView([46.6, 2.5], 6);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OSM'}).addTo(map);
+  // compute avg per dept for coloring
+  const avgs=new Map();
+  let min=Infinity, max=-Infinity;
+  for(const [code,st] of deptStats.entries()){
+    const avg=st.sumI/st.count;
+    avgs.set(code, avg);
+    if(avg<min) min=avg; if(avg>max) max=avg;
+  }
+  function colorFor(avg){
+    // scale 1027 -> 5639 ; interpolate light to dark
+    const t=(avg - 1100)/(3500 - 1100); // clamp
+    const clamped=Math.max(0,Math.min(1,t));
+    // interpolate between #eff6ff and #0f3b5e
+    // use 5 steps
+    if(clamped<0.25) return '#eff6ff';
+    if(clamped<0.45) return '#bfdbfe';
+    if(clamped<0.65) return '#60a5fa';
+    if(clamped<0.85) return '#2563eb';
+    return '#0f3b5e';
+  }
+  // legend
+  document.getElementById('mapLegend').innerHTML = '<i style="background:#eff6ff"></i><small>~1 100€ (rural)</small> <i style="background:#bfdbfe"></i><small>~1 500€</small> <i style="background:#60a5fa"></i><small>~2 000€</small> <i style="background:#2563eb"></i><small>~2 800€</small> <i style="background:#0f3b5e"></i><small>~4 000€+ (urbain)</small>';
+  try{
+    const geo=await fetch('https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements.geojson').then(r=>r.json());
+    // adapt code: geo features have properties.code
+    geoLayer=L.geoJSON(geo,{
+      style: f=>{
+        const code=f.properties.code;
+        const avg=avgs.get(code);
+        const fill= avg? colorFor(avg) : '#e2e8f0';
+        const isSel = selectedDept===code;
+        return {fillColor:fill, weight:isSel?3:1, opacity:1, color:isSel?'#d97706':'white', fillOpacity:0.75};
+      },
+      onEachFeature: (f,layer)=>{
+        const code=f.properties.code;
+        const nom=f.properties.nom;
+        const st=deptStats.get(code);
+        const avg=st? (st.sumI/st.count).toFixed(0) : '—';
+        const cnt=st? st.count : '—';
+        layer.bindTooltip(`${code} – ${nom}<br>${cnt} communes<br>Moy. ${avg}€ brut`, {sticky:true});
+        layer.on('click', ()=>{
+          document.getElementById('selDept').value=code;
+          selectedDept=code;
+          document.getElementById('deptBadge').textContent = deptNames.get(code)+' ('+st.count+' communes)';
+          document.getElementById('deptBadge').style.display='inline-block';
+          document.getElementById('btnClearDept').style.display='inline-block';
+          showDept(code);
+          // restyle
+          geoLayer.setStyle(f2=>{
+            const c=f2.properties.code;
+            const a=avgs.get(c);
+            const fill=a? colorFor(a):'#e2e8f0';
+            const sel=c===code;
+            return {fillColor:fill, weight:sel?3:1, color:sel?'#d97706':'white', fillOpacity:0.75};
+          });
+        });
+      }
+    }).addTo(map);
+    // fit bounds if possible
+    try{ map.fitBounds(geoLayer.getBounds(), {padding:[10,10]});}catch(e){}
+  }catch(e){
+    document.getElementById('map').innerHTML='<p class=\"small\" style=\"padding:20px\">Impossible de charger le fond de carte (GitHub RAW). Réessaie ou vérifie ta connexion. Erreur: '+e+'</p>';
+  }
+}
+
 function selectCommune(code){
   const c=communes.find(x=>x.c===code);
   if(!c) return;
   document.getElementById('suggest').classList.remove('open');
   document.getElementById('q').value = c.n + ' (' + (c.cp[0]||c.c) + ')';
-  // update URL without reload
-  history.replaceState(null,'','?c='+c.c);
+  const deptPart = selectedDept? '&d='+selectedDept : '';
+  history.replaceState(null,'','?c='+c.c+deptPart);
   showCommune(c);
 }
 
 function showCommune(c){
   document.getElementById('emptyState').style.display='none';
+  // keep deptPanel visible if dept selected, but show result below
   document.getElementById('result').style.display='block';
   document.getElementById('cNom').textContent = c.n;
   document.getElementById('cSub').textContent = c.p.toLocaleString('fr-FR')+' habitants • INSEE '+c.c+' • '+(c.cp.join(', ')||'—');
   document.getElementById('cTranche').textContent = c.t;
-  const net=c.i * 0.855; // approx 85.5% net (DGCL indemnité 85% net environ) - close to 880/1027=0.857
-  // use more precise: for small communes net ~85.7%, for large ~85.5% . We approximate 85.5%
+  const net=c.i * 0.855;
   const netEst = Math.round(c.i * 0.855);
   document.getElementById('cIndemnite').textContent = c.i.toLocaleString('fr-FR')+' € brut / mois';
   document.getElementById('cNet').textContent = 'soit ~'+ netEst.toLocaleString('fr-FR')+' € net / mois (85,5% du brut, imposable)';
   document.getElementById('cSmic').textContent = (netEst/SMIC).toFixed(2)+'×';
   document.getElementById('cMedian').textContent = (netEst/MEDIAN).toFixed(2)+'×';
-  const coutAn = c.i*12*1.15 + (c.p>=50000?15000: c.p>=3500?3000: c.p<500?600:800); // reuse logistique from france.json logic for mare
-  // more precise logistique per tranche from france.json: <500 600, 3500 3000, 50000 15000, 100k 28000
   let log=600;
   if(c.p>=100000) log=28000;
   else if(c.p>=50000) log=15000;
@@ -253,19 +508,14 @@ function showCommune(c){
   else log=600;
   const coutAnPrecis = c.i*12*1.15 + log;
   document.getElementById('cCout').textContent = coutAnPrecis.toLocaleString('fr-FR')+' € / an';
-  // bar
   const tranches=['<500','500-999','1k-3.4k','3.5k-9.9k','10k-19k','20k-34k','35k-49k','50k-99k','100k+'];
   const idx=['Moins de 500 hab.','500 à 999 hab.','1 000 à 3 499 hab.','3 500 à 9 999 hab.','10 000 à 19 999 hab.','20 000 à 34 999 hab.','35 000 à 49 999 hab.','50 000 à 99 999 hab.','100 000 hab. et plus'].indexOf(c.t);
   document.getElementById('trancheBar').innerHTML = tranches.map((t,i)=> `<div class="trancheSeg ${i===idx?'active':''}">${i===idx?'<span>▼ '+c.t+'</span>':''}</div>`).join('');
-  // insight
-  const pctPetite = ((18270/34969)*100).toFixed(1);
   let insight='';
   if(c.p<500) insight = `Village de moins de 500 hab. : vous êtes dans les <strong>52% des communes</strong> les plus petites. Le plafond est de <strong>1 027€ brut</strong> (880€ net), soit <strong>0,74× le SMIC</strong>. Beaucoup de maires touchent moins (vote du conseil). Coût complet pour la commune : <strong>${coutAnPrecis.toLocaleString('fr-FR')}€/an</strong> tout compris.`;
   else if(c.p>=100000) insight = `Grande ville (>100k) : seulement <strong>42 communes</strong> sur 35 000 (0,12%) peuvent toucher <strong>5 639€ brut</strong>. Coût complet ~<strong>${coutAnPrecis.toLocaleString('fr-FR')}€/an</strong> + budget cabinet municipal (non compté ici, plusieurs centaines de k€).`;
   else insight = `Commune de <strong>${c.p.toLocaleString('fr-FR')} hab.</strong> : plafond <strong>${c.i.toLocaleString('fr-FR')}€ brut</strong>. Dans la moyenne des communes de cette tranche (${c.t}). Coût complet ~<strong>${coutAnPrecis.toLocaleString('fr-FR')}€/an</strong> (indemnité chargée + frais). Le conseil peut voter en dessous.`;
   document.getElementById('cInsight').innerHTML = insight;
-
-  // detail table
   const brutAn=c.i*12, charges=brutAn*0.15, coutEmployeur=brutAn*1.15;
   document.getElementById('tblDetail').innerHTML = '<thead><tr><th>Poste</th><th>Par mois</th><th>Par an</th><th>Détail</th></tr></thead><tbody>'+
     '<tr><td>Indemnité brute plafond</td><td><strong>'+c.i.toLocaleString('fr-FR')+' €</strong></td><td>'+brutAn.toLocaleString('fr-FR')+' €</td><td><span class="small">Barème DGCL L2123-20</span></td></tr>'+
@@ -275,23 +525,18 @@ function showCommune(c){
     '<tr class="total"><td>Coût complet estimé / an</td><td><strong>'+(coutAnPrecis/12).toLocaleString('fr-FR',{maximumFractionDigits:0})+' € / mois</strong></td><td><strong>'+coutAnPrecis.toLocaleString('fr-FR')+' € / an</strong></td><td><span class="small">Hors cabinet/bâtiments</span></td></tr>'+
     '</tbody>';
   document.getElementById('cNote').textContent = 'Plafond légal : le conseil municipal peut voter un montant inférieur. Net estimé à 85,5% du brut (cotisations). Hors majoration outre-mer/chef-lieu et écrêtement si cumul. Source DGCL 2024.';
-
-  // adjoints
   document.getElementById('cAdjoint').textContent = c.a.toLocaleString('fr-FR')+' € brut / mois';
   document.getElementById('cAdjointNet').textContent = 'soit ~'+Math.round(c.a*0.855).toLocaleString('fr-FR')+' € net • Plafond adjoint ('+c.t+')';
   document.getElementById('tblAdjoints').innerHTML = '<thead><tr><th>Poste</th><th>Plafond brut</th><th>Net estimé</th></tr></thead><tbody>'+
     '<tr><td>Maire</td><td><strong>'+c.i.toLocaleString('fr-FR')+' €</strong></td><td>'+Math.round(c.i*0.855).toLocaleString('fr-FR')+' €</td></tr>'+
     '<tr><td>Adjoint (max par adjoint)</td><td>'+c.a.toLocaleString('fr-FR')+' €</td><td>'+Math.round(c.a*0.855).toLocaleString('fr-FR')+' €</td></tr>'+
     '</tbody>';
-
-  // chart tranche
   const ctx=document.getElementById('chartTranche');
   if(chart) chart.destroy();
   const labels=['<500','500-999','1k-3.4k','3.5k-9.9k','10k-19k','20k-34k','35k-49k','50k-99k','100k+'];
   const vals=[1027,1567.43,2006.93,2214.04,2406.93,2857.90,3358.91,3964.86,5639.63];
   const bg=labels.map((_,i)=> i===idx?'#d97706':'#0f3b5e');
   chart=new Chart(ctx,{type:'bar',data:{labels, datasets:[{label:'Plafond maire brut €/mois', data:vals, backgroundColor:bg, borderRadius:6}]},options:{responsive:true, plugins:{legend:{display:false}, title:{display:true,text:'Où se situe ta commune dans le barème ?'}}, scales:{y:{beginAtZero:true, title:{display:true,text:'€ brut / mois'}}}}});
-  // scroll to result
   document.getElementById('result').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
