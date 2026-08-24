@@ -1,0 +1,842 @@
+[
+  {
+    "code": "01",
+    "count": 391,
+    "sumPop": 679344,
+    "avg": 1649.76,
+    "minPop": 25,
+    "maxPop": 42372
+  },
+  {
+    "code": "02",
+    "count": 797,
+    "sumPop": 523342,
+    "avg": 1232.22,
+    "minPop": 16,
+    "maxPop": 52813
+  },
+  {
+    "code": "03",
+    "count": 317,
+    "sumPop": 333298,
+    "avg": 1360.6,
+    "minPop": 40,
+    "maxPop": 33147
+  },
+  {
+    "code": "04",
+    "count": 198,
+    "sumPop": 168054,
+    "avg": 1294.06,
+    "minPop": 5,
+    "maxPop": 22718
+  },
+  {
+    "code": "05",
+    "count": 162,
+    "sumPop": 143467,
+    "avg": 1288.96,
+    "minPop": 7,
+    "maxPop": 41293
+  },
+  {
+    "code": "06",
+    "count": 163,
+    "sumPop": 1128418,
+    "avg": 1730.82,
+    "minPop": 37,
+    "maxPop": 357737
+  },
+  {
+    "code": "07",
+    "count": 335,
+    "sumPop": 334231,
+    "avg": 1424.39,
+    "minPop": 42,
+    "maxPop": 17274
+  },
+  {
+    "code": "08",
+    "count": 447,
+    "sumPop": 265893,
+    "avg": 1209.3,
+    "minPop": 26,
+    "maxPop": 45560
+  },
+  {
+    "code": "09",
+    "count": 325,
+    "sumPop": 155722,
+    "avg": 1174.97,
+    "minPop": 11,
+    "maxPop": 16473
+  },
+  {
+    "code": "10",
+    "count": 431,
+    "sumPop": 310447,
+    "avg": 1212.47,
+    "minPop": 21,
+    "maxPop": 62088
+  },
+  {
+    "code": "11",
+    "count": 433,
+    "sumPop": 379648,
+    "avg": 1299.84,
+    "minPop": 6,
+    "maxPop": 57587
+  },
+  {
+    "code": "12",
+    "count": 285,
+    "sumPop": 279609,
+    "avg": 1382.63,
+    "minPop": 35,
+    "maxPop": 23981
+  },
+  {
+    "code": "13",
+    "count": 119,
+    "sumPop": 2087658,
+    "avg": 2286.01,
+    "minPop": 126,
+    "maxPop": 886040
+  },
+  {
+    "code": "14",
+    "count": 526,
+    "sumPop": 709441,
+    "avg": 1419.41,
+    "minPop": 44,
+    "maxPop": 109400
+  },
+  {
+    "code": "15",
+    "count": 250,
+    "sumPop": 144196,
+    "avg": 1230.87,
+    "minPop": 26,
+    "maxPop": 26214
+  },
+  {
+    "code": "16",
+    "count": 359,
+    "sumPop": 352683,
+    "avg": 1372.16,
+    "minPop": 44,
+    "maxPop": 41908
+  },
+  {
+    "code": "17",
+    "count": 462,
+    "sumPop": 672279,
+    "avg": 1510.11,
+    "minPop": 39,
+    "maxPop": 79851
+  },
+  {
+    "code": "18",
+    "count": 286,
+    "sumPop": 298660,
+    "avg": 1342.8,
+    "minPop": 16,
+    "maxPop": 64186
+  },
+  {
+    "code": "19",
+    "count": 277,
+    "sumPop": 240826,
+    "avg": 1303.24,
+    "minPop": 35,
+    "maxPop": 47095
+  },
+  {
+    "code": "21",
+    "count": 698,
+    "sumPop": 540100,
+    "avg": 1198.01,
+    "minPop": 12,
+    "maxPop": 161830
+  },
+  {
+    "code": "22",
+    "count": 344,
+    "sumPop": 611859,
+    "avg": 1666.95,
+    "minPop": 75,
+    "maxPop": 44364
+  },
+  {
+    "code": "23",
+    "count": 255,
+    "sumPop": 115527,
+    "avg": 1198.3,
+    "minPop": 29,
+    "maxPop": 12955
+  },
+  {
+    "code": "24",
+    "count": 503,
+    "sumPop": 417614,
+    "avg": 1333.28,
+    "minPop": 31,
+    "maxPop": 29055
+  },
+  {
+    "code": "25",
+    "count": 563,
+    "sumPop": 547163,
+    "avg": 1305.77,
+    "minPop": 9,
+    "maxPop": 118489
+  },
+  {
+    "code": "26",
+    "count": 362,
+    "sumPop": 524207,
+    "avg": 1433.62,
+    "minPop": 2,
+    "maxPop": 64458
+  },
+  {
+    "code": "27",
+    "count": 585,
+    "sumPop": 602714,
+    "avg": 1396.5,
+    "minPop": 47,
+    "maxPop": 49360
+  },
+  {
+    "code": "28",
+    "count": 363,
+    "sumPop": 433129,
+    "avg": 1425.8,
+    "minPop": 18,
+    "maxPop": 38324
+  },
+  {
+    "code": "29",
+    "count": 277,
+    "sumPop": 933455,
+    "avg": 1879.06,
+    "minPop": 134,
+    "maxPop": 142346
+  },
+  {
+    "code": "2A",
+    "count": 124,
+    "sumPop": 168306,
+    "avg": 1329.57,
+    "minPop": 32,
+    "maxPop": 76320
+  },
+  {
+    "code": "2B",
+    "count": 236,
+    "sumPop": 187180,
+    "avg": 1225.55,
+    "minPop": 9,
+    "maxPop": 46867
+  },
+  {
+    "code": "30",
+    "count": 350,
+    "sumPop": 770940,
+    "avg": 1599.92,
+    "minPop": 25,
+    "maxPop": 151839
+  },
+  {
+    "code": "31",
+    "count": 586,
+    "sumPop": 1471468,
+    "avg": 1425.47,
+    "minPop": 3,
+    "maxPop": 514819
+  },
+  {
+    "code": "32",
+    "count": 458,
+    "sumPop": 192645,
+    "avg": 1146.8,
+    "minPop": 32,
+    "maxPop": 22428
+  },
+  {
+    "code": "33",
+    "count": 534,
+    "sumPop": 1690493,
+    "avg": 1635.95,
+    "minPop": 41,
+    "maxPop": 267991
+  },
+  {
+    "code": "34",
+    "count": 341,
+    "sumPop": 1230289,
+    "avg": 1666.64,
+    "minPop": 24,
+    "maxPop": 310240
+  },
+  {
+    "code": "35",
+    "count": 332,
+    "sumPop": 1120666,
+    "avg": 1869.46,
+    "minPop": 97,
+    "maxPop": 230890
+  },
+  {
+    "code": "36",
+    "count": 241,
+    "sumPop": 216069,
+    "avg": 1318.57,
+    "minPop": 51,
+    "maxPop": 42963
+  },
+  {
+    "code": "37",
+    "count": 272,
+    "sumPop": 619362,
+    "avg": 1621.85,
+    "minPop": 107,
+    "maxPop": 139259
+  },
+  {
+    "code": "38",
+    "count": 512,
+    "sumPop": 1298990,
+    "avg": 1706.79,
+    "minPop": 14,
+    "maxPop": 156140
+  },
+  {
+    "code": "39",
+    "count": 492,
+    "sumPop": 257973,
+    "avg": 1195.77,
+    "minPop": 9,
+    "maxPop": 23840
+  },
+  {
+    "code": "40",
+    "count": 327,
+    "sumPop": 433570,
+    "avg": 1468.51,
+    "minPop": 50,
+    "maxPop": 31592
+  },
+  {
+    "code": "41",
+    "count": 267,
+    "sumPop": 328543,
+    "avg": 1477.74,
+    "minPop": 33,
+    "maxPop": 47219
+  },
+  {
+    "code": "42",
+    "count": 320,
+    "sumPop": 774133,
+    "avg": 1645.69,
+    "minPop": 39,
+    "maxPop": 173136
+  },
+  {
+    "code": "43",
+    "count": 257,
+    "sumPop": 228654,
+    "avg": 1352.93,
+    "minPop": 22,
+    "maxPop": 18540
+  },
+  {
+    "code": "44",
+    "count": 207,
+    "sumPop": 1487570,
+    "avg": 2130.4,
+    "minPop": 334,
+    "maxPop": 327734
+  },
+  {
+    "code": "45",
+    "count": 325,
+    "sumPop": 691268,
+    "avg": 1577.57,
+    "minPop": 29,
+    "maxPop": 116357
+  },
+  {
+    "code": "46",
+    "count": 312,
+    "sumPop": 176473,
+    "avg": 1226.75,
+    "minPop": 44,
+    "maxPop": 20050
+  },
+  {
+    "code": "47",
+    "count": 319,
+    "sumPop": 333602,
+    "avg": 1369.51,
+    "minPop": 41,
+    "maxPop": 32801
+  },
+  {
+    "code": "48",
+    "count": 152,
+    "sumPop": 76486,
+    "avg": 1197.28,
+    "minPop": 31,
+    "maxPop": 12464
+  },
+  {
+    "code": "49",
+    "count": 176,
+    "sumPop": 833776,
+    "avg": 1896.05,
+    "minPop": 115,
+    "maxPop": 159022
+  },
+  {
+    "code": "50",
+    "count": 445,
+    "sumPop": 497522,
+    "avg": 1396.04,
+    "minPop": 18,
+    "maxPop": 78258
+  },
+  {
+    "code": "51",
+    "count": 610,
+    "sumPop": 563076,
+    "avg": 1233.54,
+    "minPop": 5,
+    "maxPop": 177674
+  },
+  {
+    "code": "52",
+    "count": 426,
+    "sumPop": 168331,
+    "avg": 1142.05,
+    "minPop": 6,
+    "maxPop": 22858
+  },
+  {
+    "code": "53",
+    "count": 240,
+    "sumPop": 305468,
+    "avg": 1485.89,
+    "minPop": 103,
+    "maxPop": 49400
+  },
+  {
+    "code": "54",
+    "count": 591,
+    "sumPop": 732236,
+    "avg": 1330.63,
+    "minPop": 2,
+    "maxPop": 103671
+  },
+  {
+    "code": "55",
+    "count": 499,
+    "sumPop": 180290,
+    "avg": 1127.95,
+    "minPop": 0,
+    "maxPop": 16890
+  },
+  {
+    "code": "56",
+    "count": 249,
+    "sumPop": 783390,
+    "avg": 1900.87,
+    "minPop": 104,
+    "maxPop": 58329
+  },
+  {
+    "code": "57",
+    "count": 725,
+    "sumPop": 1051309,
+    "avg": 1439.17,
+    "minPop": 11,
+    "maxPop": 122572
+  },
+  {
+    "code": "58",
+    "count": 309,
+    "sumPop": 201417,
+    "avg": 1234.35,
+    "minPop": 14,
+    "maxPop": 33085
+  },
+  {
+    "code": "59",
+    "count": 647,
+    "sumPop": 2615635,
+    "avg": 1809.11,
+    "minPop": 43,
+    "maxPop": 238246
+  },
+  {
+    "code": "60",
+    "count": 680,
+    "sumPop": 829899,
+    "avg": 1416.14,
+    "minPop": 15,
+    "maxPop": 55550
+  },
+  {
+    "code": "61",
+    "count": 381,
+    "sumPop": 275201,
+    "avg": 1279.38,
+    "minPop": 28,
+    "maxPop": 25490
+  },
+  {
+    "code": "62",
+    "count": 887,
+    "sumPop": 1457905,
+    "avg": 1455.19,
+    "minPop": 13,
+    "maxPop": 67571
+  },
+  {
+    "code": "63",
+    "count": 463,
+    "sumPop": 664453,
+    "avg": 1417.67,
+    "minPop": 19,
+    "maxPop": 146351
+  },
+  {
+    "code": "64",
+    "count": 545,
+    "sumPop": 706564,
+    "avg": 1346.88,
+    "minPop": 45,
+    "maxPop": 80441
+  },
+  {
+    "code": "65",
+    "count": 469,
+    "sumPop": 231349,
+    "avg": 1148.87,
+    "minPop": 11,
+    "maxPop": 44399
+  },
+  {
+    "code": "66",
+    "count": 226,
+    "sumPop": 496855,
+    "avg": 1512.05,
+    "minPop": 15,
+    "maxPop": 121616
+  },
+  {
+    "code": "67",
+    "count": 514,
+    "sumPop": 1163810,
+    "avg": 1603.53,
+    "minPop": 29,
+    "maxPop": 293771
+  },
+  {
+    "code": "68",
+    "count": 366,
+    "sumPop": 770738,
+    "avg": 1648.27,
+    "minPop": 29,
+    "maxPop": 104978
+  },
+  {
+    "code": "69",
+    "count": 266,
+    "sumPop": 1914667,
+    "avg": 1964.08,
+    "minPop": 120,
+    "maxPop": 519127
+  },
+  {
+    "code": "70",
+    "count": 536,
+    "sumPop": 233185,
+    "avg": 1163.04,
+    "minPop": 16,
+    "maxPop": 15078
+  },
+  {
+    "code": "71",
+    "count": 563,
+    "sumPop": 550310,
+    "avg": 1355.64,
+    "minPop": 18,
+    "maxPop": 45102
+  },
+  {
+    "code": "72",
+    "count": 352,
+    "sumPop": 566733,
+    "avg": 1540.47,
+    "minPop": 12,
+    "maxPop": 146249
+  },
+  {
+    "code": "73",
+    "count": 273,
+    "sumPop": 448226,
+    "avg": 1521.24,
+    "minPop": 31,
+    "maxPop": 59964
+  },
+  {
+    "code": "74",
+    "count": 279,
+    "sumPop": 861158,
+    "avg": 1846.37,
+    "minPop": 55,
+    "maxPop": 132117
+  },
+  {
+    "code": "75",
+    "count": 1,
+    "sumPop": 2103778,
+    "avg": 5639.63,
+    "minPop": 2103778,
+    "maxPop": 2103778
+  },
+  {
+    "code": "76",
+    "count": 707,
+    "sumPop": 1260964,
+    "avg": 1459.66,
+    "minPop": 18,
+    "maxPop": 166687
+  },
+  {
+    "code": "77",
+    "count": 507,
+    "sumPop": 1468108,
+    "avg": 1673.38,
+    "minPop": 34,
+    "maxPop": 56905
+  },
+  {
+    "code": "78",
+    "count": 259,
+    "sumPop": 1485086,
+    "avg": 1876.11,
+    "minPop": 37,
+    "maxPop": 84095
+  },
+  {
+    "code": "79",
+    "count": 252,
+    "sumPop": 375229,
+    "avg": 1545.08,
+    "minPop": 54,
+    "maxPop": 59854
+  },
+  {
+    "code": "80",
+    "count": 771,
+    "sumPop": 565413,
+    "avg": 1252.08,
+    "minPop": 7,
+    "maxPop": 136449
+  },
+  {
+    "code": "81",
+    "count": 314,
+    "sumPop": 397352,
+    "avg": 1392.4,
+    "minPop": 33,
+    "maxPop": 51290
+  },
+  {
+    "code": "82",
+    "count": 195,
+    "sumPop": 265817,
+    "avg": 1467.45,
+    "minPop": 36,
+    "maxPop": 62945
+  },
+  {
+    "code": "83",
+    "count": 153,
+    "sumPop": 1119307,
+    "avg": 2022.56,
+    "minPop": 8,
+    "maxPop": 179116
+  },
+  {
+    "code": "84",
+    "count": 151,
+    "sumPop": 572056,
+    "avg": 1759.92,
+    "minPop": 25,
+    "maxPop": 92188
+  },
+  {
+    "code": "85",
+    "count": 253,
+    "sumPop": 713609,
+    "avg": 1893.74,
+    "minPop": 123,
+    "maxPop": 54849
+  },
+  {
+    "code": "86",
+    "count": 265,
+    "sumPop": 438897,
+    "avg": 1544.29,
+    "minPop": 68,
+    "maxPop": 89916
+  },
+  {
+    "code": "87",
+    "count": 195,
+    "sumPop": 373167,
+    "avg": 1567.17,
+    "minPop": 46,
+    "maxPop": 129937
+  },
+  {
+    "code": "88",
+    "count": 506,
+    "sumPop": 357248,
+    "avg": 1245.41,
+    "minPop": 5,
+    "maxPop": 32251
+  },
+  {
+    "code": "89",
+    "count": 423,
+    "sumPop": 332267,
+    "avg": 1312.96,
+    "minPop": 24,
+    "maxPop": 35097
+  },
+  {
+    "code": "90",
+    "count": 101,
+    "sumPop": 140255,
+    "avg": 1445.42,
+    "minPop": 46,
+    "maxPop": 45912
+  },
+  {
+    "code": "91",
+    "count": 194,
+    "sumPop": 1338485,
+    "avg": 1975.08,
+    "minPop": 72,
+    "maxPop": 66919
+  },
+  {
+    "code": "92",
+    "count": 36,
+    "sumPop": 1654712,
+    "avg": 3335.0,
+    "minPop": 1752,
+    "maxPop": 119019
+  },
+  {
+    "code": "93",
+    "count": 39,
+    "sumPop": 1704316,
+    "avg": 3330.23,
+    "minPop": 5175,
+    "maxPop": 149077
+  },
+  {
+    "code": "94",
+    "count": 47,
+    "sumPop": 1426929,
+    "avg": 2893.77,
+    "minPop": 2724,
+    "maxPop": 93963
+  },
+  {
+    "code": "95",
+    "count": 183,
+    "sumPop": 1281653,
+    "avg": 1858.41,
+    "minPop": 32,
+    "maxPop": 106130
+  },
+  {
+    "code": "971",
+    "count": 32,
+    "sumPop": 384160,
+    "avg": 2358.98,
+    "minPop": 873,
+    "maxPop": 51055
+  },
+  {
+    "code": "972",
+    "count": 34,
+    "sumPop": 360630,
+    "avg": 2259.71,
+    "minPop": 487,
+    "maxPop": 75506
+  },
+  {
+    "code": "973",
+    "count": 22,
+    "sumPop": 293996,
+    "avg": 2291.73,
+    "minPop": 150,
+    "maxPop": 62675
+  },
+  {
+    "code": "974",
+    "count": 24,
+    "sumPop": 889679,
+    "avg": 3115.63,
+    "minPop": 5040,
+    "maxPop": 155634
+  },
+  {
+    "code": "975",
+    "count": 2,
+    "sumPop": 5790,
+    "avg": 1890.74,
+    "minPop": 596,
+    "maxPop": 5194
+  },
+  {
+    "code": "976",
+    "count": 17,
+    "sumPop": 256518,
+    "avg": 2445.68,
+    "minPop": 5192,
+    "maxPop": 71437
+  },
+  {
+    "code": "977",
+    "count": 1,
+    "sumPop": 10660,
+    "avg": 2406.93,
+    "minPop": 10660,
+    "maxPop": 10660
+  },
+  {
+    "code": "978",
+    "count": 1,
+    "sumPop": 31160,
+    "avg": 2857.9,
+    "minPop": 31160,
+    "maxPop": 31160
+  },
+  {
+    "code": "98",
+    "count": 90,
+    "sumPop": 554533,
+    "avg": 1960.53,
+    "minPop": 0,
+    "maxPop": 85976
+  }
+]

@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+  <script defer data-domain="wald52.github.io" src="https://plausible.io/js/script.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>France – Toutes les rémunérations des élus | Détail 2024</title>
 <meta property="og:title" content="France – Toutes les rémunérations | Élus : combien ça coûte vraiment ?">
@@ -55,9 +56,15 @@
       <div class="card"><h3>500 000 conseillers municipaux</h3><p class="small">0€ d'indemnité s'ils n'ont pas de délégation du maire. C'est l'armée invisible de la République, bénévoles.</p></div>
     </div>
   </section>
+  <section>
+    <h2>Intercommunalité (EPCI) : le mandat méconnu</h2>
+    <p class="muted">Président d'EPCI à fiscalité propre (métropole, agglo, communauté de communes) : barème <strong>CGCT R5211-4</strong>, aussi au plafond. Souvent cumulé avec maire, mais écrêté à 8 434€ total.</p>
+    <div class="tableWrap"><table class="dataTable" id="tblEpci"></table></div>
+    <p class="small">Ex. Métropole 200k+ hab. : président 3 782€ brut max, vice-président 1 513€. Une CA de 15k hab. : 2 100€ / 840€. Source <a href="data/epci.json">epci.json</a> (DGCL 2024).</p>
+  </section>
 </main>
-<footer><div class="container small">Données : <a href="data/france.json">france.json</a> • <a href="communes.html">Mon maire</a>
-      <a href="methodologie.html">Méthodologie</a></div></footer>
+<footer><div class="container small" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><div>Données : <a href="data/france.json">france.json</a> • <a href="communes.html">Mon maire</a>
+      <a href="methodologie.html">Méthodologie</a></div>  <button data-issue="Signalement" style="width:auto;padding:6px 10px;font-size:12px;background:white;border:1px solid var(--border);color:var(--primary)">🐛 Signaler une erreur</button></div></footer>
 <script>
 async function load(){
   const res = await fetch('data/france.json'); const j = await res.json();
@@ -98,6 +105,12 @@ async function load(){
   });
 }
 load();
+  fetch('data/epci.json').then(r=>r.json()).then(j=>{
+    const tbl=document.getElementById('tblEpci');
+    if(!tbl) return;
+    tbl.innerHTML='<thead><tr><th>Population EPCI</th><th>Président brut max</th><th>Vice-président brut max</th><th>Net estimé</th></tr></thead><tbody>'+j.tranches.map(r=> `<tr><td><strong>${r.pop}</strong></td><td><strong>${r.president.toLocaleString('fr-FR')} €</strong></td><td>${r.vice_president.toLocaleString('fr-FR')} €</td><td>${Math.round(r.president*0.855).toLocaleString('fr-FR')}€ / ${Math.round(r.vice_president*0.855).toLocaleString('fr-FR')}€</td></tr>`).join('')+'</tbody>';
+  });
 </script>
+  <script src="assets/nav.js"></script>
 </body>
 </html>

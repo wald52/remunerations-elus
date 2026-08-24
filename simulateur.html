@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+  <script defer data-domain="wald52.github.io" src="https://plausible.io/js/script.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Simulateur retraite & écrêtement cumul | Élus</title>
 <meta name="description" content="Simule ta pension d'élu (député, maire...) et le plafond d'écrêtement si tu cumules plusieurs mandats. Calculs transparents, barèmes 2024.">
@@ -141,7 +142,7 @@
     </div>
   </section>
 </main>
-<footer><div class="container small">Données : <a href="data/france.json">france.json</a> + IRCANTEC 2024 + CGCT L2123-20 • <a href="methodologie.html">Méthodologie</a></div></footer>
+<footer><div class="container small" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><div>Données : <a href="data/france.json">france.json</a> + IRCANTEC 2024 + CGCT L2123-20 • <a href="methodologie.html">Méthodologie</a></div>  <button data-issue="Signalement" style="width:auto;padding:6px 10px;font-size:12px;background:white;border:1px solid var(--border);color:var(--primary)">🐛 Signaler une erreur</button></div></footer>
 <script>
 let franceData=null, chartRet=null, chartCumul=null;
 const PLAFOND=8434.85;
@@ -344,5 +345,6 @@ function updateCumul(){
 
 init();
 </script>
+  <script src="assets/nav.js"></script>
 </body>
 </html>

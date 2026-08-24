@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+  <script defer data-domain="wald52.github.io" src="https://plausible.io/js/script.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Élus vs Métiers : qui gagne combien vraiment ? | SMIC, infirmier, prof</title>
 <meta property="og:title" content="Élus vs Métiers du quotidien | Élus : combien ça coûte vraiment ?">
@@ -70,7 +71,7 @@
     <p class="small">Sources : INSEE DADS 2023, DREES (hôpital), Ministère Éducation (revalorisation 2023 socle 2 000€ brut), DGCL pour élus. Nets = après cotisations, avant IR, primes Ségur incluses pour soignants. Fichier <a href="data/metiers.json">metiers.json</a> éditable.</p>
   </section>
 </main>
-<footer><div class="container small">Données : <a href="data/metiers.json">metiers.json</a> • <a href="data/france.json">france.json</a></div></footer>
+<footer><div class="container small" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><div>Données : <a href="data/metiers.json">metiers.json</a> • <a href="data/france.json">france.json</a></div>  <button data-issue="Signalement" style="width:auto;padding:6px 10px;font-size:12px;background:white;border:1px solid var(--border);color:var(--primary)">🐛 Signaler une erreur</button></div></footer>
 <script>
 async function init(){
   const j=await fetch('data/metiers.json').then(r=>r.json());
@@ -104,5 +105,6 @@ async function init(){
 }
 init();
 </script>
+  <script src="assets/nav.js"></script>
 </body>
 </html>

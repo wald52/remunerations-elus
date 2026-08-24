@@ -1,0 +1,21 @@
+{
+  "note": "EPCI à fiscalité propre : président et vice-présidents. Barème CGCT R5211-4, indice 1027. Montants au 01/01/2024, plafonds.",
+  "source": "CGCT art. R5211-4, DGCL 2024",
+  "tranches": [
+    {"pop":"Moins de 500 hab.", "president": 859.17, "vice_president": 343.67},
+    {"pop":"500 à 999 hab.", "president": 1275.19, "vice_president": 510.08},
+    {"pop":"1 000 à 3 499 hab.", "president": 1670.15, "vice_president": 668.06},
+    {"pop":"3 500 à 9 999 hab.", "president": 1847.46, "vice_president": 738.98},
+    {"pop":"10 000 à 19 999 hab.", "president": 2100.50, "vice_president": 840.20},
+    {"pop":"20 000 à 49 999 hab.", "president": 2502.86, "vice_president": 1001.14},
+    {"pop":"50 000 à 99 999 hab.", "president": 2805.38, "vice_president": 1122.15},
+    {"pop":"100 000 à 199 999 hab.", "president": 3420.68, "vice_president": 1368.27},
+    {"pop":"200 000 hab. et plus", "president": 3782.90, "vice_president": 1513.16}
+  ],
+  "exemples": [
+    {"nom":"Métropole du Grand Paris (7M hab.)", "president": 3782.90, "pop": 7000000},
+    {"nom":"Métropole de Lyon (1,4M)", "president": 3782.90, "pop": 1400000},
+    {"nom":"CU Bordeaux Métropole (800k)", "president": 3782.90, "pop": 800000},
+    {"nom":"CA petite (15k hab.)", "president": 2100.50, "pop": 15000}
+  ]
+}

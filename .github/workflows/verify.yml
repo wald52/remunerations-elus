@@ -1,0 +1,33 @@
+name: verify-data
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # lundi 06:00 UTC
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check JSON valid
+        run: |
+          python3 -m json.tool data/france.json > /dev/null && echo "france.json OK"
+          python3 -m json.tool data/monde.json > /dev/null && echo "monde.json OK"
+          python3 -m json.tool data/communes.json > /dev/null && echo "communes.json OK"
+          python3 -m json.tool data/history.json > /dev/null && echo "history.json OK"
+          python3 -m json.tool data/metiers.json > /dev/null && echo "metiers.json OK"
+          python3 -m json.tool data/epci.json > /dev/null && echo "epci.json OK"
+      - name: Check geo.api.gouv.fr
+        run: |
+          curl -fsS "https://geo.api.gouv.fr/communes?fields=nom,code&limit=1" | head -c 200
+          echo "geo.api OK"
+      - name: Check point indice not changed (alert if 2024 value moved)
+        run: |
+          echo "Point indice 2024 = 4.92€ (JO). Vérifier https://www.legifrance.gouv.fr"
+          # placeholder: could scrape JO or just warn
+      - name: Build check (Pages will build anyway)
+        run: |
+          ls -lh data/ sitemap.xml robots.txt og-image.png

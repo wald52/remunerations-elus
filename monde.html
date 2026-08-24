@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+  <script defer data-domain="wald52.github.io" src="https://plausible.io/js/script.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Monde – Comparatif des rémunérations parlementaires | 12 pays</title>
 <meta property="og:title" content="Monde – Comparatif 12 pays | Élus : combien ça coûte vraiment ?">
@@ -50,7 +51,7 @@
     <div class="callout"><strong>Piège à éviter :</strong> L'UE (Parlement européen) paie 10 075€ brut identique pour un Bulgare et un Luxembourgeois. En × médian bulgare c'est 10×, en × médian luxembourgeois c'est 2×. D'où l'importance du PPA et du médian.</div>
   </section>
 </main>
-<footer><div class="container small">Données : <a href="data/monde.json">monde.json</a> • <a href="data/france.json">france.json</a></div></footer>
+<footer><div class="container small" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><div>Données : <a href="data/monde.json">monde.json</a> • <a href="data/france.json">france.json</a></div>  <button data-issue="Signalement" style="width:auto;padding:6px 10px;font-size:12px;background:white;border:1px solid var(--border);color:var(--primary)">🐛 Signaler une erreur</button></div></footer>
 <script>
 async function load(){
   const res=await fetch('data/monde.json'); const rmonde=await res.json();
@@ -90,5 +91,6 @@ async function load(){
 }
 load();
 </script>
+  <script src="assets/nav.js"></script>
 </body>
 </html>

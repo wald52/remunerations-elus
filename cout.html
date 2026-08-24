@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+  <script defer data-domain="wald52.github.io" src="https://plausible.io/js/script.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Coût complet d'un élu pour le contribuable – Calculateur 2024</title>
 <meta property="og:title" content="Coût complet pour le contribuable | Élus : combien ça coûte vraiment ?">
@@ -156,7 +157,7 @@
   </section>
 </main>
 
-<footer><div class="container small"><a href="index.html">← Accueil</a> • Données <a href="data/france.json">france.json</a></div></footer>
+<footer><div class="container small" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><div><a href="index.html">← Accueil</a> • Données <a href="data/france.json">france.json</a></div>  <button data-issue="Signalement" style="width:auto;padding:6px 10px;font-size:12px;background:white;border:1px solid var(--border);color:var(--primary)">🐛 Signaler une erreur</button></div></footer>
 
 <script>
 let france=null, chartDonut=null, chartBar=null;
@@ -272,5 +273,6 @@ function compute(){
 }
 init();
 </script>
+  <script src="assets/nav.js"></script>
 </body>
 </html>

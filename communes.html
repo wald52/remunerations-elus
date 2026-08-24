@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+  <script defer data-domain="wald52.github.io" src="https://plausible.io/js/script.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Mon maire, combien ? Indemnité par commune | 35 000 communes</title>
 <meta property="og:title" content="Mon maire, combien ? 35 000 communes | Élus : combien ça coûte vraiment ?">
@@ -157,7 +158,12 @@
 
         <div class="tableWrap" style="margin-top:12px;box-shadow:none"><table class="dataTable breakdown" id="tblDetail"></table></div>
         <p class="small" id="cNote" style="margin-top:8px"></p>
-        <div style="margin-top:8px"><button id="btnShare" style="width:auto;padding:8px 12px;font-size:13px">📋 Copier lien vers cette commune</button> <span id="shareOk" class="small" style="margin-left:8px;color:green;display:none">Lien copié !</span></div>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          <button id="btnShare" style="width:auto;padding:8px 12px;font-size:13px">📋 Copier lien</button> <span id="shareOk" class="small" style="color:green;display:none">Lien copié !</span>
+          <button id="btnPrint" style="width:auto;padding:8px 12px;font-size:13px;background:white;color:var(--primary);border:1px solid var(--border)">🖨️ Imprimer / PDF</button>
+          <button id="btnImage" style="width:auto;padding:8px 12px;font-size:13px;background:white;color:var(--primary);border:1px solid var(--border)">🖼️ Générer image à partager</button>
+        </div>
+        <canvas id="shareCanvas" width="1080" height="1080" style="display:none"></canvas>
       </div>
 
       <div>
@@ -190,12 +196,43 @@
   </section>
 </main>
 
-<footer><div class="container small">Données : <a href="data/communes.json">communes.json</a> (geo.api.gouv.fr + population INSEE) + barème DGCL. <a href="methodologie.html">Méthodologie</a> • Carte : france-geojson (etalab)</div></footer>
+<footer><div class="container small" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><div>Données : <a href="data/communes.json">communes.json</a> (geo.api.gouv.fr + population INSEE) + barème DGCL. <a href="methodologie.html">Méthodologie</a> • Carte : france-geojson (etalab)</div>  <button data-issue="Signalement" style="width:auto;padding:6px 10px;font-size:12px;background:white;border:1px solid var(--border);color:var(--primary)">🐛 Signaler une erreur</button></div></footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 let communes=[], chart=null, chartDeptTranche=null, chartDeptTop=null;
 let deptStats=new Map(), deptNames=new Map(), map=null, geoLayer=null, selectedDept=null;
+let deptCache=new Map();
+let allLoaded=false;
+
+async function ensureDeptGlobal(dept){
+  if(deptCache.has(dept)) return deptCache.get(dept);
+  const el=document.getElementById('stats');
+  if(el) el.textContent='Chargement département '+dept+'…';
+  const r=await fetch(`data/communes/${dept}.json`);
+  const lst=await r.json();
+  deptCache.set(dept, lst);
+  const st=deptStats.get(dept);
+  if(st){ st.communes=lst; }
+  if(el) el.textContent = 'Département '+dept+' — '+lst.length.toLocaleString('fr-FR')+' communes chargées';
+  return lst;
+}
+async function ensureAllGlobal(){
+  if(allLoaded) return communes;
+  if(communes.length>0) { allLoaded=true; return communes; }
+  const el=document.getElementById('stats');
+  if(el) el.textContent='Chargement des 34 969 communes (3,6 Mo)…';
+  const r=await fetch('data/communes.json');
+  communes=await r.json();
+  allLoaded=true;
+  if(el) el.textContent = communes.length.toLocaleString('fr-FR')+' communes chargées • Recherche globale active';
+  return communes;
+}
+
+// aliases for global access (selectCommune outside init)
+async function ensureDept(dept){ return ensureDeptGlobal(dept); }
+async function ensureAll(){ return ensureAllGlobal(); }
+
 const SMIC=1398, MEDIAN=1940;
 
 function getDept(code){
@@ -209,22 +246,22 @@ function getDept(code){
 
 async function init(){
   const t0=performance.now();
+  // lazy: fetch lightweight index only (5KB) instead of 3.6MB
+  let indexLoaded=false;
   try{
-    const r=await fetch('data/communes.json');
-    communes=await r.json();
+    const rIdx=await fetch('data/communes_index.json');
+    const idx=await rIdx.json();
+    for(const e of idx){
+      // e: {code,count,sumPop,avg,...}
+      const sumI = e.avg * e.count;
+      deptStats.set(e.code, {count:e.count, sumI: sumI, sumPop:e.sumPop, communes:[], avg:e.avg});
+    }
     const dt=(performance.now()-t0).toFixed(0);
-    document.getElementById('stats').textContent = communes.length.toLocaleString('fr-FR')+' communes chargées en '+dt+'ms • Tape 2 lettres ou un code postal — ou filtre par département';
+    document.getElementById('stats').textContent = '105 départements • 34 969 communes • Index chargé en '+dt+'ms • Choisis un département ou tape 2 lettres (chargement à la demande)';
+    indexLoaded=true;
   }catch(e){
-    document.getElementById('stats').textContent='Erreur chargement communes.json : '+e;
+    document.getElementById('stats').textContent='Erreur chargement communes_index.json : '+e;
     return;
-  }
-
-  // dept stats
-  for(const c of communes){
-    const d=getDept(c.c);
-    if(!deptStats.has(d)) deptStats.set(d,{count:0,sumI:0,sumPop:0, communes:[]});
-    const s=deptStats.get(d);
-    s.count++; s.sumI+=c.i; s.sumPop+=c.p; s.communes.push(c);
   }
   // fetch dept names
   try{
@@ -232,6 +269,40 @@ async function init(){
     const depts=await r.json();
     for(const d of depts) deptNames.set(d.code, d.nom);
   }catch(e){ console.warn('dept names fetch failed',e); }
+  // cache for per-dept files and for global load
+  async function ensureDept(dept){
+    if(deptCache.has(dept)) return deptCache.get(dept);
+    document.getElementById('stats').textContent='Chargement département '+dept+'…';
+    const r=await fetch(`data/communes/${dept}.json`);
+    const lst=await r.json();
+    deptCache.set(dept, lst);
+    // fill deptStats communes
+    const st=deptStats.get(dept);
+    if(st){ st.communes=lst; }
+    document.getElementById('stats').textContent = 'Département '+dept+' — '+lst.length.toLocaleString('fr-FR')+' communes chargées';
+    return lst;
+  }
+  async function ensureAll(){
+    if(allLoaded) return communes;
+    if(communes.length>0) { allLoaded=true; return communes; }
+    document.getElementById('stats').textContent='Chargement des 34 969 communes (3,6 Mo)…';
+    const r=await fetch('data/communes.json');
+    communes=await r.json();
+    // fill all deptStats communes if not already
+    for(const c of communes){
+      const d=getDept(c.c);
+      const st=deptStats.get(d);
+      if(st && st.communes.length===0){
+        // will be filled via deptCache later, but we can also push
+        // for now, ensure deptCache has it if not
+      }
+    }
+    // also populate deptCache for each dept for future fast access (avoid re-fetch)
+    // we can keep global communes for global search
+    allLoaded=true;
+    document.getElementById('stats').textContent = communes.length.toLocaleString('fr-FR')+' communes chargées • Recherche globale active';
+    return communes;
+  }
   // fallback: ensure all dept codes in stats have a name
   for(const d of deptStats.keys()){
     if(!deptNames.has(d)) deptNames.set(d, 'Dept '+d);
@@ -268,14 +339,14 @@ async function init(){
   }
   populateDeptSelect();
   if(sortSel) sortSel.addEventListener('change', populateDeptSelect);
-  sel.addEventListener('change', ()=>{
+  sel.addEventListener('change', async ()=>{
     const v=sel.value;
     if(v){
       selectedDept=v;
       document.getElementById('deptBadge').textContent = deptNames.get(v)+' ('+deptStats.get(v).count+' communes)';
       document.getElementById('deptBadge').style.display='inline-block';
       document.getElementById('btnClearDept').style.display='inline-block';
-      showDept(v);
+      await showDept(v);
     } else {
       clearDept();
     }
@@ -334,13 +405,27 @@ async function init(){
     sug.classList.add('open');
     sug.querySelectorAll('.sugItem').forEach(el=> el.addEventListener('click', ()=> selectCommune(el.dataset.code)));
   }
-  function search(query){
+  async function search(query){
     if(!query || query.length<2){ renderSuggest([]); return; }
     const qq=query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
     const isNum=/^\d+$/.test(qq);
-    let pool=communes;
+    let pool=[];
     if(selectedDept){
-      pool = deptStats.get(selectedDept).communes;
+      // lazy load dept file if needed
+      const st=deptStats.get(selectedDept);
+      if(!st) { renderSuggest([]); return; }
+      if(st.communes.length===0 && !deptCache.has(selectedDept)){
+        try{ pool = await ensureDept(selectedDept); }catch(e){ console.warn(e); pool=[]; }
+      } else {
+        pool = st.communes.length>0 ? st.communes : (deptCache.get(selectedDept) || []);
+      }
+    } else {
+      // global search: need all communes
+      if(!allLoaded && communes.length===0){
+        try{ pool = await ensureAll(); }catch(e){ console.warn(e); pool=communes; }
+      } else {
+        pool = communes;
+      }
     }
     let res=[];
     if(isNum){
@@ -358,7 +443,7 @@ async function init(){
     }
     renderSuggest(res);
   }
-  q.addEventListener('input', ()=>{ activeIndex=-1; search(q.value.trim()); });
+  q.addEventListener('input', async ()=>{ activeIndex=-1; await search(q.value.trim()); });
   q.addEventListener('keydown', (e)=>{
     const items=sug.querySelectorAll('.sugItem');
     if(e.key==='ArrowDown'){ e.preventDefault(); activeIndex=Math.min(activeIndex+1, items.length-1); items.forEach((el,i)=> el.classList.toggle('active', i===activeIndex)); }
@@ -381,7 +466,18 @@ async function init(){
     document.getElementById('btnClearDept').style.display='inline-block';
     showDept(deptParam);
   }
-  if(code){ const c=communes.find(x=>x.c===code); if(c){ q.value=c.n; selectCommune(c.c); } }
+  if(code){ 
+    // async find
+    let c=communes.find(x=>x.c===code);
+    if(!c){
+      for(const lst of deptCache.values()){ const f=lst.find(x=>x.c===code); if(f){c=f;break;} }
+    }
+    if(c){ q.value=c.n; await selectCommune(c.c); } else {
+      // try load dept
+      const d=getDept(code);
+      try{ const lst=await ensureDept(d); c=lst.find(x=>x.c===code); if(c){ q.value=c.n; await selectCommune(c.c);} }catch(e){}
+    }
+  }
   else if(qparam){ q.value=qparam; search(qparam); }
 
   document.getElementById('btnShare').addEventListener('click', ()=>{
@@ -390,6 +486,25 @@ async function init(){
       const ok=document.getElementById('shareOk');
       ok.style.display='inline'; setTimeout(()=> ok.style.display='none', 2000);
     });
+  });
+  document.getElementById('btnPrint').addEventListener('click', ()=> window.print());
+  document.getElementById('btnImage').addEventListener('click', ()=>{
+    const cname=document.getElementById('cNom').textContent;
+    const indemn=document.getElementById('cIndemnite').textContent;
+    const pop=document.getElementById('cSub').textContent;
+    const canvas=document.getElementById('shareCanvas');
+    const ctx=canvas.getContext('2d');
+    // background
+    ctx.fillStyle='#0f3b5e'; ctx.fillRect(0,0,1080,1080);
+    ctx.fillStyle='white'; ctx.font='bold 64px sans-serif'; ctx.fillText('ELUS : COMBIEN CA COUTE ?', 40, 80);
+    ctx.fillStyle='#f59e0b'; ctx.font='bold 48px sans-serif'; ctx.fillText(cname, 40, 160);
+    ctx.fillStyle='#bfdbfe'; ctx.font='28px sans-serif'; ctx.fillText(pop, 40, 210);
+    ctx.fillStyle='white'; ctx.font='bold 72px sans-serif'; ctx.fillText(indemn, 40, 340);
+    ctx.fillStyle='#e2e8f0'; ctx.font='24px sans-serif'; ctx.fillText('Plafond brut DGCL 2024 - voir le detail sur le site', 40, 380);
+    ctx.fillStyle='white'; ctx.font='20px sans-serif'; ctx.fillText('wald52.github.io/remunerations-elus', 40, 1040);
+    // download
+    const url=canvas.toDataURL('image/png');
+    const a=document.createElement('a'); a.href=url; a.download=`maire_${cname.replace(/[^a-zA-Z0-9]/g,'_')}.png`; a.click();
   });
 }
 
@@ -403,9 +518,13 @@ function clearDept(){
   history.replaceState(null,'', location.pathname);
 }
 
-function showDept(code){
+async function showDept(code){
   const st=deptStats.get(code);
   if(!st) return;
+  // ensure dept data
+  if(st.communes.length===0){
+    try{ await ensureDept(code); }catch(e){ console.warn('load dept failed',e); }
+  }
   document.getElementById('emptyState').style.display='none';
   document.getElementById('deptPanel').style.display='block';
   document.getElementById('deptTitle').textContent = 'Département '+code+' – '+deptNames.get(code);
@@ -546,8 +665,27 @@ async function initMap(){
   }
 }
 
-function selectCommune(code){
-  const c=communes.find(x=>x.c===code);
+async function selectCommune(code){
+  let c=communes.find(x=>x.c===code);
+  if(!c){
+    // try in deptCache
+    for(const lst of deptCache.values()){
+      const f=lst.find(x=>x.c===code);
+      if(f){ c=f; break; }
+    }
+  }
+  if(!c){
+    // try to find dept from code and load it
+    const d=getDept(code);
+    try{
+      const lst=await ensureDept(d);
+      c=lst.find(x=>x.c===code);
+    }catch(e){}
+  }
+  if(!c){
+    // last resort: ensure all
+    try{ await ensureAll(); c=communes.find(x=>x.c===code); }catch(e){}
+  }
   if(!c) return;
   document.getElementById('suggest').classList.remove('open');
   document.getElementById('q').value = c.n + ' (' + (c.cp[0]||c.c) + ')';
@@ -611,5 +749,6 @@ function showCommune(c){
 
 init();
 </script>
+  <script src="assets/nav.js"></script>
 </body>
 </html>
