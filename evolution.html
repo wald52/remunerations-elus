@@ -45,10 +45,14 @@
   </section>
 
   <div class="panel" style="padding:16px">
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;align-items:center">
       <button id="btnBase" style="width:auto;padding:6px 10px;font-size:12px;background:var(--primary);color:white;border:1px solid var(--primary)">Base 100 (2000)</button>
       <button id="btnEuro" style="width:auto;padding:6px 10px;font-size:12px;background:white;color:var(--primary);border:1px solid var(--border)">En euros courants</button>
       <span id="rangeLabel" class="badge">2000-2024</span>
+      <label style="display:flex;gap:4px;align-items:center;font-size:12px"><input type="checkbox" id="chkDepute" checked> Député</label>
+      <label style="display:flex;gap:4px;align-items:center;font-size:12px"><input type="checkbox" id="chkMaire500" checked> Maire &lt;500</label>
+      <label style="display:flex;gap:4px;align-items:center;font-size:12px"><input type="checkbox" id="chkMaire100k"> Maire 100k+</label>
+      <label style="display:flex;gap:4px;align-items:center;font-size:12px"><input type="checkbox" id="chkPresident"> Président</label>
     </div>
     <div class="chartWrap"><canvas id="chart" height="140"></canvas></div>
     <p class="small" id="insight" style="margin-top:8px"></p>
@@ -90,46 +94,56 @@ async function init(){
   // timeline
   const tl=document.getElementById('timeline');
   tl.innerHTML = hist.evenements.map(e=> `<div class="timelineNote"><strong>${e.y}</strong> — ${e.label}</div>`).join('');
-  // table
+  // table - now with all mandates
   const tbl=document.getElementById('tblEvo');
-  tbl.innerHTML = '<thead><tr><th>Année</th><th>Député brut</th><th>SMIC net</th><th>Ratio député/SMIC</th><th>IPC (100 en 2000)</th><th>Pouvoir d\'achat député (base 100)</th></tr></thead><tbody>'+
+  tbl.innerHTML = '<thead><tr><th>Année</th><th>Député</th><th>Maire &lt;500</th><th>Maire 100k+</th><th>Président</th><th>SMIC</th><th>IPC</th></tr></thead><tbody>'+
     years.slice(-8).reverse().map(y=>{
-      const ratio=(y.depute_brut/(y.smic_net*1.3)).toFixed(1); // rough brut vs net conversion
-      const pouvoir=(y.depute_brut / y.ipc*100).toFixed(0);
-      return `<tr><td><strong>${y.y}</strong></td><td>${y.depute_brut.toLocaleString('fr-FR')}€</td><td>${y.smic_net}€</td><td>${(y.depute_brut/y.smic_net).toFixed(1)}×</td><td>${y.ipc}</td><td>${pouvoir}</td></tr>`;
+      return `<tr><td><strong>${y.y}</strong></td><td>${y.depute_brut.toLocaleString('fr-FR')}€</td><td>${y.maire_500_brut.toLocaleString('fr-FR')}€</td><td>${y.maire_100k_brut.toLocaleString('fr-FR')}€</td><td>${y.president_brut.toLocaleString('fr-FR')}€</td><td>${y.smic_net}€</td><td>${y.ipc}</td></tr>`;
     }).join('')+'</tbody>';
   document.getElementById('btnExportHist').addEventListener('click', async ()=>{
-    const rows=['annee;depute_brut;smic_net;ipc;point_indice'];
-    for(const y of hist.years) rows.push([y.y,y.depute_brut,y.smic_net,y.ipc,y.point_indice].join(';'));
+    const rows=['annee;depute_brut;maire_500_brut;maire_100k_brut;president_brut;smic_net;ipc;point_indice'];
+    for(const y of hist.years) rows.push([y.y,y.depute_brut,y.maire_500_brut,y.maire_100k_brut,y.president_brut,y.smic_net,y.ipc,y.point_indice].join(';'));
     const blob=new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='historique_2000-2024.csv'; a.click(); URL.revokeObjectURL(url);
   });
   draw();
   document.getElementById('btnBase').addEventListener('click', ()=>{mode='base'; draw();});
   document.getElementById('btnEuro').addEventListener('click', ()=>{mode='euro'; draw();});
+  ['chkDepute','chkMaire500','chkMaire100k','chkPresident'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.addEventListener('change', draw);
+  });
 }
 function draw(){
   const years=hist.years;
   const labels=years.map(y=>y.y);
+  const showDepute=document.getElementById('chkDepute')?.checked ?? true;
+  const showM500=document.getElementById('chkMaire500')?.checked ?? false;
+  const showM100k=document.getElementById('chkMaire100k')?.checked ?? false;
+  const showPres=document.getElementById('chkPresident')?.checked ?? false;
   let datasets, yTitle;
   if(mode==='base'){
     // base 100
     document.getElementById('btnBase').style.background='var(--primary)'; document.getElementById('btnBase').style.color='white';
     document.getElementById('btnEuro').style.background='white'; document.getElementById('btnEuro').style.color='var(--primary)';
-    datasets=[
-      {label:'Député brut (base 100)', data:years.map(y=> y.depute_brut/years[0].depute_brut*100), borderColor:'#0f3b5e', backgroundColor:'#0f3b5e', tension:0.2, borderWidth:3},
-      {label:'SMIC net (base 100)', data:years.map(y=> y.smic_net/years[0].smic_net*100), borderColor:'#d97706', backgroundColor:'#d97706', tension:0.2, borderWidth:3, borderDash:[6,4]},
-      {label:'Inflation IPC (base 100)', data:years.map(y=> y.ipc), borderColor:'#64748b', backgroundColor:'#64748b', tension:0.2, borderWidth:2},
-    ];
+    datasets=[];
+    if(showDepute) datasets.push({label:'Député brut (base 100)', data:years.map(y=> y.depute_brut/years[0].depute_brut*100), borderColor:'#0f3b5e', backgroundColor:'#0f3b5e', tension:0.2, borderWidth:3});
+    if(showM500) datasets.push({label:'Maire <500 (base 100)', data:years.map(y=> y.maire_500_brut/years[0].maire_500_brut*100), borderColor:'#16a34a', backgroundColor:'#16a34a', tension:0.2, borderWidth:2, borderDash:[4,4]});
+    if(showM100k) datasets.push({label:'Maire 100k+ (base 100)', data:years.map(y=> y.maire_100k_brut/years[0].maire_100k_brut*100), borderColor:'#7c3aed', backgroundColor:'#7c3aed', tension:0.2, borderWidth:2});
+    if(showPres) datasets.push({label:'Président brut (base 100)', data:years.map(y=> y.president_brut/years[0].president_brut*100), borderColor:'#dc2626', backgroundColor:'#dc2626', tension:0.2, borderWidth:2});
+    datasets.push({label:'SMIC net (base 100)', data:years.map(y=> y.smic_net/years[0].smic_net*100), borderColor:'#d97706', backgroundColor:'#d97706', tension:0.2, borderWidth:3, borderDash:[6,4]});
+    datasets.push({label:'Inflation IPC (base 100)', data:years.map(y=> y.ipc), borderColor:'#64748b', backgroundColor:'#64748b', tension:0.2, borderWidth:2});
     yTitle='Base 100 en 2000';
     document.getElementById('insight').innerHTML = `En base 100 : en 2024, député <strong>${(years[years.length-1].depute_brut/years[0].depute_brut*100).toFixed(0)}</strong>, SMIC <strong>${(years[years.length-1].smic_net/years[0].smic_net*100).toFixed(0)}</strong>, inflation <strong>${years[years.length-1].ipc.toFixed(0)}</strong>. Le député suit l'inflation mais décroche du SMIC depuis 2012.`;
   } else {
     document.getElementById('btnEuro').style.background='var(--primary)'; document.getElementById('btnEuro').style.color='white';
     document.getElementById('btnBase').style.background='white'; document.getElementById('btnBase').style.color='var(--primary)';
-    datasets=[
-      {label:'Député brut €', data:years.map(y=> y.depute_brut), borderColor:'#0f3b5e', backgroundColor:'#0f3b5e', tension:0.2, borderWidth:3, yAxisID:'y'},
-      {label:'SMIC net €', data:years.map(y=> y.smic_net), borderColor:'#d97706', backgroundColor:'#d97706', tension:0.2, borderWidth:3, borderDash:[6,4], yAxisID:'y'},
-      {label:'IPC', data:years.map(y=> y.ipc), borderColor:'#64748b', backgroundColor:'rgba(100,116,139,0.1)', tension:0.2, borderWidth:1, yAxisID:'y1'},
-    ];
+    datasets=[];
+    if(showDepute) datasets.push({label:'Député brut €', data:years.map(y=> y.depute_brut), borderColor:'#0f3b5e', backgroundColor:'#0f3b5e', tension:0.2, borderWidth:3, yAxisID:'y'});
+    if(showM500) datasets.push({label:'Maire <500 €', data:years.map(y=> y.maire_500_brut), borderColor:'#16a34a', backgroundColor:'#16a34a', tension:0.2, borderWidth:2, borderDash:[4,4], yAxisID:'y'});
+    if(showM100k) datasets.push({label:'Maire 100k+ €', data:years.map(y=> y.maire_100k_brut), borderColor:'#7c3aed', backgroundColor:'#7c3aed', tension:0.2, borderWidth:2, yAxisID:'y'});
+    if(showPres) datasets.push({label:'Président €', data:years.map(y=> y.president_brut), borderColor:'#dc2626', backgroundColor:'#dc2626', tension:0.2, borderWidth:2, yAxisID:'y'});
+    datasets.push({label:'SMIC net €', data:years.map(y=> y.smic_net), borderColor:'#d97706', backgroundColor:'#d97706', tension:0.2, borderWidth:3, borderDash:[6,4], yAxisID:'y'});
+    datasets.push({label:'IPC', data:years.map(y=> y.ipc), borderColor:'#64748b', backgroundColor:'rgba(100,116,139,0.1)', tension:0.2, borderWidth:1, yAxisID:'y1'});
     yTitle='Euros courants / IPC';
     document.getElementById('insight').innerHTML = `En euros : député ${years[0].depute_brut}€ → ${years[years.length-1].depute_brut}€ (+${((years[years.length-1].depute_brut/years[0].depute_brut-1)*100).toFixed(0)}%), SMIC ${years[0].smic_net}€ → ${years[years.length-1].smic_net}€ (+${((years[years.length-1].smic_net/years[0].smic_net-1)*100).toFixed(0)}%).`;
   }

@@ -199,6 +199,7 @@
 <footer><div class="container small" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><div>Données : <a href="data/communes.json">communes.json</a> (geo.api.gouv.fr + population INSEE) + barème DGCL. <a href="methodologie.html">Méthodologie</a> • Carte : france-geojson (etalab)</div>  <button data-issue="Signalement" style="width:auto;padding:6px 10px;font-size:12px;background:white;border:1px solid var(--border);color:var(--primary)">🐛 Signaler une erreur</button></div></footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 let communes=[], chart=null, chartDeptTranche=null, chartDeptTop=null;
 let deptStats=new Map(), deptNames=new Map(), map=null, geoLayer=null, selectedDept=null;
@@ -487,14 +488,24 @@ async function init(){
       ok.style.display='inline'; setTimeout(()=> ok.style.display='none', 2000);
     });
   });
-  document.getElementById('btnPrint').addEventListener('click', ()=> window.print());
-  document.getElementById('btnImage').addEventListener('click', ()=>{
+  document.getElementById('btnImage').addEventListener('click', async ()=>{
     const cname=document.getElementById('cNom').textContent;
+    const code=document.getElementById('cSub').textContent.match(/INSEE (\w+)/)?.[1] || '';
+    // try pre-rendered OG image for top 100
+    if(code){
+      try{
+        const ogUrl=`og/communes/${code}.png`;
+        const r=await fetch(ogUrl, {method:'HEAD'});
+        if(r.ok){
+          const a=document.createElement('a'); a.href=ogUrl; a.download=`maire_${code}_${cname.replace(/[^a-zA-Z0-9]/g,'_')}.png`; a.click();
+          return;
+        }
+      }catch(e){}
+    }
     const indemn=document.getElementById('cIndemnite').textContent;
     const pop=document.getElementById('cSub').textContent;
     const canvas=document.getElementById('shareCanvas');
     const ctx=canvas.getContext('2d');
-    // background
     ctx.fillStyle='#0f3b5e'; ctx.fillRect(0,0,1080,1080);
     ctx.fillStyle='white'; ctx.font='bold 64px sans-serif'; ctx.fillText('ELUS : COMBIEN CA COUTE ?', 40, 80);
     ctx.fillStyle='#f59e0b'; ctx.font='bold 48px sans-serif'; ctx.fillText(cname, 40, 160);
@@ -502,10 +513,55 @@ async function init(){
     ctx.fillStyle='white'; ctx.font='bold 72px sans-serif'; ctx.fillText(indemn, 40, 340);
     ctx.fillStyle='#e2e8f0'; ctx.font='24px sans-serif'; ctx.fillText('Plafond brut DGCL 2024 - voir le detail sur le site', 40, 380);
     ctx.fillStyle='white'; ctx.font='20px sans-serif'; ctx.fillText('wald52.github.io/remunerations-elus', 40, 1040);
-    // download
     const url=canvas.toDataURL('image/png');
     const a=document.createElement('a'); a.href=url; a.download=`maire_${cname.replace(/[^a-zA-Z0-9]/g,'_')}.png`; a.click();
   });
+  // PDF via jsPDF
+  const btnPrint = document.getElementById('btnPrint');
+  if(btnPrint){
+    btnPrint.addEventListener('click', async ()=>{
+      // try jsPDF if available
+      if(window.jspdf && window.jspdf.jsPDF){
+        const {jsPDF}=window.jspdf;
+        const doc=new jsPDF({unit:'pt', format:'a4'});
+        const cname=document.getElementById('cNom').textContent;
+        const sub=document.getElementById('cSub').textContent;
+        const indemn=document.getElementById('cIndemnite').textContent;
+        const net=document.getElementById('cNet').textContent;
+        const cout=document.getElementById('cCout').textContent;
+        const tranche=document.getElementById('cTranche').textContent;
+        doc.setFillColor(15,59,94); doc.rect(0,0,595,80,'F');
+        doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text('ELUS : COMBIEN CA COUTE VRAIMENT ?', 20, 30);
+        doc.setFontSize(10); doc.text('Fiche commune - Donnees DGCL 2024', 20, 50);
+        doc.setTextColor(15,59,94); doc.setFontSize(18); doc.text(cname, 20, 110);
+        doc.setFontSize(11); doc.setFont('helvetica','normal'); doc.text(sub, 20, 130);
+        doc.setFont('helvetica','bold'); doc.text('Tranche : '+tranche, 20, 150);
+        doc.setFontSize(14); doc.text(indemn, 20, 180);
+        doc.setFontSize(11); doc.text(net, 20, 200);
+        doc.text('Cout complet : '+cout, 20, 220);
+        // table detail
+        const tbl=document.getElementById('tblDetail');
+        let y=250;
+        doc.setFontSize(10); doc.text('Detail :', 20, y); y+=14;
+        const rows=tbl.querySelectorAll('tbody tr');
+        rows.forEach(r=>{
+          const cells=[...r.querySelectorAll('td')].map(c=> c.textContent.replace(/\s+/g,' ').trim());
+          if(cells.length>=3){
+            doc.text(cells[0].substring(0,50), 20, y);
+            doc.text(cells[1], 300, y);
+            doc.text(cells[2].substring(0,30), 420, y);
+            y+=14; if(y>750){ doc.addPage(); y=40; }
+          }
+        });
+        doc.setFontSize(8); doc.setTextColor(100,100,100); doc.text('Source : DGCL 2024, geo.api.gouv.fr - Plafond legal, le conseil peut voter moins. Genere sur wald52.github.io/remunerations-elus', 20, 820);
+        doc.save(`fiche_${cname.replace(/[^a-zA-Z0-9]/g,'_')}.pdf`);
+      } else {
+        window.print();
+      }
+    });
+    // override the previous window.print handler (remove duplicate)
+    // we keep the jsPDF one as primary
+  }
 }
 
 function clearDept(){

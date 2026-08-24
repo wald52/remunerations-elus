@@ -1,0 +1,602 @@
+[
+  {
+    "code": "75056",
+    "nom": "Paris",
+    "pop": 2103778,
+    "og": "og/communes/75056.png"
+  },
+  {
+    "code": "13055",
+    "nom": "Marseille",
+    "pop": 886040,
+    "og": "og/communes/13055.png"
+  },
+  {
+    "code": "69123",
+    "nom": "Lyon",
+    "pop": 519127,
+    "og": "og/communes/69123.png"
+  },
+  {
+    "code": "31555",
+    "nom": "Toulouse",
+    "pop": 514819,
+    "og": "og/communes/31555.png"
+  },
+  {
+    "code": "06088",
+    "nom": "Nice",
+    "pop": 357737,
+    "og": "og/communes/06088.png"
+  },
+  {
+    "code": "44109",
+    "nom": "Nantes",
+    "pop": 327734,
+    "og": "og/communes/44109.png"
+  },
+  {
+    "code": "34172",
+    "nom": "Montpellier",
+    "pop": 310240,
+    "og": "og/communes/34172.png"
+  },
+  {
+    "code": "67482",
+    "nom": "Strasbourg",
+    "pop": 293771,
+    "og": "og/communes/67482.png"
+  },
+  {
+    "code": "33063",
+    "nom": "Bordeaux",
+    "pop": 267991,
+    "og": "og/communes/33063.png"
+  },
+  {
+    "code": "59350",
+    "nom": "Lille",
+    "pop": 238246,
+    "og": "og/communes/59350.png"
+  },
+  {
+    "code": "35238",
+    "nom": "Rennes",
+    "pop": 230890,
+    "og": "og/communes/35238.png"
+  },
+  {
+    "code": "83137",
+    "nom": "Toulon",
+    "pop": 179116,
+    "og": "og/communes/83137.png"
+  },
+  {
+    "code": "51454",
+    "nom": "Reims",
+    "pop": 177674,
+    "og": "og/communes/51454.png"
+  },
+  {
+    "code": "42218",
+    "nom": "Saint-Étienne",
+    "pop": 173136,
+    "og": "og/communes/42218.png"
+  },
+  {
+    "code": "76351",
+    "nom": "Le Havre",
+    "pop": 166687,
+    "og": "og/communes/76351.png"
+  },
+  {
+    "code": "69266",
+    "nom": "Villeurbanne",
+    "pop": 163684,
+    "og": "og/communes/69266.png"
+  },
+  {
+    "code": "21231",
+    "nom": "Dijon",
+    "pop": 161830,
+    "og": "og/communes/21231.png"
+  },
+  {
+    "code": "49007",
+    "nom": "Angers",
+    "pop": 159022,
+    "og": "og/communes/49007.png"
+  },
+  {
+    "code": "38185",
+    "nom": "Grenoble",
+    "pop": 156140,
+    "og": "og/communes/38185.png"
+  },
+  {
+    "code": "97411",
+    "nom": "Saint-Denis",
+    "pop": 155634,
+    "og": "og/communes/97411.png"
+  },
+  {
+    "code": "30189",
+    "nom": "Nîmes",
+    "pop": 151839,
+    "og": "og/communes/30189.png"
+  },
+  {
+    "code": "13001",
+    "nom": "Aix-en-Provence",
+    "pop": 149695,
+    "og": "og/communes/13001.png"
+  },
+  {
+    "code": "93066",
+    "nom": "Saint-Denis",
+    "pop": 149077,
+    "og": "og/communes/93066.png"
+  },
+  {
+    "code": "63113",
+    "nom": "Clermont-Ferrand",
+    "pop": 146351,
+    "og": "og/communes/63113.png"
+  },
+  {
+    "code": "72181",
+    "nom": "Le Mans",
+    "pop": 146249,
+    "og": "og/communes/72181.png"
+  },
+  {
+    "code": "29019",
+    "nom": "Brest",
+    "pop": 142346,
+    "og": "og/communes/29019.png"
+  },
+  {
+    "code": "37261",
+    "nom": "Tours",
+    "pop": 139259,
+    "og": "og/communes/37261.png"
+  },
+  {
+    "code": "80021",
+    "nom": "Amiens",
+    "pop": 136449,
+    "og": "og/communes/80021.png"
+  },
+  {
+    "code": "74010",
+    "nom": "Annecy",
+    "pop": 132117,
+    "og": "og/communes/74010.png"
+  },
+  {
+    "code": "87085",
+    "nom": "Limoges",
+    "pop": 129937,
+    "og": "og/communes/87085.png"
+  },
+  {
+    "code": "57463",
+    "nom": "Metz",
+    "pop": 122572,
+    "og": "og/communes/57463.png"
+  },
+  {
+    "code": "66136",
+    "nom": "Perpignan",
+    "pop": 121616,
+    "og": "og/communes/66136.png"
+  },
+  {
+    "code": "92012",
+    "nom": "Boulogne-Billancourt",
+    "pop": 119019,
+    "og": "og/communes/92012.png"
+  },
+  {
+    "code": "25056",
+    "nom": "Besançon",
+    "pop": 118489,
+    "og": "og/communes/25056.png"
+  },
+  {
+    "code": "76540",
+    "nom": "Rouen",
+    "pop": 117662,
+    "og": "og/communes/76540.png"
+  },
+  {
+    "code": "45234",
+    "nom": "Orléans",
+    "pop": 116357,
+    "og": "og/communes/45234.png"
+  },
+  {
+    "code": "93048",
+    "nom": "Montreuil",
+    "pop": 111934,
+    "og": "og/communes/93048.png"
+  },
+  {
+    "code": "14118",
+    "nom": "Caen",
+    "pop": 109400,
+    "og": "og/communes/14118.png"
+  },
+  {
+    "code": "97415",
+    "nom": "Saint-Paul",
+    "pop": 108088,
+    "og": "og/communes/97415.png"
+  },
+  {
+    "code": "95018",
+    "nom": "Argenteuil",
+    "pop": 106130,
+    "og": "og/communes/95018.png"
+  },
+  {
+    "code": "68224",
+    "nom": "Mulhouse",
+    "pop": 104978,
+    "og": "og/communes/68224.png"
+  },
+  {
+    "code": "54395",
+    "nom": "Nancy",
+    "pop": 103671,
+    "og": "og/communes/54395.png"
+  },
+  {
+    "code": "59599",
+    "nom": "Tourcoing",
+    "pop": 98772,
+    "og": "og/communes/59599.png"
+  },
+  {
+    "code": "59512",
+    "nom": "Roubaix",
+    "pop": 98286,
+    "og": "og/communes/59512.png"
+  },
+  {
+    "code": "92050",
+    "nom": "Nanterre",
+    "pop": 97783,
+    "og": "og/communes/92050.png"
+  },
+  {
+    "code": "94081",
+    "nom": "Vitry-sur-Seine",
+    "pop": 93963,
+    "og": "og/communes/94081.png"
+  },
+  {
+    "code": "92004",
+    "nom": "Asnières-sur-Seine",
+    "pop": 93941,
+    "og": "og/communes/92004.png"
+  },
+  {
+    "code": "94028",
+    "nom": "Créteil",
+    "pop": 93397,
+    "og": "og/communes/94028.png"
+  },
+  {
+    "code": "84007",
+    "nom": "Avignon",
+    "pop": 92188,
+    "og": "og/communes/84007.png"
+  },
+  {
+    "code": "92025",
+    "nom": "Colombes",
+    "pop": 91053,
+    "og": "og/communes/92025.png"
+  },
+  {
+    "code": "86194",
+    "nom": "Poitiers",
+    "pop": 89916,
+    "og": "og/communes/86194.png"
+  },
+  {
+    "code": "93001",
+    "nom": "Aubervilliers",
+    "pop": 88365,
+    "og": "og/communes/93001.png"
+  },
+  {
+    "code": "93005",
+    "nom": "Aulnay-sous-Bois",
+    "pop": 87599,
+    "og": "og/communes/93005.png"
+  },
+  {
+    "code": "59183",
+    "nom": "Dunkerque",
+    "pop": 86263,
+    "og": "og/communes/59183.png"
+  },
+  {
+    "code": "98818",
+    "nom": "Nouméa",
+    "pop": 85976,
+    "og": "og/communes/98818.png"
+  },
+  {
+    "code": "97416",
+    "nom": "Saint-Pierre",
+    "pop": 85038,
+    "og": "og/communes/97416.png"
+  },
+  {
+    "code": "78646",
+    "nom": "Versailles",
+    "pop": 84095,
+    "og": "og/communes/78646.png"
+  },
+  {
+    "code": "92026",
+    "nom": "Courbevoie",
+    "pop": 82902,
+    "og": "og/communes/92026.png"
+  },
+  {
+    "code": "92063",
+    "nom": "Rueil-Malmaison",
+    "pop": 82874,
+    "og": "og/communes/92063.png"
+  },
+  {
+    "code": "97422",
+    "nom": "Le Tampon",
+    "pop": 82579,
+    "og": "og/communes/97422.png"
+  },
+  {
+    "code": "34032",
+    "nom": "Béziers",
+    "pop": 81545,
+    "og": "og/communes/34032.png"
+  },
+  {
+    "code": "64445",
+    "nom": "Pau",
+    "pop": 80441,
+    "og": "og/communes/64445.png"
+  },
+  {
+    "code": "17300",
+    "nom": "La Rochelle",
+    "pop": 79851,
+    "og": "og/communes/17300.png"
+  },
+  {
+    "code": "50129",
+    "nom": "Cherbourg-en-Cotentin",
+    "pop": 78258,
+    "og": "og/communes/50129.png"
+  },
+  {
+    "code": "33281",
+    "nom": "Mérignac",
+    "pop": 78090,
+    "og": "og/communes/33281.png"
+  },
+  {
+    "code": "94017",
+    "nom": "Champigny-sur-Marne",
+    "pop": 78072,
+    "og": "og/communes/94017.png"
+  },
+  {
+    "code": "06004",
+    "nom": "Antibes",
+    "pop": 77637,
+    "og": "og/communes/06004.png"
+  },
+  {
+    "code": "94068",
+    "nom": "Saint-Maur-des-Fossés",
+    "pop": 76572,
+    "og": "og/communes/94068.png"
+  },
+  {
+    "code": "2A004",
+    "nom": "Ajaccio",
+    "pop": 76320,
+    "og": "og/communes/2A004.png"
+  },
+  {
+    "code": "97209",
+    "nom": "Fort-de-France",
+    "pop": 75506,
+    "og": "og/communes/97209.png"
+  },
+  {
+    "code": "44184",
+    "nom": "Saint-Nazaire",
+    "pop": 74568,
+    "og": "og/communes/44184.png"
+  },
+  {
+    "code": "06029",
+    "nom": "Cannes",
+    "pop": 74350,
+    "og": "og/communes/06029.png"
+  },
+  {
+    "code": "93051",
+    "nom": "Noisy-le-Grand",
+    "pop": 72978,
+    "og": "og/communes/93051.png"
+  },
+  {
+    "code": "93029",
+    "nom": "Drancy",
+    "pop": 72390,
+    "og": "og/communes/93029.png"
+  },
+  {
+    "code": "97611",
+    "nom": "Mamoudzou",
+    "pop": 71437,
+    "og": "og/communes/97611.png"
+  },
+  {
+    "code": "95127",
+    "nom": "Cergy",
+    "pop": 70906,
+    "og": "og/communes/95127.png"
+  },
+  {
+    "code": "92044",
+    "nom": "Levallois-Perret",
+    "pop": 68092,
+    "og": "og/communes/92044.png"
+  },
+  {
+    "code": "92040",
+    "nom": "Issy-les-Moulineaux",
+    "pop": 67669,
+    "og": "og/communes/92040.png"
+  },
+  {
+    "code": "62193",
+    "nom": "Calais",
+    "pop": 67571,
+    "og": "og/communes/62193.png"
+  },
+  {
+    "code": "33318",
+    "nom": "Pessac",
+    "pop": 67339,
+    "og": "og/communes/33318.png"
+  },
+  {
+    "code": "68066",
+    "nom": "Colmar",
+    "pop": 66970,
+    "og": "og/communes/68066.png"
+  },
+  {
+    "code": "91228",
+    "nom": "Évry-Courcouronnes",
+    "pop": 66919,
+    "og": "og/communes/91228.png"
+  },
+  {
+    "code": "69259",
+    "nom": "Vénissieux",
+    "pop": 65502,
+    "og": "og/communes/69259.png"
+  },
+  {
+    "code": "94041",
+    "nom": "Ivry-sur-Seine",
+    "pop": 65064,
+    "og": "og/communes/94041.png"
+  },
+  {
+    "code": "26362",
+    "nom": "Valence",
+    "pop": 64458,
+    "og": "og/communes/26362.png"
+  },
+  {
+    "code": "92024",
+    "nom": "Clichy",
+    "pop": 64410,
+    "og": "og/communes/92024.png"
+  },
+  {
+    "code": "29232",
+    "nom": "Quimper",
+    "pop": 64385,
+    "og": "og/communes/29232.png"
+  },
+  {
+    "code": "92002",
+    "nom": "Antony",
+    "pop": 64263,
+    "og": "og/communes/92002.png"
+  },
+  {
+    "code": "18033",
+    "nom": "Bourges",
+    "pop": 64186,
+    "og": "og/communes/18033.png"
+  },
+  {
+    "code": "83126",
+    "nom": "La Seyne-sur-Mer",
+    "pop": 63732,
+    "og": "og/communes/83126.png"
+  },
+  {
+    "code": "82121",
+    "nom": "Montauban",
+    "pop": 62945,
+    "og": "og/communes/82121.png"
+  },
+  {
+    "code": "59009",
+    "nom": "Villeneuve-d'Ascq",
+    "pop": 62868,
+    "og": "og/communes/59009.png"
+  },
+  {
+    "code": "97302",
+    "nom": "Cayenne",
+    "pop": 62675,
+    "og": "og/communes/97302.png"
+  },
+  {
+    "code": "93007",
+    "nom": "Le Blanc-Mesnil",
+    "pop": 62376,
+    "og": "og/communes/93007.png"
+  },
+  {
+    "code": "10387",
+    "nom": "Troyes",
+    "pop": 62088,
+    "og": "og/communes/10387.png"
+  },
+  {
+    "code": "93055",
+    "nom": "Pantin",
+    "pop": 61929,
+    "og": "og/communes/93055.png"
+  },
+  {
+    "code": "94076",
+    "nom": "Villejuif",
+    "pop": 60183,
+    "og": "og/communes/94076.png"
+  },
+  {
+    "code": "73065",
+    "nom": "Chambéry",
+    "pop": 59964,
+    "og": "og/communes/73065.png"
+  },
+  {
+    "code": "79191",
+    "nom": "Niort",
+    "pop": 59854,
+    "og": "og/communes/79191.png"
+  },
+  {
+    "code": "83061",
+    "nom": "Fréjus",
+    "pop": 59719,
+    "og": "og/communes/83061.png"
+  }
+]
